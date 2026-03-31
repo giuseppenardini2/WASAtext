@@ -1,0 +1,429 @@
+openapi: 3.0.0
+servers:
+  - url: "http://localhost:3000"
+info:
+  title: WASAtext
+  description: WASAtext, a message web app to communicate with friends
+  version: 1.0.0
+
+#------------
+# PATHS
+#------------
+paths:
+  /session:
+    post:
+      tags: ["login"]
+      summary: Logs in the user
+      description: |-
+        If the user does not exist, it will be created,
+        and an identifier is returned.
+        If the user exists, the user identifier is returned.
+      operationId: doLogin
+      requestBody:
+        description: User details
+      content:
+        application/json:
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Maria
+              pattern: '^.*?$'
+              minLength: 3
+              maxLength: 16
+              required: true
+      responses:
+        '201':
+          description: User log-in action successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  identifier:
+                    type: string
+                    example: "abcdef012345"
+
+  /{userID}:
+    get:
+      operationId: getMyConversations
+      summary: Get the list of the user conversation
+      description: |- 
+        Return a list of user conversation
+      parameters:
+        - $ref: "#/components/parameters/userID"
+      responses:
+        "200":
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/Conversation"}
+        "404":
+          description: Conversations not found
+
+    put: #TODO: Verifica che sia giusto perché si va a modificare l'attributo di una risorsa
+      operationId: setMyUserName
+      summary: Set username
+      description: |-
+        Set the user username
+      parameters:
+        - $ref: "#/components/parameters/userID"
+      requestBody:
+        content:
+          application/json:
+              schema:
+                type: object
+                properties:
+                  identifier:
+                    type: string
+                    example: "newusername312"
+      responses:
+        "200":
+          description: Username updated successful
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  identifier:
+                    type: string
+                    example: "newusername312"
+        "404":
+          description: Username not found
+
+  /{userID}/photos/:
+    put: #TODO: Sicuro che sia un put e non un post? Potresti fare tipo '{usersID}/photos' Però la foto è un attributo dello user quindi è più forse put
+      operationId: setMyPhoto
+      summary: Set the user picture
+      description: |-
+        Set the user profile picture
+      parameters:
+        - $ref: "#/components/parameters/userID"
+      requestBody:
+        content:
+          image/*:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          description: Photo updated successfully #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
+        "404":
+          description: Photo not found
+
+  /{userID}/conversations/:
+    get:
+      operationId: getConversation
+      summary: Get a single user conversation
+      description: |-
+        Get a single conversation of the user using the recipient id
+      parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/recipientID"
+      responses:
+        "200":
+          description: Conversation
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Conversation"}
+        "404":
+          description: Conversation not found
+      
+  /{userID}/conversations/{conversationID}:
+
+  /{userID}/conversations/{conversationID}/messages/:
+    post:
+      operationId: sendMessage
+      summary: Send a message to a user
+      description: |-
+        Send a message to a user
+      parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/recipientID"
+      requestBody:
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/Message"}
+      responses:
+        "200":
+          description: Message
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Message"}
+
+  /{userID}/conversations/{conversationID}/messages/{messageID}:
+    post:
+      operationId: forwardMessage
+      summary: Forward a message to a user
+    parameters:
+      - $ref: "#/components/parameters/messageID"
+
+    delete:
+      operationId: deleteMessage
+      summary: Delete a message
+      description: |-
+        Delete a message
+      parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/messageID"
+      responses:
+        "204":
+          description: Message deleted successfully
+        "404":
+          description: Message not found
+
+  /{userID}/conversations/{conversationID}/messages/{messageID}/reactions/:
+    post: 
+      operationId: commentMessage
+      summary: Comment a message
+      description: |-
+        Comment a message
+      parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/messageID"
+      responses:
+        "200":
+          description: Reaction
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Reaction"}
+
+  /{userID}/conversations/{conversationID}/messages/{messageID}/reactions/{reactionID}:
+    delete:
+      operationId: uncommentMessage
+      summary: Uncomment a message
+      description: |-
+        Uncomment a message
+      parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/messageID"
+        - $ref: "#/components/parameters/reactionID"
+      responses:
+        "204":
+          description: Message uncomment successfully
+        "404":
+          description: Message or reaction not found
+
+
+  /{userID}/groups/{groupID}:
+    put:
+      operationId: setGroupName
+      summary: Set the name of a group
+
+    delete:
+      operationId: leaveGroup
+      summary: Leave a group
+      description: |-
+        Leave the user from the current group
+      parameters:
+        - $ref: "#/components/parameters/groupID"
+      responses:
+        "204":
+          description: Group left successfully
+        "404":
+          description: Group not found
+
+  /{userID}/groups/{groupID}/partecipants/:
+    put:
+      operationId: addToGroup
+      summary: Add the a user to the current group
+      description: |-
+        Add the current user to a group
+      parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/groupID"
+      requestBody:
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/User"}
+      responses:
+        "200": #TODO: Ridacci un occhiata, dovrebbe ritornare lo userID dello user aggiunto al gruppo
+          content:
+          application/json:
+              schema:
+                type: object
+                properties:
+                  identifier:
+                    type: string
+                    example: "username312"
+        "404":
+          description: "User or group not found"
+
+  
+  /{userID}/groups/{groupID}/photos/:
+    put:
+      operationId: setGroupPhoto
+      summary: Set the photo of a group
+      description: |-
+        Set the group profile picture
+      parameters:
+        - $ref: "#/components/parameters/groupID"
+      requestBody:
+        content:
+          image/*:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          description: Photo updated successfully #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
+        "404":
+          description: Photo not found
+
+
+#------------
+# COMPONENTS
+#------------
+components:
+  #-- SCHEMAS
+  schemas:
+    User:
+      title: User
+      description: This object represents a single user
+      type: object
+      properties:
+        id:
+          description: Unique user identifier
+          type: string
+          example: "GiorgioGaber39"
+        profile_picture:
+          description: User's profile picture
+          type: string
+          format: binary
+        password: #TODO: È da eliminare visto che c'è il simplified login??
+          description: User's password
+          type: string
+          format: password
+          example: "passwordsicura1234"
+
+    Conversation:
+      title: Conversation
+      description: This object represents a single conversation
+      type: object
+      properties:
+        id:
+          description: Unique id identifier
+          type: string
+          example: "EnzoJannacci35"
+        picture:
+          description: User or group profile picture
+          type: string
+          format: binary
+        message_preview:
+          description: Last message preview
+          type: string
+          example: "Ciao Enzo, ..."
+        date:
+          description: The date of the last sent message
+          type: string
+          format: date-time
+          example: 2017-07-21T17:32:28Z
+          
+    Message:
+      title: Message
+      description: This object represents a single message
+      type: object
+      properties:
+        id:
+          description: Unique message identifier
+          type: string
+          example: "message123"
+        body:
+          description: Message body
+          type: string
+          example: "Hello Enzo"
+        picture:
+          description: Picture attacched to the message
+          type: string
+          format: binary
+        date:
+          description: Message send date
+          type: string
+          format: date-time
+          example: 2017-07-21T17:32:28Z
+
+    Reaction:
+      title: Message Reaction
+      description: This object represents a single reaction to a message
+      type: object
+      properties:
+        id:
+          description: Unique reaction identifier
+          type: string
+          example: "reactionmessage123"
+        body:
+          description: A emojii
+          type: string
+          minLength: 1
+          maxLength: 1
+          example: "😂"
+        
+    Group:
+      title: Group
+      description: This object represents a single group
+      type: object
+      properties:
+        id:
+          description: Unique group identifier
+          type: integer
+          example: 321
+        name:
+          description: Group name
+          type: string
+          example: "Gaber fans club"
+
+  #-- PARAMETERS
+  parameters:
+    userID:
+      schema:
+        description: User ID
+        type: string
+        example: "GiorgioGaber39"
+        readOnly: true
+        name: id
+        in: path
+        required: true
+    recipientID:
+      schema:
+        description: Recipient ID
+        type: string
+        example: "EnzoJannacci35"
+        readOnly: true
+        name: id
+        in: query
+        required: true
+    messageID:
+      schema:
+        description: Unique message identifier
+        type: string
+        example: "message123"
+        readOnly: true
+        name: id
+        in: path
+        required: true
+    reactionID:
+      schema:
+        description: Unique reaction identifier
+        type: string
+        example: "reactionmessage123"
+        readOnly: true
+        name: id
+        in: path
+        required: true
+    groupID:
+      schema:
+        description: Unique group identifier
+        type: string
+        example: "group123"
+        readOnly: true
+        name: id
+        in: path
+        required: true
+
+  #-- RESPONSES
+  responses: 
+    404NotFound: #Not in use
+      description: The specified resource was not found
