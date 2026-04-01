@@ -262,7 +262,6 @@ paths:
         "404":
           description: "User or group not found"
 
-  
   /{userID}/groups/{groupID}/photos/:
     put:
       operationId: setGroupPhoto
@@ -278,7 +277,7 @@ paths:
               type: string
               format: binary
       responses:
-        "200":
+        "204":
           description: Photo updated successfully #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
         "404":
           description: Photo not found
@@ -288,7 +287,6 @@ paths:
 # COMPONENTS
 #------------
 components:
-  #-- SCHEMAS
   schemas:
     User:
       title: User
@@ -385,7 +383,6 @@ components:
           type: string
           example: "Gaber fans club"
 
-  #-- PARAMETERS
   parameters:
     userID:
       schema:
