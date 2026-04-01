@@ -4,7 +4,7 @@ servers:
 info:
   title: WASAtext
   description: WASAtext, a message web app to communicate with friends
-  version: 1.0.0
+  version: 0.0.1
 
 #------------
 # PATHS
@@ -156,14 +156,14 @@ paths:
     post:
       operationId: forwardMessage
       summary: Forward a message to a user
-    parameters:
-      - $ref: "#/components/parameters/userID"
-      - $ref: "#/components/parameters/messageID"
-      - $ref: "#/components/parameters/recipientID"
-    responses:
-      "200":
-        content:
-          application/json:
+      parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/messageID"
+        - $ref: "#/components/parameters/recipientID"
+      responses:
+        "200":
+          content:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -253,12 +253,12 @@ paths:
         "200": #TODO: Ridacci un occhiata, dovrebbe ritornare lo userID dello user aggiunto al gruppo
           content:
           application/json:
-              schema:
-                type: object
-                properties:
-                  identifier:
-                    type: string
-                    example: "username312"
+            schema:
+              type: object
+              properties:
+                identifier:
+                  type: string
+                  example: "username312"
         "404":
           description: "User or group not found"
 
@@ -287,6 +287,7 @@ paths:
 # COMPONENTS
 #------------
 components:
+  #-- SCHEMAS
   schemas:
     User:
       title: User
@@ -367,7 +368,6 @@ components:
           type: string
           minLength: 1
           maxLength: 1
-          example: "😂"
         
     Group:
       title: Group
@@ -383,52 +383,53 @@ components:
           type: string
           example: "Gaber fans club"
 
+  #-- PARAMETERS
   parameters:
     userID:
       schema:
-        description: User ID
         type: string
         example: "GiorgioGaber39"
         readOnly: true
-        name: id
-        in: path
-        required: true
+      name: userID
+      description: Unique user identifier
+      in: path
+      required: true
     recipientID:
       schema:
-        description: Recipient ID
         type: string
         example: "EnzoJannacci35"
         readOnly: true
-        name: id
-        in: query
-        required: true
+      name: recipientID
+      description: Unique recipient identifier
+      in: query
+      required: true
     messageID:
       schema:
-        description: Unique message identifier
         type: string
         example: "message123"
         readOnly: true
-        name: id
-        in: path
-        required: true
+      name: messageID
+      description: Unique message identifier
+      in: path
+      required: true
     reactionID:
       schema:
-        description: Unique reaction identifier
         type: string
         example: "reactionmessage123"
         readOnly: true
-        name: id
-        in: path
-        required: true
+      name: reactionID
+      description: Unique reaction identifier
+      in: path
+      required: true
     groupID:
       schema:
-        description: Unique group identifier
         type: string
         example: "group123"
         readOnly: true
-        name: id
-        in: path
-        required: true
+      description: Unique group identifier
+      name: groupID
+      in: path
+      required: true
 
   #-- RESPONSES
   responses: 
