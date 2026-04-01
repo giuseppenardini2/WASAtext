@@ -21,18 +21,18 @@ paths:
       operationId: doLogin
       requestBody:
         description: User details
-      content:
-        application/json:
-        schema:
-          type: object
-          properties:
-            name:
-              type: string
-              example: Maria
-              pattern: '^.*?$'
-              minLength: 3
-              maxLength: 16
-              required: true
+        content:
+          application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Maria
+                pattern: '^.*?$'
+                minLength: 3
+                maxLength: 16
+                required: true
       responses:
         '201':
           description: User log-in action successful
@@ -109,7 +109,7 @@ paths:
               type: string
               format: binary
       responses:
-        "200":
+        "204":
           description: Photo updated successfully #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
         "404":
           description: Photo not found
@@ -131,8 +131,6 @@ paths:
               schema: {$ref: "#/components/schemas/Conversation"}
         "404":
           description: Conversation not found
-      
-  /{userID}/conversations/{conversationID}:
 
   /{userID}/conversations/{conversationID}/messages/:
     post:
@@ -159,7 +157,19 @@ paths:
       operationId: forwardMessage
       summary: Forward a message to a user
     parameters:
+      - $ref: "#/components/parameters/userID"
       - $ref: "#/components/parameters/messageID"
+      - $ref: "#/components/parameters/recipientID"
+    responses:
+      "200":
+        content:
+          application/json:
+              schema:
+                type: object
+                properties:
+                  identifier:
+                    type: string
+                    example: "message312"
 
     delete:
       operationId: deleteMessage
