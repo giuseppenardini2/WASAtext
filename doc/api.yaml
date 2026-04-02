@@ -32,7 +32,7 @@ paths:
                   pattern: '^.*?$'
                   minLength: 3
                   maxLength: 16
-                  required: true
+        required: true
       responses:
         '201':
           description: User log-in action successful
@@ -61,8 +61,6 @@ paths:
               schema:
                 type: array
                 items: {$ref: "#/components/schemas/Conversation"}
-        "404":
-          description: Conversations not found
 
     put: #TODO: Verifica che sia giusto perché si va a modificare l'attributo di una risorsa
       operationId: setMyUserName
