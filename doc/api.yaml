@@ -63,7 +63,11 @@ paths:
             application/json:
               schema:
                 type: array
-                items: {$ref: "#/components/schemas/Conversation"}
+                items: { $ref: "#/components/schemas/Conversation" }
+                uniqueItems: true
+                minItems: 0
+                maxItems: 100
+        "404": { description: User not found }
 
     put: #TODO: Verifica che sia giusto perché si va a modificare l'attributo di una risorsa
       operationId: setMyUserName
@@ -73,14 +77,15 @@ paths:
       parameters:
         - $ref: "#/components/parameters/userID"
       requestBody:
+        description: New username
         content:
           application/json:
-              schema:
-                type: object
-                properties:
-                  identifier:
-                    type: string
-                    example: "newusername312"
+            schema:
+              type: object
+              properties:
+                identifier:
+                  type: string
+                  example: "newusername312"
       responses:
         "200":
           description: Username updated successful
@@ -92,8 +97,7 @@ paths:
                   identifier:
                     type: string
                     example: "newusername312"
-        "404":
-          description: User not found
+        "404": { description: User not found }
 
   /users/{userID}/photos/:
     put: #TODO: Sicuro che sia un put e non un post? Potresti fare tipo '{usersID}/photos' Però la foto è un attributo dello user quindi è più forse put
@@ -110,10 +114,8 @@ paths:
               type: string
               format: binary
       responses:
-        "204":
-          description: Photo updated successfully #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
-        "404":
-          description: Photo not found
+        "204": { description: Photo updated successfully } #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
+        "404": { description: Photo not found }
 
   /users/{userID}/conversations/:
     get:
@@ -130,8 +132,7 @@ paths:
           content:
             application/json:
               schema: {$ref: "#/components/schemas/Conversation"}
-        "404":
-          description: Conversation not found
+        "404": { description: Conversation not found }
 
   /users/{userID}/conversations/{conversationID}/messages/:
     post:
@@ -181,10 +182,8 @@ paths:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/messageID"
       responses:
-        "204":
-          description: Message deleted successfully
-        "404":
-          description: Message not found
+        "204": { description: Message deleted successfully }
+        "404": { description: Message not found }
 
   /users/{userID}/conversations/{conversationID}/messages/{messageID}/reactions/:
     post: 
@@ -213,10 +212,8 @@ paths:
         - $ref: "#/components/parameters/messageID"
         - $ref: "#/components/parameters/reactionID"
       responses:
-        "204":
-          description: Message uncomment successfully
-        "404":
-          description: Message or reaction not found
+        "204": { description: Message uncomment successfully }
+        "404": { description: Message or reaction not found }
 
   /users/{userID}/groups/{groupID}:
     put:
@@ -230,12 +227,12 @@ paths:
       requestBody:
         content:
           application/json:
-              schema:
-                type: object
-                properties:
-                  identifier:
-                    type: string
-                    example: "New group name"
+            schema:
+              type: object
+              properties:
+                identifier:
+                  type: string
+                  example: "New group name"
       responses:
         "200":
           description: Group name updated successful
@@ -247,8 +244,7 @@ paths:
                   identifier:
                     type: string
                     example: "New group name"
-        "404":
-          description: User or group not found
+        "404": { description: User or group not found }
 
     delete:
       operationId: leaveGroup
@@ -258,10 +254,8 @@ paths:
       parameters:
         - $ref: "#/components/parameters/groupID"
       responses:
-        "204":
-          description: Group left successfully
-        "404":
-          description: Group not found
+        "204": { description: Group left successfully }
+        "404": { description: Group not found }
 
   /users/{userID}/groups/{groupID}/partecipants/:
     put:
@@ -286,8 +280,7 @@ paths:
                   identifier:
                     type: string
                     example: "username312"
-        "404":
-          description: "User or group not found"
+        "404": { description: "User or group not found" }
 
   /users/{userID}/groups/{groupID}/photos/:
     put:
@@ -304,10 +297,8 @@ paths:
               type: string
               format: binary
       responses:
-        "204":
-          description: Photo updated successfully #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
-        "404":
-          description: Photo not found
+        "204": { description: Photo updated successfully } #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
+        "404": { description: Photo not found }
 
 
 #------------
@@ -457,8 +448,3 @@ components:
       name: groupID
       in: path
       required: true
-
-  #-- RESPONSES
-  responses: 
-    404NotFound: #Not in use
-      description: The specified resource was not found
