@@ -67,7 +67,8 @@ paths:
                 uniqueItems: true
                 minItems: 0
                 maxItems: 100
-        "404": { description: User not found }
+        "404":
+          $ref: "#/components/responses/404NotFound"
 
     put: #TODO: Verifica che sia giusto perché si va a modificare l'attributo di una risorsa
       operationId: setMyUserName
@@ -97,7 +98,8 @@ paths:
                   identifier:
                     type: string
                     example: "newusername312"
-        "404": { description: User not found }
+        "404": 
+          $ref: "#/components/responses/404NotFound"
 
   /users/{userID}/photos/:
     put: #TODO: Sicuro che sia un put e non un post? Potresti fare tipo '{usersID}/photos' Però la foto è un attributo dello user quindi è più forse put
@@ -114,8 +116,10 @@ paths:
               type: string
               format: binary
       responses:
-        "204": { description: Photo updated successfully } #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
-        "404": { description: Photo not found }
+        "204":
+          description: Photo updated successfully #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
+        "404":
+          $ref: "#/components/responses/404NotFound"
 
   /users/{userID}/conversations/:
     get:
@@ -132,7 +136,8 @@ paths:
           content:
             application/json:
               schema: {$ref: "#/components/schemas/Conversation"}
-        "404": { description: Conversation not found }
+        "404":
+          $ref: "#/components/responses/404NotFound"
 
   /users/{userID}/conversations/{conversationID}/messages/:
     post:
@@ -164,6 +169,7 @@ paths:
         - $ref: "#/components/parameters/recipientID"
       responses:
         "200":
+          description: Message
           content:
             application/json:
               schema:
@@ -182,8 +188,10 @@ paths:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/messageID"
       responses:
-        "204": { description: Message deleted successfully }
-        "404": { description: Message not found }
+        "204":
+          description: Message deleted successfully
+        "404":
+          $ref: "#/components/responses/404NotFound"
 
   /users/{userID}/conversations/{conversationID}/messages/{messageID}/reactions/:
     post: 
@@ -212,8 +220,10 @@ paths:
         - $ref: "#/components/parameters/messageID"
         - $ref: "#/components/parameters/reactionID"
       responses:
-        "204": { description: Message uncomment successfully }
-        "404": { description: Message or reaction not found }
+        "204": 
+          description: Message uncomment successfully
+        "404":
+          $ref: "#/components/responses/404NotFound"
 
   /users/{userID}/groups/{groupID}:
     put:
@@ -244,7 +254,8 @@ paths:
                   identifier:
                     type: string
                     example: "New group name"
-        "404": { description: User or group not found }
+        "404":
+          $ref: "#/components/responses/404NotFound"
 
     delete:
       operationId: leaveGroup
@@ -254,8 +265,10 @@ paths:
       parameters:
         - $ref: "#/components/parameters/groupID"
       responses:
-        "204": { description: Group left successfully }
-        "404": { description: Group not found }
+        "204":
+          description: Group left successfully
+        "404":
+          $ref: "#/components/responses/404NotFound"
 
   /users/{userID}/groups/{groupID}/partecipants/:
     put:
@@ -272,6 +285,7 @@ paths:
             schema: {$ref: "#/components/schemas/User"}
       responses:
         "200": #TODO: Ridacci un occhiata, dovrebbe ritornare lo userID dello user aggiunto al gruppo
+          description: ID of the user added to the group
           content:
             application/json:
               schema:
@@ -280,7 +294,8 @@ paths:
                   identifier:
                     type: string
                     example: "username312"
-        "404": { description: "User or group not found" }
+        "404":
+          $ref: "#/components/responses/404NotFound"
 
   /users/{userID}/groups/{groupID}/photos/:
     put:
@@ -297,8 +312,10 @@ paths:
               type: string
               format: binary
       responses:
-        "204": { description: Photo updated successfully } #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
-        "404": { description: Photo not found }
+        "204":
+          description: Photo updated successfully #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
+        "404":
+          $ref: "#/components/responses/404NotFound"
 
 
 #------------
@@ -401,6 +418,20 @@ components:
           type: string
           example: "Gaber fans club"
 
+    Error:
+      title: Error
+      description: This object represents a single Error
+      properties:
+        code:
+          type: string
+          example: "404"
+        message:
+          type: string
+          example: "Resource not found"
+      required:
+        - code
+        - message
+
   #-- PARAMETERS
   parameters:
     userID:
@@ -448,3 +479,11 @@ components:
       name: groupID
       in: path
       required: true
+
+  responses:
+    404NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
