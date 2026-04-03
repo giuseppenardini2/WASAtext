@@ -75,7 +75,7 @@ paths:
           description: List of conversations
           content:
             application/json:
-              schema: {$ref: "#/components/schemas/Conversations"}
+              schema: { $ref: "#/components/schemas/Conversations" }
         "404":
           $ref: "#/components/responses/404NotFound"
 
@@ -89,24 +89,14 @@ paths:
         description: New username
         content:
           application/json:
-            schema:
-              type: object
-              properties:
-                identifier:
-                  type: string
-                  example: "newusername312"
+            schema: { $ref: "#/components/schemas/Identifier" }
       responses:
         "200":
           description: Username updated successful
           content: 
             application/json:
-              schema:
-                type: object
-                properties:
-                  identifier:
-                    type: string
-                    example: "newusername312"
-        "404": 
+              schema: { $ref: "#/components/schemas/Identifier" }
+        "404":
           $ref: "#/components/responses/404NotFound"
 
   /users/{userID}/photos/:
@@ -145,7 +135,7 @@ paths:
           description: Conversation
           content:
             application/json:
-              schema: {$ref: "#/components/schemas/Conversation"}
+              schema: { $ref: "#/components/schemas/Conversation" }
         "404":
           $ref: "#/components/responses/404NotFound"
 
@@ -162,13 +152,13 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {$ref: "#/components/schemas/Message"}
+            schema: { $ref: "#/components/schemas/Message" }
       responses:
         "200":
           description: Message
           content:
             application/json:
-              schema: {$ref: "#/components/schemas/Message"}
+              schema: { $ref: "#/components/schemas/Message" }
 
   /users/{userID}/conversations/{conversationID}/messages/{messageID}:
     parameters:
@@ -188,12 +178,7 @@ paths:
           description: Message
           content:
             application/json:
-              schema:
-                type: object
-                properties:
-                  identifier:
-                    type: string
-                    example: "message312"
+              schema: { $ref: "#/components/schemas/Identifier" }
 
     delete:
       operationId: deleteMessage
@@ -260,7 +245,7 @@ paths:
             schema:
               type: object
               properties:
-                identifier:
+                groupName:
                   type: string
                   example: "New group name"
       responses:
@@ -271,7 +256,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  identifier:
+                  groupName:
                     type: string
                     example: "New group name"
         "404":
@@ -302,18 +287,13 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {$ref: "#/components/schemas/User"}
+            schema: { $ref: "#/components/schemas/User" }
       responses:
         "200":
           description: ID of the user added to the group
           content:
             application/json:
-              schema:
-                type: object
-                properties:
-                  identifier:
-                    type: string
-                    example: "username312"
+              schema: { $ref: "#/components/schemas/Identifier"}
         "404":
           $ref: "#/components/responses/404NotFound"
 
@@ -348,20 +328,27 @@ components:
   schemas:
     Identifier:
       title: Identifier
-      description: This object represents a single Identifier
+      description: This object represents a single identifier
       type: object
       properties:
         id:
-          description: Unique identifier
-          type: string
-          example: "GiorgioGaber39"
+          description: Integer id
+          type: integer
+          example: 123
+          minimum: 0
 
     User:
       title: User
       description: This object represents a single user
       type: object
       properties:
-        id: { $ref: "#/components/schemas/Identifier"}
+        id: { $ref: "#/components/schemas/Identifier" }
+        nickname:
+          description: User nickaname
+          type: string
+          minLength: 5
+          maxLength: 15
+          example: "SignorG"
         profile_picture:
           description: User's profile picture
           type: string
@@ -377,7 +364,7 @@ components:
       description: This object represents a single conversation
       type: object
       properties:
-        id: { $ref: "#/components/schemas/Identifier"}
+        id: { $ref: "#/components/schemas/Identifier" }
         picture:
           description: User or group profile picture
           type: string
@@ -400,7 +387,7 @@ components:
         conversations:
           type: array
           description: Conversations of the current user
-          items: { $ref: "#/components/schemas/Conversations"}
+          items: { $ref: "#/components/schemas/Conversations" }
           uniqueItems: true
           minItems: 0
           maxItems: 50
@@ -410,7 +397,7 @@ components:
       description: This object represents a single message
       type: object
       properties:
-        id: { $ref: "#/components/schemas/Identifier"}
+        id: { $ref: "#/components/schemas/Identifier" }
         body:
           description: Message body
           type: string
@@ -430,22 +417,25 @@ components:
       description: This object represents a single reaction to a message
       type: object
       properties:
-        id: { $ref: "#/components/schemas/Identifier"}
+        id: { $ref: "#/components/schemas/Identifier" }
         body:
           description: A emojii
           type: string
           minLength: 1
           maxLength: 1
+          example: "😂"
         
     Group:
       title: Group
       description: This object represents a single group
       type: object
       properties:
-        id: { $ref: "#/components/schemas/Identifier"}
+        id: { $ref: "#/components/schemas/Identifier" }
         name:
           description: Group name
           type: string
+          minLength: 3
+          maxLength: 20
           example: "Gaber fans club"
 
     Error:
@@ -469,37 +459,37 @@ components:
       description: Unique user identifier
       in: path
       required: true
-      schema: { $ref: "#/components/schemas/Identifier"}
+      schema: { $ref: "#/components/schemas/Identifier" }
     conversationID:
       name: conversationID
       description: Unique conversation identifier
       in: path
       required: true
-      schema: { $ref: "#/components/schemas/Identifier"}
+      schema: { $ref: "#/components/schemas/Identifier" }
     recipientID:
       name: recipientID
       description: Unique recipient identifier
       in: query
       required: true
-      schema: { $ref: "#/components/schemas/Identifier"}
+      schema: { $ref: "#/components/schemas/Identifier" }
     messageID:
       name: messageID
       description: Unique message identifier
       in: path
       required: true
-      schema: { $ref: "#/components/schemas/Identifier"}
+      schema: { $ref: "#/components/schemas/Identifier" }
     reactionID:
       name: reactionID
       description: Unique reaction identifier
       in: path
       required: true
-      schema: { $ref: "#/components/schemas/Identifier"}
+      schema: { $ref: "#/components/schemas/Identifier" }
     groupID:
       description: Unique group identifier
       name: groupID
       in: path
       required: true
-      schema: { $ref: "#/components/schemas/Identifier"}
+      schema: { $ref: "#/components/schemas/Identifier" }
 
   #-- RESPONSES
   responses:
