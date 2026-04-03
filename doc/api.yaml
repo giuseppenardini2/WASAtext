@@ -9,6 +9,18 @@ info:
     easily stay in touch through your private chats or group discussions.
   version: 0.0.1
 
+tags:
+  - name: "login"
+    description: Login operations
+  - name: "users"
+    description: User management operations
+  - name: "messages"
+    description: Message operations
+  - name: "conversations"
+    description: Conversation operations
+  - name: "groups"
+    description: Group operations
+
 #------------
 # PATHS
 #------------
@@ -54,6 +66,7 @@ paths:
 
     get:
       operationId: getMyConversations
+      tags: ["users"]
       summary: Get the list of the user conversation
       description: |- 
         Return a list of user conversation
@@ -66,8 +79,9 @@ paths:
         "404":
           $ref: "#/components/responses/404NotFound"
 
-    put: #TODO: Verifica che sia giusto perché si va a modificare l'attributo di una risorsa
+    put:
       operationId: setMyUserName
+      tags: ["users"]
       summary: Set username
       description: |-
         Set the user username
@@ -98,6 +112,7 @@ paths:
   /users/{userID}/photos/:
     put: #TODO: Sicuro che sia un put e non un post? Potresti fare tipo '{usersID}/photos' Però la foto è un attributo dello user quindi è più forse put
       operationId: setMyPhoto
+      tags: ["users"]
       summary: Set the user picture
       description: |-
         Set the user profile picture
@@ -118,6 +133,7 @@ paths:
   /users/{userID}/conversations/:
     get:
       operationId: getConversation
+      tags: ["conversations"]
       summary: Get a single user conversation
       description: |-
         Get a single conversation of the user using the recipient id
@@ -136,6 +152,7 @@ paths:
   /users/{userID}/conversations/{conversationID}/messages/:
     post:
       operationId: sendMessage
+      tags: ["messages"]
       summary: Send a message to a user
       description: |-
         Send a message to a user
@@ -162,6 +179,7 @@ paths:
 
     post:
       operationId: forwardMessage
+      tags: ["messages"]
       summary: Forward a message to a user
       parameters:
         - $ref: "#/components/parameters/recipientID"
@@ -179,6 +197,7 @@ paths:
 
     delete:
       operationId: deleteMessage
+      tags: ["messages"]
       summary: Delete a message
       description: |-
         Delete a message
@@ -191,6 +210,7 @@ paths:
   /users/{userID}/conversations/{conversationID}/messages/{messageID}/reactions/:
     post: 
       operationId: commentMessage
+      tags: ["messages"]
       summary: Comment a message
       description: |-
         Comment a message
@@ -208,6 +228,7 @@ paths:
   /users/{userID}/conversations/{conversationID}/messages/{messageID}/reactions/{reactionID}:
     delete:
       operationId: uncommentMessage
+      tags: ["messages"]
       summary: Uncomment a message
       description: |-
         Uncomment a message
@@ -229,6 +250,7 @@ paths:
 
     put:
       operationId: setGroupName
+      tags: ["groups"]
       summary: Set the name of a group
       description: |-
         Set the group name 
@@ -257,6 +279,7 @@ paths:
 
     delete:
       operationId: leaveGroup
+      tags: ["groups"]
       summary: Leave a group
       description: |-
         Leave the user from the current group
@@ -269,6 +292,7 @@ paths:
   /users/{userID}/groups/{groupID}/partecipants/:
     put:
       operationId: addToGroup
+      tags: ["groups"]
       summary: Add the a user to the current group
       description: |-
         Add the current user to a group
@@ -296,6 +320,7 @@ paths:
   /users/{userID}/groups/{groupID}/photos/:
     put:
       operationId: setGroupPhoto
+      tags: ["groups"]
       summary: Set the photo of a group
       description: |-
         Set the group profile picture
