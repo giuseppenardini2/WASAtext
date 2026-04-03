@@ -49,24 +49,20 @@ paths:
                     example: "abcdef012345"
 
   /users/{userID}:
+    parameters:
+      - $ref: "#/components/parameters/userID"
+
     get:
       operationId: getMyConversations
       summary: Get the list of the user conversation
       description: |- 
         Return a list of user conversation
-      parameters:
-        - $ref: "#/components/parameters/userID"
       responses:
         "200":
           description: List of conversations
           content:
             application/json:
-              schema:
-                type: array
-                items: { $ref: "#/components/schemas/Conversation" }
-                uniqueItems: true
-                minItems: 0
-                maxItems: 100
+              schema: {$ref: "#/components/schemas/Conversations"}
         "404":
           $ref: "#/components/responses/404NotFound"
 
@@ -75,8 +71,6 @@ paths:
       summary: Set username
       description: |-
         Set the user username
-      parameters:
-        - $ref: "#/components/parameters/userID"
       requestBody:
         description: New username
         content:
@@ -160,13 +154,16 @@ paths:
               schema: {$ref: "#/components/schemas/Message"}
 
   /users/{userID}/conversations/{conversationID}/messages/{messageID}:
+    parameters:
+      - $ref: "#/components/parameters/userID"
+      - $ref: "#/components/parameters/messageID"
+      - $ref: "#/components/parameters/conversationID"
+      - $ref: "#/components/parameters/recipientID"
+
     post:
       operationId: forwardMessage
       summary: Forward a message to a user
       parameters:
-        - $ref: "#/components/parameters/userID"
-        - $ref: "#/components/parameters/messageID"
-        - $ref: "#/components/parameters/conversationID"
         - $ref: "#/components/parameters/recipientID"
       responses:
         "200":
@@ -185,10 +182,6 @@ paths:
       summary: Delete a message
       description: |-
         Delete a message
-      parameters:
-        - $ref: "#/components/parameters/userID"
-        - $ref: "#/components/parameters/conversationID"
-        - $ref: "#/components/parameters/messageID"
       responses:
         "204":
           description: Message deleted successfully
@@ -230,14 +223,15 @@ paths:
           $ref: "#/components/responses/404NotFound"
 
   /users/{userID}/groups/{groupID}:
+    parameters:
+      - $ref: "#/components/parameters/userID"
+      - $ref: "#/components/parameters/groupID"
+
     put:
       operationId: setGroupName
       summary: Set the name of a group
       description: |-
-        Set the group name
-      parameters:
-        - $ref: "#/components/parameters/userID"
-        - $ref: "#/components/parameters/groupID"
+        Set the group name 
       requestBody:
         content:
           application/json:
@@ -266,9 +260,6 @@ paths:
       summary: Leave a group
       description: |-
         Leave the user from the current group
-      parameters:
-        - $ref: "#/components/parameters/userID"
-        - $ref: "#/components/parameters/groupID"
       responses:
         "204":
           description: Group left successfully
@@ -371,6 +362,19 @@ components:
           type: string
           format: date-time
           example: 2017-07-21T17:32:28Z
+
+    Conversations:
+      title: Conversations
+      description: This object represents a list of conversation object
+      type: object
+      properties:
+        conversations:
+          type: array
+          description: Conversations of the current user
+          items: { $ref: "#/components/schemas/Conversations"}
+          uniqueItems: true
+          minItems: 0
+          maxItems: 50
           
     Message:
       title: Message
