@@ -147,7 +147,7 @@ paths:
         Send a message to a user
       parameters:
         - $ref: "#/components/parameters/userID"
-        - $ref: "#/components/parameters/recipientID"
+        - $ref: "#/components/parameters/conversationID"
       requestBody:
         content:
           application/json:
@@ -166,6 +166,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/messageID"
+        - $ref: "#/components/parameters/conversationID"
         - $ref: "#/components/parameters/recipientID"
       responses:
         "200":
@@ -186,6 +187,7 @@ paths:
         Delete a message
       parameters:
         - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/conversationID"
         - $ref: "#/components/parameters/messageID"
       responses:
         "204":
@@ -201,6 +203,7 @@ paths:
         Comment a message
       parameters:
         - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/conversationID"
         - $ref: "#/components/parameters/messageID"
       responses:
         "200":
@@ -217,6 +220,7 @@ paths:
         Uncomment a message
       parameters:
         - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/conversationID"
         - $ref: "#/components/parameters/messageID"
         - $ref: "#/components/parameters/reactionID"
       responses:
@@ -263,6 +267,7 @@ paths:
       description: |-
         Leave the user from the current group
       parameters:
+        - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/groupID"
       responses:
         "204":
@@ -284,7 +289,7 @@ paths:
           application/json:
             schema: {$ref: "#/components/schemas/User"}
       responses:
-        "200": #TODO: Ridacci un occhiata, dovrebbe ritornare lo userID dello user aggiunto al gruppo
+        "200":
           description: ID of the user added to the group
           content:
             application/json:
@@ -304,6 +309,7 @@ paths:
       description: |-
         Set the group profile picture
       parameters:
+        - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/groupID"
       requestBody:
         content:
@@ -435,51 +441,61 @@ components:
   #-- PARAMETERS
   parameters:
     userID:
-      schema:
-        type: string
-        example: "GiorgioGaber39"
-        readOnly: true
       name: userID
       description: Unique user identifier
       in: path
       required: true
-    recipientID:
       schema:
         type: string
-        example: "EnzoJannacci35"
+        example: "GiorgioGaber39"
         readOnly: true
+    conversationID:
+      name: conversationID
+      description: Unique conversation identifier
+      in: path
+      required: true
+      schema:
+        type: string
+        example: "EnzoJannacci53"
+        readOnly: true
+    recipientID:
       name: recipientID
       description: Unique recipient identifier
       in: query
       required: true
-    messageID:
       schema:
         type: string
-        example: "message123"
+        example: "EnzoJannacci35"
         readOnly: true
+    messageID:
       name: messageID
       description: Unique message identifier
       in: path
       required: true
-    reactionID:
       schema:
         type: string
-        example: "reactionmessage123"
+        example: "message123"
         readOnly: true
+    reactionID:
       name: reactionID
       description: Unique reaction identifier
       in: path
       required: true
-    groupID:
       schema:
         type: string
-        example: "group123"
+        example: "reactionmessage123"
         readOnly: true
+    groupID:
       description: Unique group identifier
       name: groupID
       in: path
       required: true
+      schema:
+        type: string
+        example: "group123"
+        readOnly: true
 
+  #-- RESPONSES
   responses:
     404NotFound:
       description: The specified resource was not found
