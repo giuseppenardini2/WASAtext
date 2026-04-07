@@ -61,6 +61,24 @@ paths:
                     example: 123
                     minimum: 0
 
+  /users/:
+    get:
+      operationId: getUsers
+      tags: ["users"]
+      summary: Get the list of the users
+      description: |-
+        Return a list of users
+      parameters:
+        - $ref: "#/components/parameters/username"
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Users" }
+        "404":
+          $ref: "#/components/responses/404NotFound"
+
   /users/{userID}:
     parameters:
       - $ref: "#/components/parameters/userID"
@@ -168,7 +186,6 @@ paths:
       - $ref: "#/components/parameters/userID"
       - $ref: "#/components/parameters/messageID"
       - $ref: "#/components/parameters/conversationID"
-      - $ref: "#/components/parameters/recipientID"
 
     post:
       operationId: forwardMessage
@@ -326,7 +343,7 @@ paths:
               maxLength: 9999
       responses:
         "204":
-          description: Photo updated successfully #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
+          description: Photo updated successfully
         "404":
           $ref: "#/components/responses/404NotFound"
 
@@ -356,13 +373,13 @@ components:
       type: object
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
-        nickname:
-          description: User nickaname
+        username:
+          description: User username
           type: string
           minLength: 5
           maxLength: 15
           example: "SignorG"
-        profile_picture:
+        profilePicture:
           description: User's profile picture
           type: string
           format: binary
@@ -370,8 +387,23 @@ components:
           maxLength: 9999
       required:
         - id
-        - nickname
-        - profile_picture
+        - username
+        - profilePicture
+    
+    Users:
+      title: Users
+      description: This object represents a list of user object
+      type: object
+      properties:
+        users:
+          type: array
+          description: Users
+          items: { $ref: "#/components/schemas/User" }
+          uniqueItems: true
+          minItems: 0
+          maxItems: 50
+      required:
+        - users
 
     Conversation:
       title: Conversation
@@ -410,7 +442,7 @@ components:
         conversations:
           type: array
           description: Conversations of the current user
-          items: { $ref: "#/components/schemas/Conversations" }
+          items: { $ref: "#/components/schemas/Conversation" }
           uniqueItems: true
           minItems: 0
           maxItems: 50
@@ -497,6 +529,16 @@ components:
 
   #-- PARAMETERS
   parameters:
+    username:
+      name: username
+      description: User username
+      in: query
+      required: true
+      schema:
+        type: string
+        minLength: 5
+        maxLength: 15
+        example: "SignorG"
     userID:
       name: userID
       description: Unique user identifier
