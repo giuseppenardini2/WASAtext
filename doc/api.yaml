@@ -61,7 +61,7 @@ paths:
                     example: 123
                     minimum: 0
 
-  /users/:
+  /users:
     get:
       operationId: getUsers
       tags: ["users"]
@@ -108,18 +108,18 @@ paths:
         description: New username
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/Identifier" }
+            schema: { $ref: "#/components/schemas/Username" }
       responses:
         "200":
           description: Username updated successful
           content: 
             application/json:
-              schema: { $ref: "#/components/schemas/Identifier" }
+              schema: { $ref: "#/components/schemas/Username" }
         "404":
           $ref: "#/components/responses/404NotFound"
 
-  /users/{userID}/photos/:
-    put: #TODO: Sicuro che sia un put e non un post? Potresti fare tipo '{usersID}/photos' Però la foto è un attributo dello user quindi è più forse put
+  /users/{userID}/photos:
+    put:
       operationId: setMyPhoto
       tags: ["users"]
       summary: Set the user picture
@@ -137,11 +137,11 @@ paths:
               maxLength: 9999
       responses:
         "204":
-          description: Photo updated successfully #Potrebbe ritornare un immagine o l'id dell'immagine (quindi trattarla come un oggetto)
+          description: Photo updated successfully
         "404":
           $ref: "#/components/responses/404NotFound"
 
-  /users/{userID}/conversations/:
+  /users/{userID}/conversations:
     get:
       operationId: getConversation
       tags: ["conversations"]
@@ -160,7 +160,7 @@ paths:
         "404":
           $ref: "#/components/responses/404NotFound"
 
-  /users/{userID}/conversations/{conversationID}/messages/:
+  /users/{userID}/conversations/{conversationID}/messages:
     post:
       operationId: sendMessage
       tags: ["messages"]
@@ -214,7 +214,7 @@ paths:
         "404":
           $ref: "#/components/responses/404NotFound"
 
-  /users/{userID}/conversations/{conversationID}/messages/{messageID}/reactions/:
+  /users/{userID}/conversations/{conversationID}/messages/{messageID}/reactions:
     post: 
       operationId: commentMessage
       tags: ["messages"]
@@ -300,7 +300,7 @@ paths:
         "404":
           $ref: "#/components/responses/404NotFound"
 
-  /users/{userID}/groups/{groupID}/partecipants/:
+  /users/{userID}/groups/{groupID}/partecipants:
     put:
       operationId: addToGroup
       tags: ["groups"]
@@ -323,7 +323,7 @@ paths:
         "404":
           $ref: "#/components/responses/404NotFound"
 
-  /users/{userID}/groups/{groupID}/photos/:
+  /users/{userID}/groups/{groupID}/photos:
     put:
       operationId: setGroupPhoto
       tags: ["groups"]
@@ -367,18 +367,27 @@ components:
       required:
         - id
 
-    User:
+    Username:
       title: User
       description: This object represents a single user
       type: object
       properties:
-        id: { $ref: "#/components/schemas/Identifier" }
         username:
           description: User username
           type: string
           minLength: 5
           maxLength: 15
           example: "SignorG"
+      required:
+        - username
+
+    User:
+      title: User
+      description: This object represents a single user
+      type: object
+      properties:
+        id: { $ref: "#/components/schemas/Identifier" }
+        username: { $ref: "#/components/schemas/Username" }
         profilePicture:
           description: User's profile picture
           type: string
@@ -493,7 +502,7 @@ components:
         - id
         - body
 
-    Group: #TODO: Not used
+    Group: #WARNING: Not used
       title: Group
       description: This object represents a single group
       type: object
@@ -512,6 +521,7 @@ components:
     Error:
       title: Error
       description: This object represents a single Error
+      type: object
       properties:
         code:
           type: string
@@ -534,41 +544,43 @@ components:
       description: User username
       in: query
       required: true
-      schema:
-        type: string
-        minLength: 5
-        maxLength: 15
-        example: "SignorG"
+      schema: { $ref: "#/components/schemas/Username" }
+
     userID:
       name: userID
       description: Unique user identifier
       in: path
       required: true
       schema: { $ref: "#/components/schemas/Identifier" }
+
     conversationID:
       name: conversationID
       description: Unique conversation identifier
       in: path
       required: true
       schema: { $ref: "#/components/schemas/Identifier" }
+
     recipientID:
       name: recipientID
       description: Unique recipient identifier
       in: query
       required: true
       schema: { $ref: "#/components/schemas/Identifier" }
+
     messageID:
       name: messageID
       description: Unique message identifier
       in: path
       required: true
       schema: { $ref: "#/components/schemas/Identifier" }
+
     reactionID:
       name: reactionID
       description: Unique reaction identifier
       in: path
       required: true
       schema: { $ref: "#/components/schemas/Identifier" }
+
     groupID:
       description: Unique group identifier
       name: groupID
