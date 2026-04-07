@@ -39,9 +39,11 @@ paths:
         content:
           application/json:
             schema:
+              description: Username
               type: object
               properties:
                 name:
+                  description: Username
                   type: string
                   example: Maria
                   pattern: '^.*?$'
@@ -54,9 +56,11 @@ paths:
           content:
             application/json:
               schema:
+                description: User identifier
                 type: object
                 properties:
                   identifier:
+                    description: Identifier
                     type: integer
                     example: 123
                     minimum: 0
@@ -112,7 +116,7 @@ paths:
       responses:
         "200":
           description: Username updated successful
-          content: 
+          content:
             application/json:
               schema: { $ref: "#/components/schemas/Username" }
         "404":
@@ -131,6 +135,7 @@ paths:
         content:
           image/*:
             schema:
+              description: Photo
               type: string
               format: binary
               minLength: 0
@@ -264,27 +269,13 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              type: object
-              properties:
-                groupName:
-                  type: string
-                  example: "New group name"
-                  minLength: 3
-                  maxLength: 20
+            schema: { $ref: "#/components/schemas/GroupName" }
       responses:
         "200":
           description: Group name updated successful
           content: 
             application/json:
-              schema:
-                type: object
-                properties:
-                  groupName:
-                    type: string
-                    example: "New group name"
-                    minLength: 3
-                    maxLength: 20
+              schema: { $ref: "#/components/schemas/GroupName" }
         "404":
           $ref: "#/components/responses/404NotFound"
 
@@ -337,6 +328,7 @@ paths:
         content:
           image/*:
             schema:
+              description: Photo
               type: string
               format: binary
               minLength: 0
@@ -368,18 +360,19 @@ components:
         - id
 
     Username:
-      title: User
-      description: This object represents a single user
+      title: Username
+      description: This object represents a single username
       type: object
       properties:
-        username:
+        name:
           description: User username
           type: string
-          minLength: 5
-          maxLength: 15
-          example: "SignorG"
+          example: SignorG
+          pattern: '^.*?$'
+          minLength: 3
+          maxLength: 16
       required:
-        - username
+        - name
 
     User:
       title: User
@@ -405,8 +398,8 @@ components:
       type: object
       properties:
         users:
-          type: array
           description: Users
+          type: array
           items: { $ref: "#/components/schemas/User" }
           uniqueItems: true
           minItems: 0
@@ -437,6 +430,8 @@ components:
           type: string
           format: date-time
           example: 2017-07-21T17:32:28Z
+          minLength: 20
+          maxLength: 20
       required:
         - id
         - picture
@@ -449,8 +444,8 @@ components:
       type: object
       properties:
         conversations:
-          type: array
           description: Conversations of the current user
+          type: array
           items: { $ref: "#/components/schemas/Conversation" }
           uniqueItems: true
           minItems: 0
@@ -481,13 +476,15 @@ components:
           type: string
           format: date-time
           example: 2017-07-21T17:32:28Z
+          minLength: 20
+          maxLength: 20
       required:
         - id
         - body
         - date
 
     Reaction:
-      title: Message Reaction
+      title: Message reaction
       description: This object represents a single reaction to a message
       type: object
       properties:
@@ -502,18 +499,27 @@ components:
         - id
         - body
 
+    GroupName:
+      title: Group name
+      description: Group name
+      type: object
+      properties:
+        groupName:
+          description: Group name
+          type: string
+          example: "I due corsari"
+          minLength: 3
+          maxLength: 20
+      required:
+        - groupName
+
     Group: #WARNING: Not used
       title: Group
       description: This object represents a single group
       type: object
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
-        name:
-          description: Group name
-          type: string
-          minLength: 3
-          maxLength: 20
-          example: "Gaber fans club"
+        name: { $ref: "#/components/schemas/GroupName" }
       required:
         - id
         - name
@@ -524,11 +530,13 @@ components:
       type: object
       properties:
         code:
+          description: Error code
           type: string
           minLength: 1
           maxLength: 3
           example: "404"
         message:
+          description: Error message
           type: string
           minLength: 0
           maxLength: 50
