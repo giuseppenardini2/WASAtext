@@ -72,6 +72,8 @@ paths:
       summary: Get the list of the users
       description: |-
         Return a list of users
+      security:
+        - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/username"
       responses:
@@ -93,6 +95,8 @@ paths:
       summary: Get the list of the user conversation
       description: |- 
         Return a list of user conversation
+      security:
+        - basicAuth: []
       responses:
         "200":
           description: List of conversations
@@ -108,6 +112,8 @@ paths:
       summary: Set username
       description: |-
         Set the user username
+      security:
+        - basicAuth: []
       requestBody:
         description: New username
         content:
@@ -129,6 +135,8 @@ paths:
       summary: Set the user picture
       description: |-
         Set the user profile picture
+      security:
+        - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
       requestBody:
@@ -153,6 +161,8 @@ paths:
       summary: Get a single user conversation
       description: |-
         Get a single conversation of the user using the recipient id
+      security:
+        - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/recipientID"
@@ -172,6 +182,8 @@ paths:
       summary: Send a message to a user
       description: |-
         Send a message to a user
+      security:
+        - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/conversationID"
@@ -198,6 +210,8 @@ paths:
       summary: Forward a message to a user
       description: |-
         Forward a message to a user
+      security:
+        - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/recipientID"
       responses:
@@ -213,6 +227,8 @@ paths:
       summary: Delete a message
       description: |-
         Delete a message
+      security:
+        - basicAuth: []
       responses:
         "204":
           description: Message deleted successfully
@@ -226,6 +242,8 @@ paths:
       summary: Comment a message
       description: |-
         Comment a message
+      security:
+        - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/conversationID"
@@ -244,6 +262,8 @@ paths:
       summary: Uncomment a message
       description: |-
         Uncomment a message
+      security:
+        - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/conversationID"
@@ -265,7 +285,9 @@ paths:
       tags: ["groups"]
       summary: Set the name of a group
       description: |-
-        Set the group name 
+        Set the group name
+      security:
+        - basicAuth: []
       requestBody:
         content:
           application/json:
@@ -285,6 +307,8 @@ paths:
       summary: Leave a group
       description: |-
         Leave the user from the current group
+      security:
+        - basicAuth: []
       responses:
         "204":
           description: Group left successfully
@@ -298,6 +322,8 @@ paths:
       summary: Add the a user to the current group
       description: |-
         Add the current user to a group
+      security:
+        - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/groupID"
@@ -321,6 +347,8 @@ paths:
       summary: Set the photo of a group
       description: |-
         Set the group profile picture
+      security:
+        - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/groupID"
@@ -604,3 +632,9 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+
+  #-- SECURITY SCHEMES
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
