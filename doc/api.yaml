@@ -397,7 +397,7 @@ components:
       description: This object represents a list of user object
       type: object
       properties:
-        users:
+        usersList:
           description: Users
           type: array
           items: { $ref: "#/components/schemas/User" }
@@ -405,7 +405,7 @@ components:
           minItems: 0
           maxItems: 50
       required:
-        - users
+        - usersList
 
     Conversation:
       title: Conversation
@@ -443,7 +443,7 @@ components:
       description: This object represents a list of conversation object
       type: object
       properties:
-        conversations:
+        conversationsList:
           description: Conversations of the current user
           type: array
           items: { $ref: "#/components/schemas/Conversation" }
@@ -451,7 +451,7 @@ components:
           minItems: 0
           maxItems: 50
       required:
-        - conversations
+        - conversationsList
           
     Message:
       title: Message
@@ -504,14 +504,14 @@ components:
       description: Group name
       type: object
       properties:
-        groupName:
+        name:
           description: Group name
           type: string
           example: "I due corsari"
           minLength: 3
           maxLength: 20
       required:
-        - groupName
+        - name
 
     Group: #WARNING: Not used
       title: Group
