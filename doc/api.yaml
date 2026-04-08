@@ -450,7 +450,7 @@ components:
         messagePreview:
           description: Last message preview
           type: string
-          pattern: \w
+          pattern: .
           minLength: 1
           maxLength: 20
           example: "Ciao Enzo, ..."
@@ -492,6 +492,7 @@ components:
         body:
           description: Message body
           type: string
+          pattern: "[^\/]"
           minLength: 1
           maxLength: 200
           example: "Hello Enzo"
@@ -539,7 +540,7 @@ components:
         name:
           description: Group name
           type: string
-          pattern: "[A-Za-z0-9_ ]{3, 20}$"
+          pattern: \w
           example: "I due corsari"
           minLength: 3
           maxLength: 20
