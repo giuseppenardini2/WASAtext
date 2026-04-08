@@ -450,6 +450,7 @@ components:
         messagePreview:
           description: Last message preview
           type: string
+          pattern: \w
           minLength: 1
           maxLength: 20
           example: "Ciao Enzo, ..."
@@ -522,6 +523,7 @@ components:
         body:
           description: A emojii
           type: string
+          pattern: "^.*?$"
           minLength: 1
           maxLength: 1
           example: "😂"
@@ -537,6 +539,7 @@ components:
         name:
           description: Group name
           type: string
+          pattern: "[A-Za-z0-9_ ]{3, 20}$"
           example: "I due corsari"
           minLength: 3
           maxLength: 20
