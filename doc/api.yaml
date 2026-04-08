@@ -547,7 +547,7 @@ components:
       required:
         - name
 
-    Group: #WARNING: Not used
+    Group: #WARNING: Not used : )
       title: Group
       description: This object represents a single group
       type: object
