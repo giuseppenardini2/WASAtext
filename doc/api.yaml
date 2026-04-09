@@ -73,7 +73,7 @@ paths:
       description: |-
         Return a list of users
       security:
-        - basicAuth: []
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/username"
       responses:
@@ -96,7 +96,7 @@ paths:
       description: |- 
         Return a list of user conversation
       security:
-        - basicAuth: []
+        - bearerAuth: []
       responses:
         "200":
           description: List of conversations
@@ -113,7 +113,7 @@ paths:
       description: |-
         Set the user username
       security:
-        - basicAuth: []
+        - bearerAuth: []
       requestBody:
         description: New username
         content:
@@ -136,7 +136,7 @@ paths:
       description: |-
         Set the user profile picture
       security:
-        - basicAuth: []
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
       requestBody:
@@ -162,7 +162,7 @@ paths:
       description: |-
         Get a single conversation of the user using the recipient id
       security:
-        - basicAuth: []
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/recipientID"
@@ -183,7 +183,7 @@ paths:
       description: |-
         Send a message to a user
       security:
-        - basicAuth: []
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/conversationID"
@@ -211,7 +211,7 @@ paths:
       description: |-
         Forward a message to a user
       security:
-        - basicAuth: []
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/recipientID"
       responses:
@@ -228,7 +228,7 @@ paths:
       description: |-
         Delete a message
       security:
-        - basicAuth: []
+        - bearerAuth: []
       responses:
         "204":
           description: Message deleted successfully
@@ -243,7 +243,7 @@ paths:
       description: |-
         Comment a message
       security:
-        - basicAuth: []
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/conversationID"
@@ -263,7 +263,7 @@ paths:
       description: |-
         Uncomment a message
       security:
-        - basicAuth: []
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/conversationID"
@@ -287,7 +287,7 @@ paths:
       description: |-
         Set the group name
       security:
-        - basicAuth: []
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
@@ -308,7 +308,7 @@ paths:
       description: |-
         Leave the user from the current group
       security:
-        - basicAuth: []
+        - bearerAuth: []
       responses:
         "204":
           description: Group left successfully
@@ -323,7 +323,7 @@ paths:
       description: |-
         Add the current user to a group
       security:
-        - basicAuth: []
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/groupID"
@@ -348,7 +348,7 @@ paths:
       description: |-
         Set the group profile picture
       security:
-        - basicAuth: []
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/groupID"
@@ -641,6 +641,6 @@ components:
 
   #-- SECURITY SCHEMES
   securitySchemes:
-    basicAuth:
+    bearerAuth:
       type: http
-      scheme: basic
+      scheme: bearer
