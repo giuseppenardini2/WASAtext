@@ -456,7 +456,7 @@ components:
         messagePreview:
           description: Last message preview
           type: string
-          pattern: \.
+          pattern: .
           minLength: 1
           maxLength: 20
           example: "Ciao Enzo, ..."
