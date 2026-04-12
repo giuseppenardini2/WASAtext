@@ -255,12 +255,17 @@ paths:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/conversationID"
         - $ref: "#/components/parameters/messageID"
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Reaction" }
+        required: true
       responses:
         "200":
           description: Reaction
           content:
             application/json:
-              schema: {$ref: "#/components/schemas/Reaction"}
+              schema: { $ref: "#/components/schemas/Reaction" }
 
   /users/{userID}/conversations/{conversationID}/messages/{messageID}/reactions/{reactionID}:
     delete:
