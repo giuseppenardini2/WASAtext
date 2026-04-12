@@ -119,6 +119,7 @@ paths:
         content:
           application/json:
             schema: { $ref: "#/components/schemas/Username" }
+        required: true
       responses:
         "200":
           description: Username updated successful
@@ -148,6 +149,7 @@ paths:
               format: binary
               minLength: 0
               maxLength: 9999
+        required: true
       responses:
         "204":
           description: Photo updated successfully
@@ -191,6 +193,7 @@ paths:
         content:
           application/json:
             schema: { $ref: "#/components/schemas/Message" }
+        required: true
       responses:
         "200":
           description: Message
@@ -292,6 +295,7 @@ paths:
         content:
           application/json:
             schema: { $ref: "#/components/schemas/GroupName" }
+        required: true
       responses:
         "200":
           description: Group name updated successful
@@ -331,6 +335,7 @@ paths:
         content:
           application/json:
             schema: { $ref: "#/components/schemas/User" }
+        required: true
       responses:
         "200":
           description: ID of the user added to the group
@@ -361,6 +366,7 @@ paths:
               format: binary
               minLength: 0
               maxLength: 9999
+        required: true
       responses:
         "204":
           description: Photo updated successfully
