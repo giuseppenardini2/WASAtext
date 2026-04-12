@@ -566,6 +566,7 @@ components:
         code:
           description: Error code
           type: string
+          pattern: ^[0-9]{1,3}$
           minLength: 1
           maxLength: 3
           example: "404"
