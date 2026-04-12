@@ -118,7 +118,11 @@ paths:
         description: New username
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/Username" }
+            schema:
+              description: Username
+              type: object
+              properties:
+                username: { $ref: "#/components/schemas/Username" }
         required: true
       responses:
         "200":
@@ -294,7 +298,11 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/GroupName" }
+            schema:
+              description: Group name
+              type: object
+              properties:
+                name: { $ref: "#/components/schemas/GroupName" }
         required: true
       responses:
         "200":
@@ -383,30 +391,18 @@ components:
     Identifier:
       title: Identifier
       description: This object represents a single identifier
-      type: object
-      properties:
-        id:
-          description: Integer id
-          type: integer
-          minimum: 0
-          example: 123
-      required:
-        - id
+      type: integer
+      minimum: 0
+      example: 123
 
     Username:
       title: Username
       description: This object represents a single username
-      type: object
-      properties:
-        name:
-          description: User username
-          type: string
-          example: SignorG
-          pattern: '^.*?$'
-          minLength: 3
-          maxLength: 16
-      required:
-        - name
+      type: string
+      pattern: '^.*?$'
+      minLength: 3
+      maxLength: 16
+      example: "SignorG"
 
     User:
       title: User
@@ -541,17 +537,11 @@ components:
     GroupName:
       title: Group name
       description: Group name
-      type: object
-      properties:
-        name:
-          description: Group name
-          type: string
-          pattern: \w
-          example: "I due corsari"
-          minLength: 3
-          maxLength: 20
-      required:
-        - name
+      type: string
+      pattern: \w
+      example: "I due corsari"
+      minLength: 3
+      maxLength: 20
 
     Group: #WARNING: Not used : )
       title: Group
