@@ -155,8 +155,13 @@ paths:
               maxLength: 9999
         required: true
       responses:
-        "204":
-          description: Photo updated successfully
+        "200":
+          description: Photo successfully uploaded
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Photo successfully uploaded"
         "404":
           $ref: "#/components/responses/404NotFound"
 
@@ -381,8 +386,13 @@ paths:
               maxLength: 9999
         required: true
       responses:
-        "204":
-          description: Photo updated successfully
+        "200":
+          description: Photo successfully uploaded
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Photo successfully uploaded"
         "404":
           $ref: "#/components/responses/404NotFound"
 
