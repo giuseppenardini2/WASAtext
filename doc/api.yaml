@@ -548,16 +548,16 @@ components:
       minLength: 3
       maxLength: 20
 
-    Group: #WARNING: Not used : )
-      title: Group
-      description: This object represents a single group
-      type: object
-      properties:
-        id: { $ref: "#/components/schemas/Identifier" }
-        name: { $ref: "#/components/schemas/GroupName" }
-      required:
-        - id
-        - name
+    # Group: #WARNING: Not used : )
+    #   title: Group
+    #   description: This object represents a single group
+    #   type: object
+    #   properties:
+    #     id: { $ref: "#/components/schemas/Identifier" }
+    #     name: { $ref: "#/components/schemas/GroupName" }
+    #   required:
+    #     - id
+    #     - name
 
     Error:
       title: Error
