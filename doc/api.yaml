@@ -332,7 +332,7 @@ paths:
         "404":
           $ref: "#/components/responses/404NotFound"
 
-  /users/{userID}/groups/{groupID}/partecipants:
+  /users/{userID}/groups/{groupID}/participants:
     put:
       operationId: addToGroup
       tags: ["groups"]
