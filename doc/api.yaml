@@ -292,6 +292,29 @@ paths:
         "404":
           $ref: "#/components/responses/404NotFound"
 
+  /users/{userID}/groups:
+    post:
+      operationId: createGroup
+      tags: ["groups"]
+      summary: Create a group
+      description: |-
+        Create a group
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/userID"
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Group" }
+        required: true
+      responses:
+        "201":
+          description: Group
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Group" }
+
   /users/{userID}/groups/{groupID}:
     parameters:
       - $ref: "#/components/parameters/userID"
@@ -551,16 +574,17 @@ components:
       minLength: 3
       maxLength: 20
 
-    # Group: #WARNING: Not used : )
-    #   title: Group
-    #   description: This object represents a single group
-    #   type: object
-    #   properties:
-    #     id: { $ref: "#/components/schemas/Identifier" }
-    #     name: { $ref: "#/components/schemas/GroupName" }
-    #   required:
-    #     - id
-    #     - name
+    Group:
+      title: Group
+      description: This object represents a single group
+      type: object
+      properties:
+        id: { $ref: "#/components/schemas/Identifier" }
+        name: { $ref: "#/components/schemas/GroupName" }
+        partecipants: { $ref: "#/components/schemas/Users" }
+      required:
+        - id
+        - name
 
     Error:
       title: Error
