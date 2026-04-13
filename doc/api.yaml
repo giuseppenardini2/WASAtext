@@ -146,13 +146,12 @@ paths:
         - $ref: "#/components/parameters/userID"
       requestBody:
         content:
-          image/*:
+          application/json:
             schema:
-              description: Photo
-              type: string
-              format: binary
-              minLength: 0
-              maxLength: 9999
+              description: User picture
+              type: object
+              properties:
+                picture: { $ref: "#/components/schemas/Picture" }
         required: true
       responses:
         "200":
@@ -160,6 +159,7 @@ paths:
           content:
             text/plain:
               schema:
+                description: Confirmation message
                 type: string
                 example: "Photo successfully uploaded"
         "404":
@@ -377,13 +377,12 @@ paths:
         - $ref: "#/components/parameters/groupID"
       requestBody:
         content:
-          image/*:
+          application/json:
             schema:
-              description: Photo
-              type: string
-              format: binary
-              minLength: 0
-              maxLength: 9999
+              description: User picture
+              type: object
+              properties:
+                picture: { $ref: "#/components/schemas/Picture" }
         required: true
       responses:
         "200":
@@ -391,6 +390,7 @@ paths:
           content:
             text/plain:
               schema:
+                description: Confirmation message
                 type: string
                 example: "Photo successfully uploaded"
         "404":
@@ -419,6 +419,14 @@ components:
       maxLength: 16
       example: "SignorG"
 
+    Picture:
+      title: Picture
+      description: User or group picture
+      type: string
+      format: binary
+      minLength: 0
+      maxLength: 9999
+
     User:
       title: User
       description: This object represents a single user
@@ -426,12 +434,7 @@ components:
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
         username: { $ref: "#/components/schemas/Username" }
-        profilePicture:
-          description: User's profile picture
-          type: string
-          format: binary
-          minLength: 0
-          maxLength: 9999
+        profilePicture: { $ref: "#/components/schemas/Picture" }
       required:
         - id
         - username
@@ -458,12 +461,7 @@ components:
       type: object
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
-        picture:
-          description: User or group profile picture
-          type: string
-          format: binary
-          minLength: 0
-          maxLength: 9999
+        picture: { $ref: "#/components/schemas/Picture" }
         messagePreview:
           description: Last message preview
           type: string
@@ -513,12 +511,7 @@ components:
           minLength: 1
           maxLength: 200
           example: "Hello Enzo"
-        picture:
-          description: Picture attacched to the message
-          type: string
-          format: binary
-          minLength: 0
-          maxLength: 9999
+        picture: { $ref: "#/components/schemas/Picture" }
         date:
           description: Message send date
           type: string
