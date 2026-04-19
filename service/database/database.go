@@ -68,7 +68,6 @@ func New(db *sql.DB) (AppDatabase, error) {
 		}
 	}*/
 
-	//TODO: Vedere se serve abilitare le foreign keys
 	userQuery := 'CREATE TABLE IF NOT EXISTS User (
 		id INTEGER PRIMARY KEY,
 		username TEXT NOT NULL UNIQUE,
