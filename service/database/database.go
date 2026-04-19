@@ -82,7 +82,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		id INTEGER PRIMARY KEY,
 		name TEXT NOT NULL,
 		picture BLOB,
-		user_creator INTEGER,
+		user_creator INTEGER NOT NULL,
 		FOREIGN KEY(user_creator) REFERENCES User(id)
 	);'
 	if _, err := db.Exec(groupQuery); err != nil {
@@ -115,8 +115,8 @@ func New(db *sql.DB) (AppDatabase, error) {
 		FOREIGN KEY(recipient_group) REFERENCES Group(id),
 		FOREIGN KEY(reply_message) REFERENCES Message(id),
 		FOREIGN KEY(forwarded_message) REFERENCES Message(id)
-		CHECK((recipient_user!=NULL AND recipient_group==NULL) OR
-			(recipient_user==NULL AND recipient_group!=NULL))
+		CHECK((recipient_user IS NOT NULL AND recipient_group IS NULL) OR
+			(recipient_user IS NULL AND recipient_group IS NOT NULL))
 	);'
 	if _, err := db.Exec(messageQuery); err != nil {
 		return err
