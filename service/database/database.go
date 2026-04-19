@@ -51,12 +51,14 @@ type appdbimpl struct {
 // New returns a new instance of AppDatabase based on the SQLite connection `db`.
 // `db` is required - an error will be returned if `db` is `nil`.
 func New(db *sql.DB) (AppDatabase, error) {
+	
+	//Check if the database is nil
 	if db == nil {
 		return nil, errors.New("database is required when building a AppDatabase")
 	}
 
 	// Check if table exists. If not, the database is empty, and we need to create the structure
-	var tableName string
+	/*var tableName string
 	err := db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='example_table';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
 		sqlStmt := `CREATE TABLE example_table (id INTEGER NOT NULL PRIMARY KEY, name TEXT);`
@@ -64,6 +66,83 @@ func New(db *sql.DB) (AppDatabase, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
 		}
+	}*/
+
+	//TODO: Vedere se serve abilitare le foreign keys
+	userQuery := 'CREATE TABLE IF NOT EXISTS User (
+		id INTEGER PRIMARY KEY,
+		username TEXT NOT NULL UNIQUE,
+		picture BLOB
+	);'
+	if _, err := db.Exec(userQuery); err != nil {
+		return err
+	}
+
+	groupQuery := 'CREATE TABLE IF NOT EXISTS Group (
+		id INTEGER PRIMARY KEY,
+		name TEXT NOT NULL,
+		picture BLOB,
+		user_creator INTEGER,
+		FOREIGN KEY(user_creator) REFERENCES User(id)
+	);'
+	if _, err := db.Exec(groupQuery); err != nil {
+		return err
+	}
+
+	userGroupQuery := 'CREATE TABLE IF NOT EXISTS user_group (
+		user INTEGER,
+		group INTEGER,
+		PRIMARY KEY(user, group),
+		FOREIGN KEY(user) REFERENCES User(id),
+		FOREIGN KEY(group) REFERENCES Group(id)
+	);'
+	if _, err := db.Exec(userGroupQuery); err != nil {
+		return err
+	}
+
+	messageQuery := 'CREATE TABLE IF NOT EXISTS Message (
+		id INTEGER PRIMARY KEY,
+		body TEXT NOT NULL,
+		date TEXT NOT NULL,
+		picture BLOB,
+		sender INTEGER NOT NULL,
+		recipient_user INTEGER,
+		recipient_group INTEGER,
+		reply_message INTEGER,
+		forwarded_message INTEGER,
+		FOREIGN KEY(sender) REFERENCES User(id),
+		FOREIGN KEY(recipient_user) REFERENCES User(id),
+		FOREIGN KEY(recipient_group) REFERENCES Group(id),
+		FOREIGN KEY(reply_message) REFERENCES Message(id),
+		FOREIGN KEY(forwarded_message) REFERENCES Message(id)
+		CHECK((recipient_user!=NULL AND recipient_group==NULL) OR
+			(recipient_user==NULL AND recipient_group!=NULL))
+	);'
+	if _, err := db.Exec(messageQuery); err != nil {
+		return err
+	}
+
+	userReadsMessageQuery := 'CREATE TABLE IF NOT EXISTS user_reads_message (
+		user INTEGER,
+		message INTEGER,
+		PRIMARY KEY(user, message),
+		FOREIGN KEY(user) REFERENCES User(id),
+		FOREIGN KEY(message) REFERENCES Message(id)
+	);'
+	if _, err := db.Exec(userReadsMessageQuery); err != nil {
+		return err
+	}
+
+	userReactsMessageQuery := 'CREATE TABLE IF NOT EXISTS user_reacts_message (
+		user INTEGER,
+		message INTEGER,
+		reaction TEXT NOT NULL,
+		PRIMARY KEY(user, message),
+		FOREIGN KEY(user) REFERENCES User(id),
+		FOREIGN KEY(message) REFERENCES Message(id)
+	);'
+	if _, err := db.Exec(userReactsMessageQuery); err != nil {
+		return err
 	}
 
 	return &appdbimpl{
