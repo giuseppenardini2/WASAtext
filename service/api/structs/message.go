@@ -1,18 +1,16 @@
 package structs
 
-import(
-	"time"
-)
+import "time"
 
 //Message
 type Message struct {
-	id int
-	body string
-	date time.Time
-	picture string
-	sender int
-	recipient_user int
-	recipient_group int
-	reply_message int
-	forwareded_message int
+	id int //Message id
+	body string //Message body
+	date time.Time //Message sent time
+	picture string //Message picture
+	sender int //User id
+	recipient_user int //Recipient user id
+	recipient_group int //Recipient group id
+	reply_message int //Id of the message to which reply to
+	forwareded_message int //Id of the message which is forwarded
 }
