@@ -1,8 +1,8 @@
 package structs
 
-//User
+//A struct which represents a user
 type User struct {
-	id int
-	username string
-	picture string
+	id int //User id
+	username string //User username
+	picture string //User profile picture
 }
