@@ -1,8 +1,6 @@
 package database
 
-import(
-	//TODO: Import User
-)
+import "WASAtext/service/api/structs/User"
 
 // Given a user ID, return the user
 func (db *appdbimpl) GetUser(user_id int) (User, error) {
