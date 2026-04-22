@@ -2,7 +2,7 @@ package structs
 
 import "time"
 
-//Message
+//A struct which represent a message of a conversation
 type Message struct {
 	id int //Message id
 	body string //Message body
