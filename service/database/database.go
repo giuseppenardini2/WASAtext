@@ -45,6 +45,8 @@ type AppDatabase interface {
 	UpdateUserPicture(id int, picture string) (error)
 
 	AddGroup(name string, picture string, user_creator int) (int64, error)
+	GetGroup(id int) (structs.Group, error)
+	UpdateGroupPicture(id int, picture string) (error)
 
 	Ping() error
 }
