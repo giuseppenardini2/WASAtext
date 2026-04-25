@@ -40,8 +40,9 @@ import (
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
 	AddUser(username string, picture string) (int, error)
-	GetUser(user_id int) (structs.User, error)
+	GetUser(id int) (structs.User, error)
 	GetUsers(username string) (structs.User[], error)
+	UpdateUserPicture(id int, picture string) (error)
 
 	Ping() error
 }
