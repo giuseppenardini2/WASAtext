@@ -47,7 +47,9 @@ type AppDatabase interface {
 	AddGroup(name string, picture string, user_creator int) (int64, error)
 	DeleteGroup(id int) (error)
 	GetGroup(id int) (structs.Group, error)
+	GetGroups(id int) (structs.Group[], error)
 	UpdateGroupPicture(id int, picture string) (error)
+	GetMembersFromGroup(id int) (structs.User[], error)
 	AddMemberToGroup(user_id int, group_id int) (error)
 	RemoveUserFromGroup(user_id int, group_id int) (error)
 
