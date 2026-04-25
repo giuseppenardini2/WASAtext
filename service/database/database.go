@@ -53,6 +53,8 @@ type AppDatabase interface {
 	AddMemberToGroup(user_id int, group_id int) (error)
 	RemoveUserFromGroup(user_id int, group_id int) (error)
 
+	GetMessage(id int) (structs.Message, error)
+
 	Ping() error
 }
 
