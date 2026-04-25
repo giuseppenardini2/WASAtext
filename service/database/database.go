@@ -54,6 +54,8 @@ type AppDatabase interface {
 	RemoveUserFromGroup(user_id int, group_id int) (error)
 
 	GetMessage(id int) (structs.Message, error)
+	//TODO: Aggiungere getMessages dopo averlo completato ??
+	GetMessagesByRecipient(user_id int, recipient_id int) (structs.Message[], error)
 
 	Ping() error
 }
