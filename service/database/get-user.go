@@ -6,5 +6,8 @@ import "WASAtext/service/api/structs"
 func (db *appdbimpl) GetUser(id int) (structs.User, error) {
 	var user structs.User
 	err := db.c.QueryRow("SELECT id, username, picture FROM User WHERE id=?", id).Scan(&user.id, &user.username, &user.picture)
+	if err != nil {
+		return nil, err
+	}
 	return user, err
 }
