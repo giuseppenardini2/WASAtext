@@ -41,6 +41,7 @@ import (
 type AppDatabase interface {
 	AddUser(username string, picture string) (int, error)
 	GetUser(user_id int) (structs.User, error)
+	GetUsers(username string) (structs.User[], error)
 
 	Ping() error
 }
