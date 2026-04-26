@@ -56,8 +56,8 @@ type AppDatabase interface {
 	GetMessage(id int) (structs.Message, error)
 	//TODO: Aggiungere getMessages dopo averlo completato ??
 	GetMessagesByRecipient(user_id int, recipient_id int) (structs.Message[], error)
-	//TODO: Verificare se AddMessage fare un unica funzione o separarla per gruppi e utenti
-	AddMessage(body string, date string, picture string, sender int, recipient int, bool is_recipient_user reply_message int, forwarded_message int) (int64, error)
+	AddMessageToUser(body string, date string, picture string, sender int, recipient_user int, reply_message int, forwarded_message int) (int64, error)
+	AddMessageToGroup(body string, date string, picture string, sender int, recipient_group int, reply_message int, forwarded_message int) (int64, error)
 	DeleteMessage(id int) (error)
 
 	Ping() error
