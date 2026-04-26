@@ -1,0 +1,7 @@
+package database
+
+// Given a user ID and message ID, delete the user's reaction to that message
+func (db *appdbimpl) DeleteReaction(user_id int, message_id int) (error) {
+	_, err := db.c.Exec("DELETE FROM user_reacts_message WHERE user=? AND message=?", user_id, message_id)
+	return err
+}

@@ -59,7 +59,10 @@ type AppDatabase interface {
 	AddMessageToUser(body string, date string, picture string, sender int, recipient_user int, reply_message int, forwarded_message int) (int64, error)
 	AddMessageToGroup(body string, date string, picture string, sender int, recipient_group int, reply_message int, forwarded_message int) (int64, error)
 	DeleteMessage(id int) (error)
-
+	AddMessageReadByUser(user_id int, message_id int) (error)
+	AddReaction(user_id int, message_id int, reaction string) (error)
+	DeleteReaction(user_id int, message_id int) (error)
+	
 	Ping() error
 }
 
