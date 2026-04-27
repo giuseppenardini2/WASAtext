@@ -4,7 +4,7 @@ import "WASAtext/service/api/structs"
 
 // Given a group ID, return the group's members
 func (db *appdbimpl) GetMembersFromGroup(id int) (structs.User[], error) {
-	rows, err := db.c.Query("SELECT User.id, User.username, User.picture FROM User, user_group WHERE User.id=user_group.user AND user_group.group=?", id)
+	rows, err := db.c.Query("SELECT u.id, u.username, u.picture FROM User u, user_group ug WHERE u.id=ug.user AND ug.group=?", id)
 	if err != nil {
 		return nil, err
 	}
