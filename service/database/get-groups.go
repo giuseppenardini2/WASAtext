@@ -3,8 +3,8 @@ package database
 import "WASAtext/service/api/structs"
 
 // Given a group ID, return the group's members
-func (db *appdbimpl) GetGroups(id int) (structs.Group[], error) {
-	rows, err := db.c.Query("SELECT Group.id, Group.name, Group.picture, Group.user_creator FROM Group, user_group WHERE Group.id=user_group.group AND user_group.user=?", id)
+func (db *appdbimpl) GetGroups(user_id int) (structs.Group[], error) {
+	rows, err := db.c.Query("SELECT g.id, g.name, g.picture, g.user_creator FROM Group g, user_group ug WHERE g.id=ug.group AND ug.user=?", user_id)
 	if err != nil {
 		return nil, err
 	}
@@ -20,5 +20,5 @@ func (db *appdbimpl) GetGroups(id int) (structs.Group[], error) {
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
-	return groups, err
+	return groups, nil
 }
