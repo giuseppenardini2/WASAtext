@@ -4,8 +4,9 @@ import "WASAtext/service/api/structs"
 
 // Given a user ID, return the user's messages
 //TODO: Decidere come prendere le conversazioni
-func (db *appdbimpl) GetMessages(id int) (structs.Message[], error) {
-	rows, err := db.c.Query("SELECT Message. FROM Message, user_group WHERE Group.id=user_group.group AND user_group.user=?", id)
+func (db *appdbimpl) GetMessages(user_id int) (structs.Conversation[], error) {
+	rows, err := db.c.Query("SELECT * FROM Message 
+	WHERE sender=?", user_id)
 	if err != nil {
 		return nil, err
 	}
