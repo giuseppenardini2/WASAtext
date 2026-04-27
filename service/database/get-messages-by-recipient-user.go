@@ -2,10 +2,11 @@ package database
 
 import "WASAtext/service/api/structs"
 
-// Given a user ID, return the user's messages
-func (db *appdbimpl) GetMessagesByRecipient(user_id int, recipient_id int) (structs.Message[], error) {
+// Given a user ID and recipient user ID, return the user's messages with that user
+func (db *appdbimpl) GetMessagesByRecipientUser(user_id int, recipient_user int) (structs.Message[], error) {
 	rows, err := db.c.Query("SELECT id, body, date, picture, sender, recipient_user, recipient_group, reply_message, forwarded_message
-		FROM Message WHERE (sender=? AND (recipient_user=? OR recipient_group=?))", user_id, recipient_group, recipient_group)
+		FROM Message WHERE sender=? AND recipient_user=?
+		ORDER BY date DESC", user_id, recipient_user)
 	if err != nil {
 		return nil, err
 	}
