@@ -42,28 +42,28 @@ type AppDatabase interface {
 	AddUser(username string, picture string) (int64, error)
 	GetUser(id int) (structs.User, error)
 	GetUsers(username string) (structs.User[], error)
-	UpdateUserPicture(id int, picture string) (error)
+	UpdateUserPicture(id int, picture string) error
 
 	AddGroup(name string, picture string, user_creator int) (int64, error)
-	DeleteGroup(id int) (error)
+	DeleteGroup(id int) error
 	GetGroup(id int) (structs.Group, error)
 	GetGroups(user_id int) (structs.Group[], error)
-	UpdateGroupPicture(id int, picture string) (error)
+	UpdateGroupPicture(id int, picture string) error
 	GetMembersFromGroup(id int) (structs.User[], error)
-	AddMemberToGroup(user_id int, group_id int) (error)
-	RemoveUserFromGroup(user_id int, group_id int) (error)
+	AddMemberToGroup(user_id int, group_id int) error
+	RemoveUserFromGroup(user_id int, group_id int) error
 
 	GetMessage(id int) (structs.Message, error)
-	//TODO: Aggiungere getMessages dopo averlo completato ??
+	GetMessages(user_id int) (structs.Conversation[], error)
 	GetMessagesByRecipientUser(user_id int, recipient_user int) (structs.Message[], error)
 	GetMessagesByRecipientGroup(user_id int, recipient_group int) (structs.Message[], error)
 	GetLastMessageFromUser(user_id int, recipient_user int) (structs.Message, error)
 	AddMessageToUser(body string, date string, picture string, sender int, recipient_user int, reply_message int) (int64, error)
 	AddMessageToGroup(body string, date string, picture string, sender int, recipient_group int, reply_message int) (int64, error)
-	DeleteMessage(id int) (error)
-	AddMessageReadByUser(user_id int, message_id int) (error)
-	AddReaction(user_id int, message_id int, reaction string) (error)
-	DeleteReaction(user_id int, message_id int) (error)
+	DeleteMessage(id int) error
+	AddMessageReadByUser(user_id int, message_id int) error
+	AddReaction(user_id int, message_id int, reaction string) error
+	DeleteReaction(user_id int, message_id int) error
 	AddForwardedMessageToUser(original_message_id int, sender int, recipient_user id, date string) (int64, error)
 	
 	Ping() error

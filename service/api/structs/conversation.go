@@ -13,7 +13,7 @@ func (conversation_type ConversationType) String() string {
 	return [...]string{"UserConversation", "GroupConversation"}[conversation_type]
 }
 
-//A struct which represents a group
+//A struct which represents a conversation
 type Conversation struct {
 	recipient_id int //Recipient id
 	conversation_type ConversationType //Recipient type
