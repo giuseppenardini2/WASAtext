@@ -56,8 +56,8 @@ type AppDatabase interface {
 	GetMessage(id int) (structs.Message, error)
 	//TODO: Aggiungere getMessages dopo averlo completato ??
 	GetMessagesByRecipient(user_id int, recipient_id int) (structs.Message[], error)
-	AddMessageToUser(body string, date string, picture string, sender int, recipient_user int, reply_message int, forwarded_message int) (int64, error)
-	AddMessageToGroup(body string, date string, picture string, sender int, recipient_group int, reply_message int, forwarded_message int) (int64, error)
+	AddMessageToUser(body string, date string, picture string, sender int, recipient_user int, reply_message int) (int64, error)
+	AddMessageToGroup(body string, date string, picture string, sender int, recipient_group int, reply_message int) (int64, error)
 	DeleteMessage(id int) (error)
 	AddMessageReadByUser(user_id int, message_id int) (error)
 	AddReaction(user_id int, message_id int, reaction string) (error)
