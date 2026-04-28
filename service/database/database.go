@@ -57,7 +57,7 @@ type AppDatabase interface {
 	GetMessages(user_id int) (structs.Conversation[], error)
 	GetMessagesByRecipientUser(user_id int, recipient_user int) (structs.Message[], error)
 	GetMessagesByRecipientGroup(user_id int, recipient_group int) (structs.Message[], error)
-	GetLastMessageFromUser(user_id int, recipient_user int) (structs.Message, error)
+	GetLastMessageFromUser(user_id int, recipient_user int) (structs.Message, error) //2DO: Eliminabile
 	AddMessageToUser(body string, date string, picture string, sender int, recipient_user int, reply_message int) (int64, error)
 	AddMessageToGroup(body string, date string, picture string, sender int, recipient_group int, reply_message int) (int64, error)
 	DeleteMessage(id int) error
