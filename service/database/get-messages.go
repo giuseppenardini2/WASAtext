@@ -1,6 +1,6 @@
 package database
 
-import "WASAtext/service/api/structs"
+import "wasatext/service/api/structs"
 
 // Given a user ID, return the user's messages as conversation
 func (db *appdbimpl) GetMessages(user_id int) (structs.Conversation[], error) {

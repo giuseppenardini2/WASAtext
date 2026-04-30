@@ -1,6 +1,6 @@
 package database
 
-import "WASAtext/service/api/structs"
+import "wasatext/service/api/structs"
 
 // Given a user ID and recipient user ID, return the user's messages with that user
 func (db *appdbimpl) GetMessagesByRecipientUser(user_id int, recipient_user int) (structs.Message[], error) {

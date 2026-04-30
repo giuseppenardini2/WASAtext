@@ -34,7 +34,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"WASAtext/service/api/structs"
+	"wasatext/service/api/structs"
 )
 
 // AppDatabase is the high level interface for the DB

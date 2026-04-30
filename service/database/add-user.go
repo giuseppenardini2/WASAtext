@@ -6,5 +6,5 @@ func (db *appdbimpl) AddUser(username string, picture string) (int64, error) {
 	if err != nil {
 		return -1, err
 	}
-	return result.LastInsertId(), err
+	return result.LastInsertId()
 }

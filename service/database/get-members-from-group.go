@@ -1,6 +1,6 @@
 package database
 
-import "WASAtext/service/api/structs"
+import "wasatext/service/api/structs"
 
 // Given a group ID, return the group's members
 func (db *appdbimpl) GetMembersFromGroup(id int) (structs.User[], error) {

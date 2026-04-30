@@ -6,5 +6,5 @@ func (db *appdbimpl) AddMessageToGroup(body string, date string, picture string,
 	if err != nil {
 		return -1, err
 	}
-	return result.LastInsertId(), err
+	return result.LastInsertId()
 }

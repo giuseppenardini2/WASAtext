@@ -6,5 +6,5 @@ func (db *appdbimpl) AddGroup(name string, picture string, user_creator int) (in
 	if err != nil {
 		return -1, err
 	}
-	return result.LastInsertId(), err
+	return result.LastInsertId()
 }

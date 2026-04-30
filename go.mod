@@ -1,4 +1,4 @@
-module WASAtext
+module wasatext
 
 go 1.17
 
