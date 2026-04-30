@@ -4,7 +4,9 @@ package database
 func (db *appdbimpl) AddForwardedMessageToUser(original_message_id int, sender int, recipient_user int, date string) (int64, error) {
 	//Get the body and picture of the message to forward to
 	var body, picture string
-	err := db.c.QueryRow("SELECT body, picture FROM Message WHERE id=?", original_message_id).Scan(&body, &picture)
+
+	var query = "SELECT body, picture FROM Message WHERE id=?"
+	err := db.c.QueryRow(query, original_message_id).Scan(&body, &picture)
 	if err != nil {
 		return -1, err
 	}

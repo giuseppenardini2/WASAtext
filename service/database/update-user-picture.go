@@ -2,6 +2,7 @@ package database
 
 // Given a user ID and a profile picture, update the profile picture of the user
 func (db *appdbimpl) UpdateUserPicture(id int, picture string) error {
-	_, err := db.c.Exec("UPDATE User SET picture=? WHERE id=?", picture, id)
+	var query = "UPDATE User SET picture=? WHERE id=?"
+	_, err := db.c.Exec(query, picture, id)
 	return err
 }
