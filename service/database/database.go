@@ -33,7 +33,6 @@ package database
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"wasatext/service/api/structs"
 )
 
@@ -41,22 +40,22 @@ import (
 type AppDatabase interface {
 	AddUser(username string, picture string) (int64, error)
 	GetUser(id int) (structs.User, error)
-	GetUsers(username string) (structs.User[], error)
+	GetUsers(username string) ([]structs.User, error)
 	UpdateUserPicture(id int, picture string) error
 
 	AddGroup(name string, picture string, user_creator int) (int64, error)
 	DeleteGroup(id int) error
 	GetGroup(id int) (structs.Group, error)
-	GetGroups(user_id int) (structs.Group[], error)
+	GetGroups(user_id int) ([]structs.Group, error)
 	UpdateGroupPicture(id int, picture string) error
-	GetMembersFromGroup(id int) (structs.User[], error)
+	GetMembersFromGroup(id int) ([]structs.User, error)
 	AddMemberToGroup(user_id int, group_id int) error
 	RemoveUserFromGroup(user_id int, group_id int) error
 
 	GetMessage(id int) (structs.Message, error)
-	GetMessages(user_id int) (structs.Conversation[], error)
-	GetMessagesByRecipientUser(user_id int, recipient_user int) (structs.Message[], error)
-	GetMessagesByRecipientGroup(user_id int, recipient_group int) (structs.Message[], error)
+	GetMessages(user_id int) ([]structs.Conversation, error)
+	GetMessagesByRecipientUser(user_id int, recipient_user int) ([]structs.Message, error)
+	GetMessagesByRecipientGroup(user_id int, recipient_group int) ([]structs.Message, error)
 	GetLastMessageFromUser(user_id int, recipient_user int) (structs.Message, error) //2DO: Vedere se eliminare (Ultimo messaggio già preso in getMessages)
 	AddMessageToUser(body string, date string, picture string, sender int, recipient_user int, reply_message int) (int64, error)
 	AddMessageToGroup(body string, date string, picture string, sender int, recipient_group int, reply_message int) (int64, error)
@@ -64,8 +63,8 @@ type AppDatabase interface {
 	AddMessageReadByUser(user_id int, message_id int) error
 	AddReaction(user_id int, message_id int, reaction string) error
 	DeleteReaction(user_id int, message_id int) error
-	AddForwardedMessageToUser(original_message_id int, sender int, recipient_user id, date string) (int64, error)
-	
+	AddForwardedMessageToUser(original_message_id int, sender int, recipient_user int, date string) (int64, error)
+
 	Ping() error
 }
 
@@ -76,49 +75,49 @@ type appdbimpl struct {
 // New returns a new instance of AppDatabase based on the SQLite connection `db`.
 // `db` is required - an error will be returned if `db` is `nil`.
 func New(db *sql.DB) (AppDatabase, error) {
-	
+
 	//Check if the database is nil
 	if db == nil {
 		return nil, errors.New("database is required when building a AppDatabase")
 	}
 
 	//Enable foreign keys
-	sqlForeignKeys := 'PRAGMA foreign_keys = ON'
+	sqlForeignKeys := `PRAGMA foreign_keys = ON`
 	if _, err := db.Exec(sqlForeignKeys); err != nil {
-		return err
+		return nil, err
 	}
-	
+
 	//Tables creation (if they not exists)
 	//TODO: Inserire ON DELETE CASCADE ??
-	userQuery := 'CREATE TABLE IF NOT EXISTS User (
+	userQuery := `CREATE TABLE IF NOT EXISTS User (
 		id INTEGER PRIMARY KEY,
 		username TEXT NOT NULL UNIQUE,
 		picture BLOB
-	);'
+	);`
 	if _, err := db.Exec(userQuery); err != nil {
-		return err
+		return nil, err
 	}
 
-	groupQuery := 'CREATE TABLE IF NOT EXISTS Group (
+	groupQuery := `CREATE TABLE IF NOT EXISTS Group (
 		id INTEGER PRIMARY KEY,
 		name TEXT NOT NULL,
 		picture BLOB,
 		user_creator INTEGER NOT NULL REFERENCES User(id)
-	);'
+	);`
 	if _, err := db.Exec(groupQuery); err != nil {
-		return err
+		return nil, err
 	}
 
-	userGroupQuery := 'CREATE TABLE IF NOT EXISTS user_group (
+	userGroupQuery := `CREATE TABLE IF NOT EXISTS user_group (
 		user INTEGER REFERENCES User(id),
 		group INTEGER REFERENCES Group(id),
 		PRIMARY KEY(user, group)
-	);'
+	);`
 	if _, err := db.Exec(userGroupQuery); err != nil {
-		return err
+		return nil, err
 	}
 
-	messageQuery := 'CREATE TABLE IF NOT EXISTS Message (
+	messageQuery := `CREATE TABLE IF NOT EXISTS Message (
 		id INTEGER PRIMARY KEY,
 		body TEXT NOT NULL,
 		date TEXT NOT NULL,
@@ -130,28 +129,28 @@ func New(db *sql.DB) (AppDatabase, error) {
 		forwarded_message INTEGER REFERENCES Message(id),
 		CHECK((recipient_user IS NOT NULL AND recipient_group IS NULL) OR
 			(recipient_user IS NULL AND recipient_group IS NOT NULL))
-	);'
+	);`
 	if _, err := db.Exec(messageQuery); err != nil {
-		return err
+		return nil, err
 	}
 
-	userReadsMessageQuery := 'CREATE TABLE IF NOT EXISTS user_reads_message (
+	userReadsMessageQuery := `CREATE TABLE IF NOT EXISTS user_reads_message (
 		user INTEGER REFERENCES User(id),
 		message INTEGER REFERENCES Message(id),
 		PRIMARY KEY(user, message)
-	);'
+	);`
 	if _, err := db.Exec(userReadsMessageQuery); err != nil {
-		return err
+		return nil, err
 	}
 
-	userReactsMessageQuery := 'CREATE TABLE IF NOT EXISTS user_reacts_message (
+	userReactsMessageQuery := `CREATE TABLE IF NOT EXISTS user_reacts_message (
 		user INTEGER REFERENCES User(id),
 		message INTEGER REFERENCES Message(id),
 		reaction TEXT NOT NULL,
 		PRIMARY KEY(user, message)
-	);'
+	);`
 	if _, err := db.Exec(userReactsMessageQuery); err != nil {
-		return err
+		return nil, err
 	}
 
 	return &appdbimpl{

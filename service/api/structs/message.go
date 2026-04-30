@@ -4,13 +4,13 @@ import "time"
 
 // A struct which represent a message of a conversation
 type Message struct {
-	id                 int       //Message id
-	body               string    //Message body
-	date               time.Time //Message sent time
-	picture            string    //Message picture
-	sender             int       //User id
-	recipient_user     int       //Recipient user id
-	recipient_group    int       //Recipient group id
-	reply_message      int       //Id of the message to which reply to
-	forwareded_message int       //Id of the message which is forwarded
+	Id               int       `json:"id"`               //Message id
+	Body             string    `json:"body"`             //Message body
+	Date             time.Time `json:"date"`             //Message sent time
+	Picture          string    `json:"picture"`          //Message picture
+	Sender           int       `json:"sender"`           //Sender user id
+	RecipientUser    int       `json:"recipientUser"`    //Recipient user id
+	RecipientGroup   int       `json:"recipientGroup"`   //Recipient group id
+	ReplyMessage     int       `json:"replyMessage"`     //Id of the message to which reply to
+	ForwardedMessage int       `json:"forwardedMessage"` //Id of the message which is forwarded
 }

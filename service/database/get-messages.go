@@ -3,8 +3,8 @@ package database
 import "wasatext/service/api/structs"
 
 // Given a user ID, return the user's messages as conversation
-func (db *appdbimpl) GetMessages(user_id int) (structs.Conversation[], error) {
-	var conversations structs.Conversation[]
+func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
+	var conversations []structs.Conversation
 
 	rows, err := db.c.Query("SELECT m.recipient_user, u.nickanme, u.picture, (
 			SELECT body FROM Message WHERE sender=? AND recipient_user=u.id
