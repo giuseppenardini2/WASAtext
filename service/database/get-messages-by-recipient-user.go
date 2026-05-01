@@ -5,7 +5,7 @@ import "wasatext/service/api/structs"
 // Given a user ID and recipient user ID, return the user's messages with that user
 func (db *appdbimpl) GetMessagesByRecipientUser(user_id int, recipient_user int) ([]structs.Message, error) {
 	var query = `SELECT id, body, date, picture, sender, recipient_user, recipient_group, reply_message, forwarded_message
-		FROM Message WHERE sender=? AND recipient_user=?
+		FROM messages WHERE sender=? AND recipient_user=?
 		ORDER BY date DESC`
 	rows, err := db.c.Query(query, user_id, recipient_user)
 	if err != nil {

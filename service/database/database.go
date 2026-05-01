@@ -89,7 +89,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	//Tables creation (if they not exists)
-	userQuery := `CREATE TABLE IF NOT EXISTS User (
+	userQuery := `CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY,
 		username TEXT NOT NULL UNIQUE,
 		picture BLOB
@@ -98,35 +98,35 @@ func New(db *sql.DB) (AppDatabase, error) {
 		return nil, err
 	}
 
-	groupQuery := `CREATE TABLE IF NOT EXISTS Group (
+	groupQuery := `CREATE TABLE IF NOT EXISTS groups (
 		id INTEGER PRIMARY KEY,
 		name TEXT NOT NULL,
 		picture BLOB,
-		user_creator INTEGER NOT NULL REFERENCES User(id) ON DELETE CASCADE
+		user_creator INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 	);`
 	if _, err := db.Exec(groupQuery); err != nil {
 		return nil, err
 	}
 
-	userGroupQuery := `CREATE TABLE IF NOT EXISTS user_group (
-		user INTEGER REFERENCES User(id),
-		group INTEGER REFERENCES Group(id),
+	userGroupQuery := `CREATE TABLE IF NOT EXISTS users_groups (
+		user INTEGER REFERENCES users(id),
+		group INTEGER REFERENCES groups(id),
 		PRIMARY KEY(user, group)
 	);`
 	if _, err := db.Exec(userGroupQuery); err != nil {
 		return nil, err
 	}
 
-	messageQuery := `CREATE TABLE IF NOT EXISTS Message (
+	messageQuery := `CREATE TABLE IF NOT EXISTS messages (
 		id INTEGER PRIMARY KEY,
 		body TEXT NOT NULL,
 		date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		picture BLOB,
-		sender INTEGER NOT NULL REFERENCES User(id) ON DELETE CASCADE,
-		recipient_user INTEGER REFERENCES User(id) ON DELETE CASCADE,
-		recipient_group INTEGER REFERENCES Group(id) ON DELETE CASCADE,
-		reply_message INTEGER REFERENCES Message(id) ON DELETE CASCADE,
-		forwarded_message INTEGER REFERENCES Message(id) ON DELETE CASCADE,
+		sender INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+		recipient_user INTEGER REFERENCES users(id) ON DELETE CASCADE,
+		recipient_group INTEGER REFERENCES groups(id) ON DELETE CASCADE,
+		reply_message INTEGER REFERENCES messages(id) ON DELETE CASCADE,
+		forwarded_message INTEGER REFERENCES messages(id) ON DELETE CASCADE,
 		CHECK((recipient_user IS NOT NULL AND recipient_group IS NULL) OR
 			(recipient_user IS NULL AND recipient_group IS NOT NULL))
 	);`
@@ -134,18 +134,18 @@ func New(db *sql.DB) (AppDatabase, error) {
 		return nil, err
 	}
 
-	userReadsMessageQuery := `CREATE TABLE IF NOT EXISTS user_reads_message (
-		user INTEGER REFERENCES User(id) ON DELETE CASCADE,
-		message INTEGER REFERENCES Message(id) ON DELETE CASCADE,
+	userReadsMessageQuery := `CREATE TABLE IF NOT EXISTS users_read_messages (
+		user INTEGER REFERENCES users(id) ON DELETE CASCADE,
+		message INTEGER REFERENCES messages(id) ON DELETE CASCADE,
 		PRIMARY KEY(user, message)
 	);`
 	if _, err := db.Exec(userReadsMessageQuery); err != nil {
 		return nil, err
 	}
 
-	userReactsMessageQuery := `CREATE TABLE IF NOT EXISTS user_reacts_message (
-		user INTEGER REFERENCES User(id) ON DELETE CASCADE,
-		message INTEGER REFERENCES Message(id) ON DELETE CASCADE,
+	userReactsMessageQuery := `CREATE TABLE IF NOT EXISTS users_react_messages (
+		user INTEGER REFERENCES users(id) ON DELETE CASCADE,
+		message INTEGER REFERENCES messages(id) ON DELETE CASCADE,
 		reaction TEXT NOT NULL,
 		PRIMARY KEY(user, message)
 	);`

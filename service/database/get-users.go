@@ -4,7 +4,7 @@ import "wasatext/service/api/structs"
 
 // Given a username, return the users that corresponds to that username
 func (db *appdbimpl) GetUsers(username string) ([]structs.User, error) {
-	var query = "SELECT id, username, picture FROM User WHERE username LIKE concat(?, '%')"
+	var query = "SELECT id, username, picture FROM users WHERE username LIKE concat(?, '%')"
 	rows, err := db.c.Query(query, username)
 	if err != nil {
 		return nil, err
