@@ -120,7 +120,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	messageQuery := `CREATE TABLE IF NOT EXISTS messages (
 		id INTEGER PRIMARY KEY,
 		body TEXT NOT NULL,
-		date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+		sent_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
 		picture BLOB,
 		sender INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 		recipient_user INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -128,7 +128,8 @@ func New(db *sql.DB) (AppDatabase, error) {
 		reply_message INTEGER REFERENCES messages(id) ON DELETE CASCADE,
 		forwarded_message INTEGER REFERENCES messages(id) ON DELETE CASCADE,
 		CHECK((recipient_user IS NOT NULL AND recipient_group IS NULL) OR
-			(recipient_user IS NULL AND recipient_group IS NOT NULL))
+			(recipient_user IS NULL AND recipient_group IS NOT NULL)
+		)
 	);`
 	if _, err := db.Exec(messageQuery); err != nil {
 		return nil, err
