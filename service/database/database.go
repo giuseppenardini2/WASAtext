@@ -83,7 +83,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	//Enable foreign keys
-	sqlForeignKeys := `PRAGMA foreign_keys = ON`
+	sqlForeignKeys := "PRAGMA foreign_keys = ON"
 	if _, err := db.Exec(sqlForeignKeys); err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		id INTEGER PRIMARY KEY,
 		name TEXT NOT NULL,
 		picture BLOB,
-		user_creator INTEGER NOT NULL REFERENCES User(id)
+		user_creator INTEGER NOT NULL REFERENCES User(id) ON DELETE CASCADE
 	);`
 	if _, err := db.Exec(groupQuery); err != nil {
 		return nil, err
@@ -121,13 +121,13 @@ func New(db *sql.DB) (AppDatabase, error) {
 	messageQuery := `CREATE TABLE IF NOT EXISTS Message (
 		id INTEGER PRIMARY KEY,
 		body TEXT NOT NULL,
-		date TEXT NOT NULL,
+		date DATETIME DEFAULT CURRENT_TIMESTAMP,
 		picture BLOB,
-		sender INTEGER NOT NULL REFERENCES User(id),
-		recipient_user INTEGER REFERENCES User(id),
-		recipient_group INTEGER REFERENCES Group(id),
-		reply_message INTEGER REFERENCES Message(id),
-		forwarded_message INTEGER REFERENCES Message(id),
+		sender INTEGER NOT NULL REFERENCES User(id) ON DELETE CASCADE,
+		recipient_user INTEGER REFERENCES User(id) ON DELETE CASCADE,
+		recipient_group INTEGER REFERENCES Group(id) ON DELETE CASCADE,
+		reply_message INTEGER REFERENCES Message(id) ON DELETE CASCADE,
+		forwarded_message INTEGER REFERENCES Message(id) ON DELETE CASCADE,
 		CHECK((recipient_user IS NOT NULL AND recipient_group IS NULL) OR
 			(recipient_user IS NULL AND recipient_group IS NOT NULL))
 	);`
@@ -136,8 +136,8 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	userReadsMessageQuery := `CREATE TABLE IF NOT EXISTS user_reads_message (
-		user INTEGER REFERENCES User(id),
-		message INTEGER REFERENCES Message(id),
+		user INTEGER REFERENCES User(id) ON DELETE CASCADE,
+		message INTEGER REFERENCES Message(id) ON DELETE CASCADE,
 		PRIMARY KEY(user, message)
 	);`
 	if _, err := db.Exec(userReadsMessageQuery); err != nil {
@@ -145,8 +145,8 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	userReactsMessageQuery := `CREATE TABLE IF NOT EXISTS user_reacts_message (
-		user INTEGER REFERENCES User(id),
-		message INTEGER REFERENCES Message(id),
+		user INTEGER REFERENCES User(id) ON DELETE CASCADE,
+		message INTEGER REFERENCES Message(id) ON DELETE CASCADE,
 		reaction TEXT NOT NULL,
 		PRIMARY KEY(user, message)
 	);`
