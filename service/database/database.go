@@ -127,7 +127,9 @@ func New(db *sql.DB) (AppDatabase, error) {
 		recipient_group INTEGER REFERENCES groups(id) ON DELETE CASCADE,
 		reply_message INTEGER REFERENCES messages(id) ON DELETE CASCADE,
 		forwarded_message INTEGER REFERENCES messages(id) ON DELETE CASCADE,
-		CHECK((recipient_user IS NOT NULL AND recipient_group IS NULL) OR
+		CHECK(
+			(recipient_user IS NOT NULL AND recipient_group IS NULL) 
+			OR
 			(recipient_user IS NULL AND recipient_group IS NOT NULL)
 		)
 	);`
