@@ -89,7 +89,6 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	//Tables creation (if they not exists)
-	//TODO: Inserire ON DELETE CASCADE ??
 	userQuery := `CREATE TABLE IF NOT EXISTS User (
 		id INTEGER PRIMARY KEY,
 		username TEXT NOT NULL UNIQUE,
