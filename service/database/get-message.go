@@ -6,7 +6,7 @@ import "wasatext/service/api/structs"
 func (db *appdbimpl) GetMessage(id int) (structs.Message, error) {
 	var message structs.Message
 
-	var query = "SELECT id, body, date, picture, sender, recipient_user, recipient_group, reply_message, forwarded_message FROM messages WHERE id=?"
-	err := db.c.QueryRow(query, id).Scan(&message.Id, &message.Date, &message.Picture, &message.Sender, &message.RecipientUser, &message.RecipientGroup, &message.ReplyMessage, &message.ForwardedMessage)
+	query := "SELECT id, body, date, picture, sender_id, recipient_user_id, recipient_group_id, reply_message_id, forwarded_message_id FROM messages WHERE id=?"
+	err := db.c.QueryRow(query, id).Scan(&message.ID, &message.Date, &message.Picture, &message.SenderID, &message.RecipientUserID, &message.RecipientGroupID, &message.ReplyMessageID, &message.ForwardedMessageID)
 	return message, err
 }

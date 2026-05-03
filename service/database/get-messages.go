@@ -6,11 +6,11 @@ import "wasatext/service/api/structs"
 func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
 	var conversations []structs.Conversation
 
-	var query1 = `SELECT m.recipient_user, u.nickanme, u.picture, (
-			SELECT body FROM messages WHERE sender=? AND recipient_user=u.id
+	query1 := `SELECT m.recipient_user_id, u.nickanme, u.picture, (
+			SELECT body FROM messages WHERE sender_id=? AND recipient_user_id=u.id
 		) message_body
 		FROM messages AS m, users AS u
-		WHERE sender=? AND recipient_user IS NOT NULL AND m.recipient_user=u.id`
+		WHERE sender_id=? AND recipient_user_id IS NOT NULL AND m.recipient_user_id=u.id`
 	rows, err := db.c.Query(query1, user_id, user_id)
 	if err != nil {
 		return nil, err
@@ -18,7 +18,7 @@ func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
 	for rows.Next() {
 		var conversation structs.Conversation
 		conversation.Type = structs.UserConversation
-		if err := rows.Scan(&conversation.RecipientId, &conversation.Name, &conversation.Picture, &conversation.LastMessage); err != nil {
+		if err := rows.Scan(&conversation.RecipientID, &conversation.Name, &conversation.Picture, &conversation.LastMessage); err != nil {
 			return nil, err
 		}
 		conversations = append(conversations, conversation)
@@ -27,11 +27,11 @@ func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
 		return nil, err
 	}
 
-	var query2 = `SELECT m.recipient_group, u.nickanme, u.picture, (
-			SELECT body FROM messages WHERE sender=? AND recipient_group=u.id
+	query2 := `SELECT m.recipient_group_id, u.nickname, u.picture, (
+			SELECT body FROM messages WHERE sender=? AND recipient_group_id=u.id
 		) message_body
 	FROM messages AS m, users AS u
-	WHERE sender=? AND recipient_group IS NOT NULL AND m.recipient_group=u.id`
+	WHERE sender_id=? AND recipient_group_id IS NOT NULL AND m.recipient_group_id=u.id`
 	rows, err = db.c.Query(query2, user_id, user_id)
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
 	for rows.Next() {
 		var conversation structs.Conversation
 		conversation.Type = structs.GroupConversation
-		if err := rows.Scan(&conversation.RecipientId, &conversation.Name, &conversation.Picture, &conversation.LastMessage); err != nil {
+		if err := rows.Scan(&conversation.RecipientID, &conversation.Name, &conversation.Picture, &conversation.LastMessage); err != nil {
 			return nil, err
 		}
 		conversations = append(conversations, conversation)

@@ -13,7 +13,7 @@ func (conversation_type ConversationType) String() string {
 
 // A struct which represents a conversation
 type Conversation struct {
-	RecipientId int              `json:"id"`          //Recipient id
+	RecipientID int              `json:"id"`          //Recipient id
 	Type        ConversationType `json:"type"`        //Recipient type
 	Name        string           `json:"name"`        //Recipient name (Group name or user username)
 	Picture     string           `json:"picture"`     //Recipient picture

@@ -4,7 +4,7 @@ import "wasatext/service/api/structs"
 
 // Given a group ID, return the group's members
 func (db *appdbimpl) GetMembersFromGroup(id int) ([]structs.User, error) {
-	var query = "SELECT u.id, u.username, u.picture FROM users AS u, users_groups AS ug WHERE u.id=ug.user_id AND ug.group_id=?"
+	query := "SELECT u.id, u.username, u.picture FROM users AS u, users_groups AS ug WHERE u.id=ug.user_id AND ug.group_id=?"
 	rows, err := db.c.Query(query, id)
 	if err != nil {
 		return nil, err
@@ -13,7 +13,7 @@ func (db *appdbimpl) GetMembersFromGroup(id int) ([]structs.User, error) {
 	var users []structs.User
 	for rows.Next() {
 		var user structs.User
-		if err := rows.Scan(&user.Id, &user.Username, &user.Picture); err != nil {
+		if err := rows.Scan(&user.ID, &user.Username, &user.Picture); err != nil {
 			return nil, err
 		}
 		users = append(users, user)

@@ -43,7 +43,7 @@ type AppDatabase interface {
 	GetUsers(username string) ([]structs.User, error)
 	UpdateUserPicture(id int, picture string) error
 
-	AddGroup(name string, picture string, user_creator int) (int64, error)
+	AddGroup(name string, picture string, user_creator_id int) (int64, error)
 	DeleteGroup(id int) error
 	GetGroup(id int) (structs.Group, error)
 	GetGroups(user_id int) ([]structs.Group, error)
@@ -54,17 +54,20 @@ type AppDatabase interface {
 
 	GetMessage(id int) (structs.Message, error)
 	GetMessages(user_id int) ([]structs.Conversation, error)
-	GetMessagesByRecipientUser(user_id int, recipient_user int) ([]structs.Message, error)
-	GetMessagesByRecipientGroup(user_id int, recipient_group int) ([]structs.Message, error)
-	GetLastMessageFromUser(user_id int, recipient_user int) (structs.Message, error)   //2DO: Vedere se eliminare (Ultimo messaggio già preso in getMessages)
-	GetLastMessageFromGroup(user_id int, recipient_group int) (structs.Message, error) //2DO: Stessa cosa del 2do sopra
-	AddMessageToUser(body string, date string, picture string, sender int, recipient_user int, reply_message int) (int64, error)
-	AddMessageToGroup(body string, date string, picture string, sender int, recipient_group int, reply_message int) (int64, error)
+	GetMessagesByRecipientUser(user_id int, recipient_user_id int) ([]structs.Message, error)
+	GetMessagesByRecipientGroup(user_id int, recipient_group_id int) ([]structs.Message, error)
+	GetLastMessageFromUser(user_id int, recipient_user_id int) (structs.Message, error)   //2DO: Vedere se eliminare (Ultimo messaggio già preso in getMessages)
+	GetLastMessageFromGroup(user_id int, recipient_group_id int) (structs.Message, error) //2DO: Stessa cosa del 2do sopra
+	AddMessageToUser(body string, date string, picture string, sender_id int, recipient_user_id int) (int64, error)
+	AddMessageToGroup(body string, date string, picture string, sender_id int, recipient_group_id int) (int64, error)
+	AddReplyMessageToUser(body string, date string, picture string, sender_id int, recipient_user_id int, reply_message_id int) (int64, error)
+	AddReplyMessageToGroup(body string, date string, picture string, sender_id int, recipient_group_id int, reply_message_id int) (int64, error)
 	DeleteMessage(id int) error
 	AddMessageReadByUser(user_id int, message_id int) error
 	AddReaction(user_id int, message_id int, reaction string) error
 	DeleteReaction(user_id int, message_id int) error
-	AddForwardedMessageToUser(original_message_id int, sender int, recipient_user int, date string) (int64, error)
+	AddForwardedMessageToUser(original_message_id int, sender_id int, recipient_user_id int, date string) (int64, error)
+	AddForwardedMessageToGroup(original_message_id int, sender_id int, recipient_group_id int, date string) (int64, error)
 
 	Ping() error
 }
@@ -102,16 +105,16 @@ func New(db *sql.DB) (AppDatabase, error) {
 		id INTEGER PRIMARY KEY,
 		name TEXT NOT NULL,
 		picture BLOB,
-		user_creator INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
+		user_creator_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 	);`
 	if _, err := db.Exec(groupQuery); err != nil {
 		return nil, err
 	}
 
 	userGroupQuery := `CREATE TABLE IF NOT EXISTS users_groups (
+		PRIMARY KEY(user_id, group_id),
 		user_id INTEGER REFERENCES users(id),
-		group_id INTEGER REFERENCES groups(id),
-		PRIMARY KEY(user_id, group_id)
+		group_id INTEGER REFERENCES groups(id)
 	);`
 	if _, err := db.Exec(userGroupQuery); err != nil {
 		return nil, err
@@ -122,15 +125,15 @@ func New(db *sql.DB) (AppDatabase, error) {
 		body TEXT NOT NULL,
 		sent_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
 		picture BLOB,
-		sender INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-		recipient_user INTEGER REFERENCES users(id) ON DELETE CASCADE,
-		recipient_group INTEGER REFERENCES groups(id) ON DELETE CASCADE,
-		reply_message INTEGER REFERENCES messages(id) ON DELETE CASCADE,
-		forwarded_message INTEGER REFERENCES messages(id) ON DELETE CASCADE,
+		sender_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+		recipient_user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+		recipient_group_id INTEGER REFERENCES groups(id) ON DELETE CASCADE,
+		reply_message_id INTEGER REFERENCES messages(id) ON DELETE CASCADE,
+		forwarded_message_id INTEGER REFERENCES messages(id) ON DELETE CASCADE,
 		CHECK(
-			(recipient_user IS NOT NULL AND recipient_group IS NULL) 
+			(recipient_user_id IS NOT NULL AND recipient_group_id IS NULL) 
 			OR
-			(recipient_user IS NULL AND recipient_group IS NOT NULL)
+			(recipient_user_id IS NULL AND recipient_group_id IS NOT NULL)
 		)
 	);`
 	if _, err := db.Exec(messageQuery); err != nil {
@@ -138,19 +141,19 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	userReadsMessageQuery := `CREATE TABLE IF NOT EXISTS users_read_messages (
+		PRIMARY KEY(user_id, message_id),
 		user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-		message_id INTEGER REFERENCES messages(id) ON DELETE CASCADE,
-		PRIMARY KEY(user_id, message_id)
+		message_id INTEGER REFERENCES messages(id) ON DELETE CASCADE
 	);`
 	if _, err := db.Exec(userReadsMessageQuery); err != nil {
 		return nil, err
 	}
 
 	userReactsMessageQuery := `CREATE TABLE IF NOT EXISTS users_react_messages (
+		PRIMARY KEY(user_id, message_id),
 		user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
 		message_id INTEGER REFERENCES messages(id) ON DELETE CASCADE,
-		reaction TEXT NOT NULL,
-		PRIMARY KEY(user_id, message_id)
+		reaction TEXT NOT NULL
 	);`
 	if _, err := db.Exec(userReactsMessageQuery); err != nil {
 		return nil, err

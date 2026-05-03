@@ -3,12 +3,12 @@ package database
 import "wasatext/service/api/structs"
 
 // Given a user ID and recipient user ID, return the last message with that user
-func (db *appdbimpl) GetLastMessageFromUser(user_id int, recipient_user int) (structs.Message, error) {
+func (db *appdbimpl) GetLastMessageFromUser(user_id int, recipient_user_id int) (structs.Message, error) {
 	var message structs.Message
 
-	var query = `SELECT id, body, date, picture, sender, recipient_user, recipient_group, reply_message, forwarded_message FROM messages 
-		WHERE sender=? AND recipient_user=?
+	query := `SELECT id, body, date, picture, sender_id, recipient_user_id, recipient_group_id, reply_message_id, forwarded_message_id FROM messages 
+		WHERE sender_id=? AND recipient_user_id=?
 		ORDER BY date DESC LIMIT 1`
-	err := db.c.QueryRow(query, user_id, recipient_user).Scan(&message.Id, &message.Date, &message.Picture, &message.Sender, &message.RecipientUser, &message.RecipientGroup, &message.ReplyMessage, &message.ForwardedMessage)
+	err := db.c.QueryRow(query, user_id, recipient_user_id).Scan(&message.ID, &message.Date, &message.Picture, &message.SenderID, &message.RecipientUserID, &message.RecipientGroupID, &message.ReplyMessageID, &message.ForwardedMessageID)
 	return message, err
 }
