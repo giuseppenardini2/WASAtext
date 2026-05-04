@@ -112,9 +112,9 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	userGroupQuery := `CREATE TABLE IF NOT EXISTS users_groups (
-		PRIMARY KEY(user_id, group_id),
 		user_id INTEGER REFERENCES users(id),
-		group_id INTEGER REFERENCES groups(id)
+		group_id INTEGER REFERENCES groups(id),
+		PRIMARY KEY(user_id, group_id)
 	);`
 	if _, err := db.Exec(userGroupQuery); err != nil {
 		return nil, err
@@ -141,19 +141,19 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	userReadsMessageQuery := `CREATE TABLE IF NOT EXISTS users_read_messages (
-		PRIMARY KEY(user_id, message_id),
 		user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-		message_id INTEGER REFERENCES messages(id) ON DELETE CASCADE
+		message_id INTEGER REFERENCES messages(id) ON DELETE CASCADE,
+		PRIMARY KEY(user_id, message_id)
 	);`
 	if _, err := db.Exec(userReadsMessageQuery); err != nil {
 		return nil, err
 	}
 
 	userReactsMessageQuery := `CREATE TABLE IF NOT EXISTS users_react_messages (
-		PRIMARY KEY(user_id, message_id),
 		user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
 		message_id INTEGER REFERENCES messages(id) ON DELETE CASCADE,
-		reaction TEXT NOT NULL
+		reaction TEXT NOT NULL,
+		PRIMARY KEY(user_id, message_id)
 	);`
 	if _, err := db.Exec(userReactsMessageQuery); err != nil {
 		return nil, err
