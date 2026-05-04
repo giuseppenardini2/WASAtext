@@ -5,8 +5,9 @@ import "wasatext/service/api/structs"
 // Given a user ID and recipient group ID, return the user's messages with that group
 func (db *appdbimpl) GetMessagesByRecipientGroup(user_id int, recipient_group_id int) ([]structs.Message, error) {
 	query := `SELECT id, body, sent_date, picture, sender_id, COALESCE(recipient_user_id, -1), COALESCE(recipient_group_id, -1), COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
-		FROM messages WHERE sender_id=? AND recipient_group_id=?
-		ORDER BY sent_date ASC`
+		FROM messages 
+		WHERE sender_id=? AND recipient_group_id=?
+		ORDER BY sent_date DESC`
 	rows, err := db.c.Query(query, user_id, recipient_group_id)
 	if err != nil {
 		return nil, err
