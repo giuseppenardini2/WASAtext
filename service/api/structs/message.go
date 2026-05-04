@@ -2,15 +2,37 @@ package structs
 
 import "time"
 
+type RecipientType int
+
+const (
+	RecipientUser RecipientType = iota
+	RecipientGroup
+	UndefinedRecipient
+)
+
+func (recipient_type RecipientType) String() string {
+	return [...]string{"RecipientUser", "RecipientGroup", "UndefinedRecipient"}[recipient_type]
+}
+
 // A struct which represent a message of a conversation
 type Message struct {
-	ID                 int       `json:"id"`                 //Message id
+	ID                 int       `json:"id"`                 //Message ID
 	Body               string    `json:"body"`               //Message body
 	Date               time.Time `json:"date"`               //Message sent time
 	Picture            string    `json:"picture"`            //Message picture
-	SenderID           int       `json:"senderID"`           //Sender user id
-	RecipientUserID    int       `json:"recipientUserID"`    //Recipient user id
-	RecipientGroupID   int       `json:"recipientGroupID"`   //Recipient group id
-	ReplyMessageID     int       `json:"replyMessageID"`     //Id of the message to which reply to
-	ForwardedMessageID int       `json:"forwardedMessageID"` //Id of the message which is forwarded
+	SenderID           int       `json:"senderID"`           //Sender ID
+	RecipientUserID    int       `json:"recipientUserID"`    //Recipient user ID
+	RecipientGroupID   int       `json:"recipientGroupID"`   //Recipient group ID
+	ReplyMessageID     int       `json:"replyMessageID"`     //ID of the message to which reply to
+	ForwardedMessageID int       `json:"forwardedMessageID"` //ID of the message which is forwarded
+}
+
+func (message Message) GetRecipientType() RecipientType {
+	if message.RecipientUserID != -1 {
+		return RecipientUser
+	}
+	if message.RecipientGroupID != -1 {
+		return RecipientGroup
+	}
+	return UndefinedRecipient
 }
