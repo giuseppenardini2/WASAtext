@@ -58,16 +58,16 @@ type AppDatabase interface {
 	GetMessagesByRecipientGroup(user_id int, recipient_group_id int) ([]structs.Message, error)
 	GetLastMessageFromUser(user_id int, recipient_user_id int) (structs.Message, error)   //2DO: Vedere se eliminare (Ultimo messaggio già preso in getMessages)
 	GetLastMessageFromGroup(user_id int, recipient_group_id int) (structs.Message, error) //2DO: Stessa cosa del 2do sopra
-	AddMessageToUser(body string, date string, picture string, sender_id int, recipient_user_id int) (int64, error)
-	AddMessageToGroup(body string, date string, picture string, sender_id int, recipient_group_id int) (int64, error)
-	AddReplyMessageToUser(body string, date string, picture string, sender_id int, recipient_user_id int, reply_message_id int) (int64, error)
-	AddReplyMessageToGroup(body string, date string, picture string, sender_id int, recipient_group_id int, reply_message_id int) (int64, error)
+	AddMessageToUser(body string, sent_date string, picture string, sender_id int, recipient_user_id int) (int64, error)
+	AddMessageToGroup(body string, sent_date string, picture string, sender_id int, recipient_group_id int) (int64, error)
+	AddReplyMessageToUser(body string, sent_date string, picture string, sender_id int, recipient_user_id int, reply_message_id int) (int64, error)
+	AddReplyMessageToGroup(body string, sent_date string, picture string, sender_id int, recipient_group_id int, reply_message_id int) (int64, error)
 	DeleteMessage(id int) error
 	AddMessageReadByUser(user_id int, message_id int) error
 	AddReaction(user_id int, message_id int, reaction string) error
 	DeleteReaction(user_id int, message_id int) error
-	AddForwardedMessageToUser(original_message_id int, sender_id int, recipient_user_id int, date string) (int64, error)
-	AddForwardedMessageToGroup(original_message_id int, sender_id int, recipient_group_id int, date string) (int64, error)
+	AddForwardedMessageToUser(original_message_id int, sender_id int, recipient_user_id int, sent_date string) (int64, error)
+	AddForwardedMessageToGroup(original_message_id int, sender_id int, recipient_group_id int, sent_date string) (int64, error)
 
 	Ping() error
 }

@@ -18,7 +18,7 @@ func (recipient_type RecipientType) String() string {
 type Message struct {
 	ID                 int       `json:"id"`                 //Message ID
 	Body               string    `json:"body"`               //Message body
-	Date               time.Time `json:"date"`               //Message sent time
+	SentDate           time.Time `json:"sent date"`          //Message sent time
 	Picture            string    `json:"picture"`            //Message picture
 	SenderID           int       `json:"senderID"`           //Sender ID
 	RecipientUserID    int       `json:"recipientUserID"`    //Recipient user ID

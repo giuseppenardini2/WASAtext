@@ -1,7 +1,7 @@
 package database
 
 // Add a forwarded message to a group and return its ID
-func (db *appdbimpl) AddForwardedMessageToGroup(original_message_id int, sender_id int, recipient_group_id int, date string) (int64, error) {
+func (db *appdbimpl) AddForwardedMessageToGroup(original_message_id int, sender_id int, recipient_group_id int, sent_date string) (int64, error) {
 	//Get the body and picture of the message to forward to
 	var body, picture string
 
@@ -12,8 +12,8 @@ func (db *appdbimpl) AddForwardedMessageToGroup(original_message_id int, sender_
 	}
 
 	//Create a new message with the same body and picture of the message to forward to
-	query2 := "INSERT INTO messages (body, date, picture, sender_id, recipient_group_id, forwarded_message_id) VALUES (?, ?, ?, ?, ?, ?)"
-	result, err := db.c.Exec(query2, body, date, picture, sender_id, recipient_group_id, original_message_id)
+	query2 := "INSERT INTO messages (body, sent_date, picture, sender_id, recipient_group_id, forwarded_message_id) VALUES (?, ?, ?, ?, ?, ?)"
+	result, err := db.c.Exec(query2, body, sent_date, picture, sender_id, recipient_group_id, original_message_id)
 	if err != nil {
 		return -1, err
 	}
