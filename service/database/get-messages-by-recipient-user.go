@@ -6,7 +6,7 @@ import "wasatext/service/api/structs"
 func (db *appdbimpl) GetMessagesByRecipientUser(user_id int, recipient_user_id int) ([]structs.Message, error) {
 	query := `SELECT id, body, sent_date, picture, sender_id, COALESCE(recipient_user_id, -1), COALESCE(recipient_group_id, -1), COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
 		FROM messages WHERE sender_id=? AND recipient_user_id=?
-		ORDER BY sent_date DESC`
+		ORDER BY sent_date ASC`
 	rows, err := db.c.Query(query, user_id, recipient_user_id)
 	if err != nil {
 		return nil, err
