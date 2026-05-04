@@ -6,12 +6,15 @@ import "wasatext/service/api/structs"
 func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
 	var conversations []structs.Conversation
 
-	query1 := `SELECT m.recipient_user_id, u.nickanme, u.picture, (
-			SELECT body FROM messages WHERE sender_id=? AND recipient_user_id=u.id
+	query1 := `SELECT DISTINCT m.recipient_user_id, u.username, u.picture, (
+			SELECT body
+			FROM messages
+			WHERE recipient_user_id=u.id
+			ORDER BY sent_date DESC
 		) message_body
 		FROM messages AS m, users AS u
 		WHERE sender_id=? AND recipient_user_id IS NOT NULL AND m.recipient_user_id=u.id`
-	rows, err := db.c.Query(query1, user_id, user_id)
+	rows, err := db.c.Query(query1, user_id)
 	if err != nil {
 		return nil, err
 	}
@@ -27,12 +30,15 @@ func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
 		return nil, err
 	}
 
-	query2 := `SELECT m.recipient_group_id, u.nickname, u.picture, (
-			SELECT body FROM messages WHERE sender=? AND recipient_group_id=u.id
+	query2 := `SELECT DISTINCT m.recipient_group_id, g.name, g.picture, (
+			SELECT body 
+			FROM messages
+			WHERE recipient_group_id=g.id
+			ORDER BY sent_date DESC
 		) message_body
-	FROM messages AS m, users AS u
-	WHERE sender_id=? AND recipient_group_id IS NOT NULL AND m.recipient_group_id=u.id`
-	rows, err = db.c.Query(query2, user_id, user_id)
+	FROM messages AS m, groups AS g
+	WHERE sender_id=? AND recipient_group_id IS NOT NULL AND m.recipient_group_id=g.id`
+	rows, err = db.c.Query(query2, user_id)
 	if err != nil {
 		return nil, err
 	}
