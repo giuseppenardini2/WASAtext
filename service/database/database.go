@@ -42,6 +42,7 @@ type AppDatabase interface {
 	GetUser(id int) (structs.User, error)
 	GetUsers(username string) ([]structs.User, error)
 	UpdateUserPicture(id int, picture string) error
+	UpdateUserUsername(id int, username string) error
 
 	AddGroup(name string, picture string, user_creator_id int) (int64, error)
 	DeleteGroup(id int) error
