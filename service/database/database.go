@@ -40,6 +40,7 @@ import (
 type AppDatabase interface {
 	AddUser(username string, picture string) (int64, error)
 	GetUser(id int) (structs.User, error)
+	GetUserByUsername(username string) (structs.User, error)
 	GetUsers(username string) ([]structs.User, error)
 	UpdateUserPicture(id int, picture string) error
 	UpdateUserUsername(id int, username string) error
