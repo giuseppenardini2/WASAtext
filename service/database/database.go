@@ -53,6 +53,7 @@ type AppDatabase interface {
 	UpdateGroupPicture(id int, picture string) error
 	AddMemberToGroup(user_id int, group_id int) error
 	RemoveUserFromGroup(user_id int, group_id int) error
+	CheckGroupMember(user_id int, group_id int) (bool, error)
 
 	GetMessage(id int) (structs.Message, error)
 	GetMessages(user_id int) ([]structs.Conversation, error)

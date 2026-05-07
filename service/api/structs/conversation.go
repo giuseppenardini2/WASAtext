@@ -1,5 +1,7 @@
 package structs
 
+import "time"
+
 type ConversationType int
 
 const (
@@ -19,5 +21,5 @@ type Conversation struct {
 	RecipientPicture    string           `json:"recipientPicture"`    //Recipient picture
 	LastMessageBody     string           `json:"lastMessageBody"`     //Last message body with the recipient
 	LastMessagePicture  string           `json:"lastMessagePicture"`  //Last message picture with the recipient
-	LastMessageSentDate string           `json:"lastMessageSentDate"` //Last message sent date with the recipient
+	LastMessageSentDate time.Time        `json:"lastMessageSentDate"` //Last message sent date with the recipient
 }
