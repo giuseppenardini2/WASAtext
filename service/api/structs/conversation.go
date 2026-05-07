@@ -13,9 +13,11 @@ func (conversation_type ConversationType) String() string {
 
 // A struct which represents a conversation
 type Conversation struct {
-	RecipientID int              `json:"id"`          //Recipient id
-	Type        ConversationType `json:"type"`        //Recipient type
-	Name        string           `json:"name"`        //Recipient name (Group name or user username)
-	Picture     string           `json:"picture"`     //Recipient picture
-	LastMessage string           `json:"lastMessage"` //Last message with the recipient
+	RecipientID         int              `json:"recipientId"`         //Recipient id
+	ConversationType    ConversationType `json:"conversationType"`    //Recipient type
+	RecipientName       string           `json:"recipientName"`       //Recipient name (Group name or user username)
+	RecipientPicture    string           `json:"recipientPicture"`    //Recipient picture
+	LastMessageBody     string           `json:"lastMessageBody"`     //Last message body with the recipient
+	LastMessagePicture  string           `json:"lastMessagePicture"`  //Last message picture with the recipient
+	LastMessageSentDate string           `json:"lastMessageSentDate"` //Last message sent date with the recipient
 }

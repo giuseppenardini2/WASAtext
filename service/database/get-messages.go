@@ -13,6 +13,11 @@ func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
 			WHERE (sender_id=? AND recipient_user_id=u.id) OR (sender_id=u.id AND recipient_user_id=?)
 			ORDER BY sent_date DESC LIMIT 1
 		) message_body, (
+		 	SELECT picture
+			FROM messages
+			WHERE (sender_id=? AND recipient_user_id=u.id) OR (sender_id=u.id AND recipient_user_id=?)
+			ORDER BY sent_date DESC LIMIT 1
+		) message_picture, (
 		 	SELECT sent_date
 			FROM messages
 			WHERE (sender_id=? AND recipient_user_id=u.id) OR (sender_id=u.id AND recipient_user_id=?)
@@ -26,8 +31,8 @@ func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
 	}
 	for rows.Next() {
 		var conversation structs.Conversation
-		conversation.Type = structs.UserConversation
-		if err := rows.Scan(&conversation.RecipientID, &conversation.Name, &conversation.Picture, &conversation.LastMessage); err != nil {
+		conversation.ConversationType = structs.UserConversation
+		if err := rows.Scan(&conversation.RecipientID, &conversation.RecipientName, &conversation.RecipientPicture, &conversation.LastMessageBody, &conversation.LastMessagePicture, &conversation.LastMessageSentDate); err != nil {
 			return nil, err
 		}
 		conversations = append(conversations, conversation)
@@ -37,12 +42,17 @@ func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
 	}
 
 	query2 := `SELECT DISTINCT g.id, g.name, g.picture, (
-			SELECT m2.body 
+			SELECT m2.body
 			FROM messages AS m2, users_groups AS ug2
 			WHERE ug2.user_id=? AND ug2.group_id=g.id AND m2.recipient_group_id=g.id
 			ORDER BY m2.sent_date DESC LIMIT 1
 		) message_body, (
-		 	SELECT m2.sent_date 
+		 	SELECT m2.picture
+			FROM messages AS m2, users_groups AS ug2
+			WHERE ug2.user_id=? AND ug2.group_id=g.id AND m2.recipient_group_id=g.id
+			ORDER BY m2.sent_date DESC LIMIT 1
+		) message_picture, (
+		 	SELECT m2.sent_date
 			FROM messages AS m2, users_groups AS ug2
 			WHERE ug2.user_id=? AND ug2.group_id=g.id AND m2.recipient_group_id=g.id
 			ORDER BY m2.sent_date DESC LIMIT 1
@@ -55,8 +65,8 @@ func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
 	}
 	for rows.Next() {
 		var conversation structs.Conversation
-		conversation.Type = structs.GroupConversation
-		if err := rows.Scan(&conversation.RecipientID, &conversation.Name, &conversation.Picture, &conversation.LastMessage); err != nil {
+		conversation.ConversationType = structs.GroupConversation
+		if err := rows.Scan(&conversation.RecipientID, &conversation.RecipientName, &conversation.RecipientPicture, &conversation.LastMessageBody, &conversation.LastMessagePicture, &conversation.LastMessageSentDate); err != nil {
 			return nil, err
 		}
 		conversations = append(conversations, conversation)
