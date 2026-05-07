@@ -6,14 +6,15 @@ import "wasatext/service/api/structs"
 func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
 	var conversations []structs.Conversation
 
+	//TODO: Questa query prende solo i messaggi inviati, deve prendere anche quelli ricevuti
 	query1 := `SELECT DISTINCT m.recipient_user_id, u.username, u.picture, (
 			SELECT body
 			FROM messages
 			WHERE recipient_user_id=u.id
-			ORDER BY sent_date DESC
+			ORDER BY sent_date DESC LIMIT 1
 		) message_body
 		FROM messages AS m, users AS u
-		WHERE sender_id=? AND recipient_user_id IS NOT NULL AND m.recipient_user_id=u.id`
+		WHERE sender_id=? AND recipient_user_id IS NOT NULL AND m.recipient_user_id=u.id` //TODO: Modificare per includere anche messaggi ricevuti e il sent_date
 	rows, err := db.c.Query(query1, user_id)
 	if err != nil {
 		return nil, err

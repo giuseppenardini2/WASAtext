@@ -6,6 +6,6 @@ func (db *appdbimpl) AddMessageToGroup(body string, sent_date string, picture st
 	result, err := db.c.Exec(query, body, sent_date, picture, sender_id, recipient_group_id)
 	if err != nil {
 		return -1, err
-	}
+	} //TODO: Aggiungere il messaggio solo se l'utente fa parte del gruppo
 	return result.LastInsertId()
 }
