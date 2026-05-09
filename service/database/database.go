@@ -67,6 +67,7 @@ type AppDatabase interface {
 	AddReplyMessageToGroup(body string, sent_date string, picture string, sender_id int, recipient_group_id int, reply_message_id int) (int64, error)
 	DeleteMessage(id int) error
 	AddMessageReadByUser(user_id int, message_id int) error
+	CheckReadMessage(message_id int) (bool, error)
 	AddReaction(user_id int, message_id int, reaction string) error
 	DeleteReaction(user_id int, message_id int) error
 	AddForwardedMessageToUser(original_message_id int, sender_id int, recipient_user_id int, sent_date string) (int64, error)

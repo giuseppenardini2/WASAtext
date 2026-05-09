@@ -1,6 +1,6 @@
 package database
 
-// Given a user ID and a group, return if the user is a member of the group
+// Given a user ID and a group ID, return if the user is a member of the group
 func (db *appdbimpl) CheckGroupMember(user_id int, group_id int) (bool, error) {
 	var count int
 
