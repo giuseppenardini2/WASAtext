@@ -39,39 +39,39 @@ import (
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
 	AddUser(username string, picture string) (int64, error)
-	GetUser(id int) (structs.User, error)
+	GetUser(userID int) (structs.User, error)
 	GetUserByUsername(username string) (structs.User, error)
 	GetUsers(username string) ([]structs.User, error)
-	UpdateUserPicture(id int, picture string) error
-	UpdateUserUsername(id int, username string) error
+	UpdateUserPicture(userID int, picture string) error
+	UpdateUserUsername(userID int, username string) error
 
-	AddGroup(name string, picture string, user_creator_id int) (int64, error)
-	DeleteGroup(id int) error
-	GetGroup(id int) (structs.Group, error)
-	GetGroups(user_id int) ([]structs.Group, error)
-	GetGroupMembers(id int) ([]structs.User, error)
-	UpdateGroupPicture(id int, picture string) error
-	AddMemberToGroup(user_id int, group_id int) error
-	RemoveUserFromGroup(user_id int, group_id int) error
-	CheckGroupMember(user_id int, group_id int) (bool, error)
+	AddGroup(name string, picture string, userCreatorID int) (int64, error)
+	DeleteGroup(groupID int) error
+	GetGroup(groupID int) (structs.Group, error)
+	GetGroups(userID int) ([]structs.Group, error)
+	GetGroupMembers(groupID int) ([]structs.User, error)
+	UpdateGroupPicture(groupID int, picture string) error
+	AddMemberToGroup(userID int, groupID int) error
+	RemoveUserFromGroup(userID int, groupID int) error
+	CheckGroupMember(userID int, groupID int) (bool, error)
 
-	GetMessage(id int) (structs.Message, error)
-	GetMessages(user_id int) ([]structs.Conversation, error)
-	GetMessagesByRecipientUser(user_id int, recipient_user_id int) ([]structs.Message, error)
-	GetMessagesByRecipientGroup(user_id int, recipient_group_id int) ([]structs.Message, error)
-	GetLastMessageFromUser(user_id int, recipient_user_id int) (structs.Message, error)   //2DO: Vedere se eliminare (Ultimo messaggio già preso in getMessages)
-	GetLastMessageFromGroup(user_id int, recipient_group_id int) (structs.Message, error) //2DO: Stessa cosa del 2do sopra
-	AddMessageToUser(body string, sent_date string, picture string, sender_id int, recipient_user_id int) (int64, error)
-	AddMessageToGroup(body string, sent_date string, picture string, sender_id int, recipient_group_id int) (int64, error)
-	AddReplyMessageToUser(body string, sent_date string, picture string, sender_id int, recipient_user_id int, reply_message_id int) (int64, error)
-	AddReplyMessageToGroup(body string, sent_date string, picture string, sender_id int, recipient_group_id int, reply_message_id int) (int64, error)
-	DeleteMessage(id int) error
-	AddMessageReadByUser(user_id int, message_id int) error
-	CheckReadMessage(message_id int) (bool, error)
-	AddReaction(user_id int, message_id int, reaction string) error
-	DeleteReaction(user_id int, message_id int) error
-	AddForwardedMessageToUser(original_message_id int, sender_id int, recipient_user_id int, sent_date string) (int64, error)
-	AddForwardedMessageToGroup(original_message_id int, sender_id int, recipient_group_id int, sent_date string) (int64, error)
+	GetMessage(messageID int) (structs.Message, error)
+	GetMessages(userID int) ([]structs.Conversation, error)
+	GetMessagesByRecipientUser(userID int, recipientUserID int) ([]structs.Message, error)
+	GetMessagesByRecipientGroup(userID int, recipientGroupID int) ([]structs.Message, error)
+	GetLastMessageFromUser(userID int, recipientUserID int) (structs.Message, error)   //2DO: Vedere se eliminare (Ultimo messaggio già preso in getMessages)
+	GetLastMessageFromGroup(userID int, recipientGroupID int) (structs.Message, error) //2DO: Stessa cosa del 2do sopra
+	AddMessageToUser(body string, sentDate string, picture string, senderID int, recipientUserID int) (int64, error)
+	AddMessageToGroup(body string, sentDate string, picture string, senderID int, recipientGroupID int) (int64, error)
+	AddReplyMessageToUser(body string, sentDate string, picture string, senderID int, recipientUserID int, replyMessageID int) (int64, error)
+	AddReplyMessageToGroup(body string, sentDate string, picture string, senderID int, recipientGroupID int, replyMessageID int) (int64, error)
+	DeleteMessage(messageID int) error
+	AddMessageReadByUser(userID int, messageID int) error
+	CheckReadMessage(messageID int) (bool, error)
+	AddReaction(userID int, messageID int, reaction string) error
+	DeleteReaction(userID int, messageID int) error
+	AddForwardedMessageToUser(originalMessageID int, senderID int, recipientUserID int, sentDate string) (int64, error)
+	AddForwardedMessageToGroup(originalMessageID int, senderID int, recipientGroupID int, sentDate string) (int64, error)
 
 	Ping() error
 }

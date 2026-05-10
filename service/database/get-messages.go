@@ -3,7 +3,7 @@ package database
 import "wasatext/service/api/structs"
 
 // Given a user ID, return the user's messages as conversation
-func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
+func (db *appdbimpl) GetMessages(userID int) ([]structs.Conversation, error) {
 	var conversations []structs.Conversation
 
 	//TODO: Questa query prende solo i messaggi inviati, deve prendere anche quelli ricevuti
@@ -25,7 +25,7 @@ func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
 		) message_sent_date
 		FROM messages AS m, users AS u
 		WHERE (m.sender_id=? AND m.recipient_user_id=u.id) OR (m.sender_id=u.id AND m.recipient_user_id=?)`
-	rows, err := db.c.Query(query1, user_id, user_id, user_id, user_id, user_id, user_id)
+	rows, err := db.c.Query(query1, userID, userID, userID, userID, userID, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (db *appdbimpl) GetMessages(user_id int) ([]structs.Conversation, error) {
 		) message_sent_date
 	FROM messages AS m1, groups AS g, users_groups AS ug1
 	WHERE ug1.user_id=? AND ug1.group_id=g.id AND m1.recipient_group_id=g.id`
-	rows, err = db.c.Query(query2, user_id, user_id, user_id)
+	rows, err = db.c.Query(query2, userID, userID, userID)
 	if err != nil {
 		return nil, err
 	}

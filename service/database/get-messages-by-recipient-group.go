@@ -3,12 +3,12 @@ package database
 import "wasatext/service/api/structs"
 
 // Given a user ID and recipient group ID, return the user's messages with that group
-func (db *appdbimpl) GetMessagesByRecipientGroup(user_id int, recipient_group_id int) ([]structs.Message, error) {
+func (db *appdbimpl) GetMessagesByRecipientGroup(userID int, recipientGroupID int) ([]structs.Message, error) {
 	query := `SELECT m.id, m.body, m.sent_date, m.picture, m.sender_id, COALESCE(m.recipient_user_id, -1), COALESCE(m.recipient_group_id, -1), COALESCE(m.reply_message_id, -1), COALESCE(m.forwarded_message_id, -1)
 		FROM messages AS m, users_groups AS ug
 		WHERE ug.user_id=? AND ug.group_id=? AND m.recipient_group_id=?
 		ORDER BY sent_date DESC`
-	rows, err := db.c.Query(query, user_id, recipient_group_id, recipient_group_id)
+	rows, err := db.c.Query(query, userID, recipientGroupID, recipientGroupID)
 	if err != nil {
 		return nil, err
 	}

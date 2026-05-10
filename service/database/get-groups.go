@@ -3,9 +3,9 @@ package database
 import "wasatext/service/api/structs"
 
 // Given a group ID, return the group's members
-func (db *appdbimpl) GetGroups(user_id int) ([]structs.Group, error) {
+func (db *appdbimpl) GetGroups(userID int) ([]structs.Group, error) {
 	query := "SELECT g.id, g.name, g.picture, g.user_creator_id FROM groups AS g, users_groups AS ug WHERE g.id=ug.group_id AND ug.user_id=?"
-	rows, err := db.c.Query(query, user_id)
+	rows, err := db.c.Query(query, userID)
 	if err != nil {
 		return nil, err
 	}
