@@ -1,6 +1,6 @@
 package database
 
-import "wasatext/service/api/structs"
+import "wasatext/service/structs"
 
 // Given a user ID and recipient user ID, return the last message with that user
 func (db *appdbimpl) GetLastMessageFromUser(userID int, recipientUserID int) (structs.Message, error) {

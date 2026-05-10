@@ -1,6 +1,6 @@
 package database
 
-import "wasatext/service/api/structs"
+import "wasatext/service/structs"
 
 // Given a message ID, return the message
 func (db *appdbimpl) GetMessage(messageID int) (structs.Message, error) {

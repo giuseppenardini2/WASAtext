@@ -33,7 +33,7 @@ package database
 import (
 	"database/sql"
 	"errors"
-	"wasatext/service/api/structs"
+	"wasatext/service/structs"
 )
 
 // AppDatabase is the high level interface for the DB
