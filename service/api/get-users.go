@@ -8,7 +8,6 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-// Return the users
 func (rt *_router) getUsers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	username := r.URL.Query().Get("username")
 	if username == "" {

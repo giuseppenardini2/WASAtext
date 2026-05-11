@@ -82,8 +82,12 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Users" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}:
     parameters:
@@ -104,7 +108,7 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/Conversations" }
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/NotFound"
 
     put:
       operationId: setMyUserName
@@ -131,7 +135,7 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/Username" }
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/NotFound"
 
   /users/{userID}/photos:
     put:
@@ -163,7 +167,7 @@ paths:
                 type: string
                 example: "Photo successfully uploaded"
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/NotFound"
 
   /users/{userID}/conversations:
     get:
@@ -184,7 +188,7 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/Conversation" }
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/NotFound"
 
   /users/{userID}/conversations/{conversationID}/messages:
     post:
@@ -245,7 +249,7 @@ paths:
         "204":
           description: Message deleted successfully
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/NotFound"
 
   /users/{userID}/conversations/{conversationID}/messages/{messageID}/reactions:
     post: 
@@ -290,7 +294,7 @@ paths:
         "204": 
           description: Message uncomment successfully
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/NotFound"
 
   /users/{userID}/groups:
     post:
@@ -344,7 +348,7 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/GroupName" }
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/NotFound"
 
     delete:
       operationId: leaveGroup
@@ -358,7 +362,7 @@ paths:
         "204":
           description: Group left successfully
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/NotFound"
 
   /users/{userID}/groups/{groupID}/participants:
     put:
@@ -384,7 +388,7 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/Identifier"}
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/NotFound"
 
   /users/{userID}/groups/{groupID}/photos:
     put:
@@ -417,7 +421,7 @@ paths:
                 type: string
                 example: "Photo successfully uploaded"
         "404":
-          $ref: "#/components/responses/404NotFound"
+          $ref: "#/components/responses/NotFound"
 
 
 #------------
@@ -661,8 +665,22 @@ components:
 
   #-- RESPONSES
   responses:
-    404NotFound:
-      description: The specified resource was not found
+    BadRequest:
+      description: The server could not understand the request due to incorrect syntax
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    NotFound:
+      description: The server can not find the requested resource
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    InternalServerError:
+      description: The server encountered an unexpected condition that prevented it from fulfilling the request
       content:
         application/json:
           schema:
