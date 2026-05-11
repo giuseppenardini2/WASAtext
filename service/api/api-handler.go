@@ -8,6 +8,7 @@ import (
 func (rt *_router) Handler() http.Handler {
 	// Register routes
 	rt.router.GET("/users", rt.getUsers)
+	rt.router.GET("/users/:userid", rt.getMyConversations)
 	rt.router.GET("/context", rt.wrap(rt.getContextReply))
 
 	// Special routes
