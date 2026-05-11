@@ -90,9 +90,6 @@ paths:
           $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}:
-    parameters:
-      - $ref: "#/components/parameters/userID"
-
     get:
       operationId: getMyConversations
       tags: ["users"]
@@ -101,6 +98,8 @@ paths:
         Return a list of user conversation
       security:
         - bearerAuth: []
+      parameters:
+      - $ref: "#/components/parameters/userID"
       responses:
         "200":
           description: List of conversations
@@ -110,6 +109,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
+  /users/{userID}/username:
     put:
       operationId: setMyUserName
       tags: ["users"]
@@ -118,6 +118,8 @@ paths:
         Set the user username
       security:
         - bearerAuth: []
+      parameters:
+      - $ref: "#/components/parameters/userID"
       requestBody:
         description: New username
         content:
