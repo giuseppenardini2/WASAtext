@@ -42,7 +42,6 @@ type AppDatabase interface {
 	GetUser(userID int) (structs.User, error)
 	GetUserByUsername(username string) (structs.User, error)
 	GetUsers(username string) ([]structs.User, error)
-	CheckUser(userID int) (bool, error)
 	CheckUserUsername(username string) (bool, error)
 	UpdateUserPicture(userID int, picture string) error
 	UpdateUserUsername(userID int, username string) error
