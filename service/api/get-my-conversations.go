@@ -12,6 +12,7 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 	userID, err := strconv.Atoi(ps.ByName("userID"))
 	if err != nil {
 		http.Error(w, "User ID is empty", http.StatusBadRequest)
+		return
 	}
 
 	conversations, err := rt.db.GetMessages(userID)

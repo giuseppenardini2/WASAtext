@@ -12,6 +12,7 @@ func (rt *_router) getUsers(w http.ResponseWriter, r *http.Request, ps httproute
 	username := r.URL.Query().Get("username")
 	if username == "" {
 		http.Error(w, "Username is empty", http.StatusBadRequest)
+		return
 	}
 
 	usernameRegex := regexp.MustCompile("^.*?$")
