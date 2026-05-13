@@ -1,15 +1,40 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
 	"regexp"
+	"wasatext/service/structs"
 
 	"github.com/julienschmidt/httprouter"
 )
 
 func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	username := r.URL.Query().Get("username")
+	username := ps.ByName("username")
+	if username == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	usernameRegex := regexp.MustCompile("^.*?$")
+	if !usernameRegex.MatchString(username) {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	is_username_exists, err := rt.db.CheckUserUsername(username)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	var user structs.User
+	if is_username_exists == false {
+		//Creo lo user
+	}
+
+	//Prendo lo user
+
+	/*username := r.URL.Query().Get("username")
 	if username == "" {
 		http.Error(w, "Username is empty", http.StatusBadRequest)
 		return
@@ -32,5 +57,5 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 	if err := json.NewEncoder(w).Encode(users); err != nil {
 		http.Error(w, "Encoding error", http.StatusInternalServerError)
 		return
-	}
+	}*/
 }

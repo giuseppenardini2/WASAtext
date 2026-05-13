@@ -11,26 +11,26 @@ import (
 func (rt *_router) getUsers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	username := r.URL.Query().Get("username")
 	if username == "" {
-		http.Error(w, "Username is empty", http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	usernameRegex := regexp.MustCompile("^.*?$")
 	if !usernameRegex.MatchString(username) {
-		http.Error(w, "Username not match regex", http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	users, err := rt.db.GetUsers(username)
 	if err != nil {
-		http.Error(w, "DB error", http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("content-type", "application/json")
 	if err := json.NewEncoder(w).Encode(users); err != nil {
-		http.Error(w, "Encoding error", http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 }
