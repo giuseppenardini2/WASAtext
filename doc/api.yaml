@@ -42,28 +42,23 @@ paths:
               description: Username
               type: object
               properties:
-                name:
-                  description: Username
-                  type: string
-                  example: Maria
-                  pattern: '^.*?$'
-                  minLength: 3
-                  maxLength: 16
+                name: { $ref: "#/components/schemas/Username" }
         required: true
       responses:
-        "201":
-          description: User log-in action successful
+        "200":
+          description: User logged-in successfully
           content:
             application/json:
-              schema:
-                description: User identifier
-                type: object
-                properties:
-                  identifier:
-                    description: Identifier
-                    type: integer
-                    example: 123
-                    minimum: 0
+              schema: { $ref: "#/components/schemas/Identifier" }
+        "201":
+          description: User created and logged-in successfully
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Identifier" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /users:
     get:
