@@ -85,18 +85,18 @@ type appdbimpl struct {
 // `db` is required - an error will be returned if `db` is `nil`.
 func New(db *sql.DB) (AppDatabase, error) {
 
-	//Check if the database is nil
+	// Check if the database is nil
 	if db == nil {
 		return nil, errors.New("database is required when building a AppDatabase")
 	}
 
-	//Enable foreign keys
+	// Enable foreign keys
 	sqlForeignKeys := "PRAGMA foreign_keys = ON"
 	if _, err := db.Exec(sqlForeignKeys); err != nil {
 		return nil, err
 	}
 
-	//Tables creation (if they not exists)
+	// Tables creation (if they not exists)
 	userQuery := `CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY,
 		username TEXT NOT NULL UNIQUE,
