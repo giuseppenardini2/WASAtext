@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-	"regexp"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -15,8 +14,7 @@ func (rt *_router) getUsers(w http.ResponseWriter, r *http.Request, ps httproute
 		return
 	}
 
-	usernameRegex := regexp.MustCompile("^.*?$")
-	if !usernameRegex.MatchString(username) {
+	if !IsUsernameRegexValid(username) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

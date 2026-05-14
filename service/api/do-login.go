@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-	"regexp"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -15,8 +14,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
-	usernameRegex := regexp.MustCompile("^.*?$")
-	if !usernameRegex.MatchString(username) {
+	if !IsUsernameRegexValid(username) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -27,7 +25,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
-	if is_username_exists == false {
+	if !is_username_exists {
 		_, err := rt.db.AddUser(username, nil) //Come rendere nulla la stringa ?
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
