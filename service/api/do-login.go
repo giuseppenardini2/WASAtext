@@ -26,7 +26,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 	}
 
 	if !is_username_exists {
-		_, err := rt.db.AddUser(username, nil) //Come rendere nulla la stringa ?
+		_, err := rt.db.AddUser(username) // Come rendere nulla la stringa ?
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return

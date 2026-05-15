@@ -1,17 +1,19 @@
 package structs
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type RecipientType int
 
 const (
 	RecipientUser RecipientType = iota
 	RecipientGroup
-	UndefinedRecipient
 )
 
 func (recipient_type RecipientType) String() string {
-	return [...]string{"RecipientUser", "RecipientGroup", "UndefinedRecipient"}[recipient_type]
+	return [...]string{"RecipientUser", "RecipientGroup"}[recipient_type]
 }
 
 // A struct which represent a message of a conversation
@@ -27,12 +29,12 @@ type Message struct {
 	ForwardedMessageID int       `json:"forwardedMessageID"` //ID of the message which is forwarded
 }
 
-func (message Message) GetRecipientType() RecipientType {
+func (message Message) GetRecipientType() (RecipientType, error) {
 	if message.RecipientUserID != -1 {
-		return RecipientUser
+		return RecipientUser, nil
 	}
 	if message.RecipientGroupID != -1 {
-		return RecipientGroup
+		return RecipientGroup, nil
 	}
-	return UndefinedRecipient
+	return RecipientGroup, errors.New("Recipient type error")
 }
