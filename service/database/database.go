@@ -58,21 +58,16 @@ type AppDatabase interface {
 
 	GetMessage(messageID int) (structs.Message, error)
 	GetMessages(userID int) ([]structs.Conversation, error)
-	GetMessagesByRecipientUser(userID int, recipientUserID int) ([]structs.Message, error)
-	GetMessagesByRecipientGroup(userID int, recipientGroupID int) ([]structs.Message, error)
-	GetLastMessageFromUser(userID int, recipientUserID int) (structs.Message, error)   //2DO: Vedere se eliminare (Ultimo messaggio già preso in getMessages)
-	GetLastMessageFromGroup(userID int, recipientGroupID int) (structs.Message, error) //2DO: Stessa cosa del 2do sopra
-	AddMessageToUser(body string, sentDate string, picture string, senderID int, recipientUserID int) (int64, error)
-	AddMessageToGroup(body string, sentDate string, picture string, senderID int, recipientGroupID int) (int64, error)
-	AddReplyMessageToUser(body string, sentDate string, picture string, senderID int, recipientUserID int, replyMessageID int) (int64, error)
-	AddReplyMessageToGroup(body string, sentDate string, picture string, senderID int, recipientGroupID int, replyMessageID int) (int64, error)
+	GetMessagesByRecipient(userID int, recipientID int, recipientType structs.RecipientType) ([]structs.Message, error)
+	GetLastMessage(userID int, recipientID int, recipientType structs.RecipientType) (structs.Message, error) //2DO: Vedere se eliminare (Ultimo messaggio già preso in getMessages)
+	AddMessage(body string, sentDate string, picture string, senderID int, recipientID int, recipientType structs.RecipientType) (int64, error)
+	AddReplyMessage(body string, sentDate string, picture structs.Picture, senderID int, recipientID int, recipientType structs.RecipientType, replyMessageID int) (int64, error)
 	DeleteMessage(messageID int) error
 	AddMessageReadByUser(userID int, messageID int) error
 	CheckReadMessage(messageID int) (bool, error)
 	AddReaction(userID int, messageID int, reaction string) error
 	DeleteReaction(userID int, messageID int) error
-	AddForwardedMessageToUser(originalMessageID int, senderID int, recipientUserID int, sentDate string) (int64, error)
-	AddForwardedMessageToGroup(originalMessageID int, senderID int, recipientGroupID int, sentDate string) (int64, error)
+	AddForwardedMessage(originalMessageID int, senderID int, recipientID int, recipientType structs.RecipientType, sentDate string) (int64, error)
 
 	Ping() error
 }
