@@ -21,7 +21,7 @@ type Message struct {
 	ID                 int       `json:"id"`                 //Message ID
 	Body               string    `json:"body"`               //Message body
 	SentDate           time.Time `json:"sent date"`          //Message sent time
-	Picture            string    `json:"picture"`            //Message picture
+	Picture            Picture   `json:"picture"`            //Message picture
 	SenderID           int       `json:"senderID"`           //Sender ID
 	RecipientUserID    int       `json:"recipientUserID"`    //Recipient user ID
 	RecipientGroupID   int       `json:"recipientGroupID"`   //Recipient group ID
