@@ -14,7 +14,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
-	if !IsUsernameRegexValid(username) {
+	if !IsUsernameValid(username) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
