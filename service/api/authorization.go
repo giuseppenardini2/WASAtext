@@ -8,7 +8,7 @@ import (
 )
 
 // Given an HTTP request, extract the bearer token from the Authorization header
-func (rt *_router) GetUserToken(r *http.Request) (int, error) {
+func GetUserToken(r *http.Request) (int, error) {
 	// Get the authorization header
 	authorizationHeader := r.Header.Get("Authorization")
 	if authorizationHeader == "" {
@@ -30,6 +30,11 @@ func (rt *_router) GetUserToken(r *http.Request) (int, error) {
 }
 
 // TODO: La funzione verifica se l'utente è quello del token
-func IsUserAuthorized(userID int, token int) bool {
-	return true
+func IsUserAuthorized(userID int, r *http.Request, w http.ResponseWriter) bool {
+	token, err := GetUserToken(r)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return false
+	}
+	return userID == token
 }

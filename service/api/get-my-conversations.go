@@ -15,6 +15,10 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 		return
 	}
 
+	if !IsUserAuthorized(userID, r, w) {
+		return
+	}
+
 	conversations, err := rt.db.GetMessages(userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
