@@ -31,7 +31,7 @@ func (db *appdbimpl) GetMessages(userID int) ([]structs.Conversation, error) {
 	}
 	for rows.Next() {
 		var conversation structs.Conversation
-		conversation.ConversationType = structs.UserConversation
+		conversation.RecipientType = structs.RecipientUser
 		if err := rows.Scan(&conversation.RecipientID, &conversation.RecipientName, &conversation.RecipientPicture, &conversation.LastMessageBody, &conversation.LastMessagePicture, &conversation.LastMessageSentDate); err != nil {
 			return nil, err
 		}
@@ -65,7 +65,7 @@ func (db *appdbimpl) GetMessages(userID int) ([]structs.Conversation, error) {
 	}
 	for rows.Next() {
 		var conversation structs.Conversation
-		conversation.ConversationType = structs.GroupConversation
+		conversation.RecipientType = structs.RecipientGroup
 		if err := rows.Scan(&conversation.RecipientID, &conversation.RecipientName, &conversation.RecipientPicture, &conversation.LastMessageBody, &conversation.LastMessagePicture, &conversation.LastMessageSentDate); err != nil {
 			return nil, err
 		}

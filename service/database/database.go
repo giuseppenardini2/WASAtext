@@ -61,7 +61,7 @@ type AppDatabase interface {
 	GetMessagesByRecipient(userID int, recipientID int, recipientType structs.RecipientType) ([]structs.Message, error)
 	GetLastMessage(userID int, recipientID int, recipientType structs.RecipientType) (structs.Message, error) //2DO: Vedere se eliminare (Ultimo messaggio già preso in getMessages)
 	AddMessage(body string, sentDate string, picture string, senderID int, recipientID int, recipientType structs.RecipientType) (int64, error)
-	AddReplyMessage(body string, sentDate string, picture structs.Picture, senderID int, recipientID int, recipientType structs.RecipientType, replyMessageID int) (int64, error)
+	AddReplyMessage(body string, sentDate string, picture string, senderID int, recipientID int, recipientType structs.RecipientType, replyMessageID int) (int64, error)
 	DeleteMessage(messageID int) error
 	AddMessageReadByUser(userID int, messageID int) error
 	CheckReadMessage(messageID int) (bool, error)
@@ -91,7 +91,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		return nil, err
 	}
 
-	// Tables creation (if they not exists)
+	// Create tables (if they not exists)
 	userQuery := `CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY,
 		username TEXT NOT NULL UNIQUE,

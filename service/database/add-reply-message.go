@@ -6,7 +6,7 @@ import (
 )
 
 // Add a reply message to a user and return its ID
-func (db *appdbimpl) AddReplyMessage(body string, sentDate string, picture structs.Picture, senderID int, recipientID int, recipientType structs.RecipientType, replyMessageID int) (int64, error) {
+func (db *appdbimpl) AddReplyMessage(body string, sentDate string, picture string, senderID int, recipientID int, recipientType structs.RecipientType, replyMessageID int) (int64, error) {
 	// Add the message based on the recipient type
 	var query string
 	switch recipientType {
@@ -24,7 +24,7 @@ func (db *appdbimpl) AddReplyMessage(body string, sentDate string, picture struc
 	}
 
 	// Add the picture of the message if it is present
-	if !picture.IsNil {
+	if picture != "" {
 		lastInsertID, err := result.LastInsertId()
 		if err != nil {
 			return -1, err
