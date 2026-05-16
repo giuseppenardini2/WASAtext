@@ -15,7 +15,7 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 		return
 	}
 
-	if !IsUserAuthorized(userID, r, w) {
+	if !IsUserAuthorized(userID, r, w) { // TODO: Da aggiungere un errore col 'w' ?
 		return
 	}
 

@@ -59,7 +59,7 @@ type AppDatabase interface {
 	GetMessage(messageID int) (structs.Message, error)
 	GetMessages(userID int) ([]structs.Conversation, error)
 	GetMessagesByRecipient(userID int, recipientID int, recipientType structs.RecipientType) ([]structs.Message, error)
-	GetLastMessage(userID int, recipientID int, recipientType structs.RecipientType) (structs.Message, error) //2DO: Vedere se eliminare (Ultimo messaggio già preso in getMessages)
+	GetLastMessage(userID int, recipientID int, recipientType structs.RecipientType) (structs.Message, error) // TODO: Vedere se eliminare (Ultimo messaggio già preso in getMessages)
 	AddMessage(body string, sentDate string, picture string, senderID int, recipientID int, recipientType structs.RecipientType) (int64, error)
 	AddReplyMessage(body string, sentDate string, picture string, senderID int, recipientID int, recipientType structs.RecipientType, replyMessageID int) (int64, error)
 	DeleteMessage(messageID int) error
