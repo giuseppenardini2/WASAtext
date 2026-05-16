@@ -4,7 +4,7 @@ import "errors"
 
 // Given a user ID and a group, return if the user is a member of the group
 func (db *appdbimpl) CheckReadMessage(messageID int) (bool, error) {
-	//Check if the recipient of the message is a user or a group
+	// Check if the recipient of the message is a user or a group
 	var recipientType string
 	query1 := `SELECT
 		CASE
@@ -19,7 +19,7 @@ func (db *appdbimpl) CheckReadMessage(messageID int) (bool, error) {
 		return false, err
 	}
 
-	//If the recipient is a user, check if that user read the message. Else if it is a group, check if all group members read the message
+	// If the recipient is a user, check if that user read the message. Else if it is a group, check if all group members read the message
 	var usersReadMessageNumber int
 	query2 := `SELECT COUNT(urm.message_id) 
 			FROM users_read_messages

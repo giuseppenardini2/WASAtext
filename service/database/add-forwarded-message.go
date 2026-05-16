@@ -7,7 +7,7 @@ func (db *appdbimpl) AddForwardedMessage(originalMessageID int, senderID int, re
 	// Get the body and picture of the message to forward to
 	var body, picture string
 
-	query1 := "SELECT body, picture FROM messages WHERE id=?"
+	query1 := `SELECT body, COALESCE(picture, "") FROM messages WHERE id=?`
 	err := db.c.QueryRow(query1, originalMessageID).Scan(&body, &picture)
 	if err != nil {
 		return -1, err
@@ -17,16 +17,29 @@ func (db *appdbimpl) AddForwardedMessage(originalMessageID int, senderID int, re
 	var query2 string
 	switch recipientType {
 	case structs.RecipientUser:
-		query2 = "INSERT INTO messages (body, sent_date, picture, sender_id, recipient_user_id, forwarded_message_id) VALUES (?, ?, ?, ?, ?, ?)"
+		query2 = "INSERT INTO messages (body, sent_date, sender_id, recipient_user_id, forwarded_message_id) VALUES (?, ?, ?, ?, ?)"
 	case structs.RecipientGroup:
-		query2 = "INSERT INTO messages (body, sent_date, picture, sender_id, recipient_group_id, forwarded_message_id) VALUES (?, ?, ?, ?, ?, ?)"
+		query2 = "INSERT INTO messages (body, sent_date, sender_id, recipient_group_id, forwarded_message_id) VALUES (?, ?, ?, ?, ?)"
 	default:
 		return -1, nil
 	}
 
-	result, err := db.c.Exec(query2, body, sentDate, picture, senderID, recipientID, originalMessageID)
+	result, err := db.c.Exec(query2, body, sentDate, senderID, recipientID, originalMessageID)
 	if err != nil {
 		return -1, err
+	}
+
+	if picture != "" {
+		lastInsertId, err := result.LastInsertId()
+		if err != nil {
+			return -1, err
+		}
+
+		query := "UPDATE messages SET picture=? WHERE id=?"
+		_, err = db.c.Exec(query, picture, lastInsertId)
+		if err != nil {
+			return -1, err
+		}
 	}
 
 	return result.LastInsertId()

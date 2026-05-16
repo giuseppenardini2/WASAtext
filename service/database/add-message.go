@@ -18,7 +18,7 @@ func (db *appdbimpl) AddMessage(body string, sentDate string, picture string, se
 		return -1, errors.New("Recipient type error")
 	}
 
-	result, err := db.c.Exec(query, body, sentDate, picture, senderID, recipientID)
+	result, err := db.c.Exec(query, body, sentDate, senderID, recipientID)
 	if err != nil {
 		return -1, err
 	}

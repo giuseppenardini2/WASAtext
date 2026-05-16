@@ -11,9 +11,9 @@ func (db *appdbimpl) AddReplyMessage(body string, sentDate string, picture strin
 	var query string
 	switch recipientType {
 	case structs.RecipientUser:
-		query = "INSERT INTO messages (body, sent_date, picture, sender_id, recipient_user_id, reply_message_id) VALUES (?, ?, ?, ?, ?)"
+		query = "INSERT INTO messages (body, sent_date, sender_id, recipient_user_id, reply_message_id) VALUES (?, ?, ?, ?, ?)"
 	case structs.RecipientGroup:
-		query = "INSERT INTO messages (body, sent_date, picture, sender_id, recipient_group_id, reply_message_id) VALUES (?, ?, ?, ?, ?)"
+		query = "INSERT INTO messages (body, sent_date, sender_id, recipient_group_id, reply_message_id) VALUES (?, ?, ?, ?, ?)"
 	default:
 		return -1, errors.New("Recipient type error")
 	}

@@ -7,13 +7,13 @@ func (db *appdbimpl) GetMessages(userID int) ([]structs.Conversation, error) {
 	var conversations []structs.Conversation
 
 	//TODO: Questa query prende solo i messaggi inviati, deve prendere anche quelli ricevuti
-	query1 := `SELECT DISTINCT u.id, u.username, u.picture, (
+	query1 := `SELECT DISTINCT u.id, u.username, COALESCE(u.picture, ""), (
 			SELECT body
 			FROM messages
 			WHERE (sender_id=? AND recipient_user_id=u.id) OR (sender_id=u.id AND recipient_user_id=?)
 			ORDER BY sent_date DESC LIMIT 1
 		) message_body, (
-		 	SELECT picture
+		 	SELECT COALESCE(picture, "")
 			FROM messages
 			WHERE (sender_id=? AND recipient_user_id=u.id) OR (sender_id=u.id AND recipient_user_id=?)
 			ORDER BY sent_date DESC LIMIT 1
@@ -41,13 +41,13 @@ func (db *appdbimpl) GetMessages(userID int) ([]structs.Conversation, error) {
 		return nil, err
 	}
 
-	query2 := `SELECT DISTINCT g.id, g.name, g.picture, (
+	query2 := `SELECT DISTINCT g.id, g.name, COALESCE(g.picture, ""), (
 			SELECT m2.body
 			FROM messages AS m2, users_groups AS ug2
 			WHERE ug2.user_id=? AND ug2.group_id=g.id AND m2.recipient_group_id=g.id
 			ORDER BY m2.sent_date DESC LIMIT 1
 		) message_body, (
-		 	SELECT m2.picture
+		 	SELECT COALESCE(m2.picture, "")
 			FROM messages AS m2, users_groups AS ug2
 			WHERE ug2.user_id=? AND ug2.group_id=g.id AND m2.recipient_group_id=g.id
 			ORDER BY m2.sent_date DESC LIMIT 1
