@@ -173,8 +173,12 @@ paths:
                 description: Confirmation message
                 type: string
                 example: "Photo successfully uploaded"
-        "404":
-          $ref: "#/components/responses/NotFound"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}/conversations:
     get:
@@ -188,6 +192,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/recipientID"
+        - $ref: "#/components/parameters/recipientType"
       responses:
         "200":
           description: Conversation
@@ -489,12 +494,20 @@ components:
       required:
         - usersList
 
+    RecipientType:
+      title: Recipient type
+      description: Recipient type
+      type: string
+      enum: [user, group]
+      example: user
+
     Conversation:
       title: Conversation
       description: This object represents a single conversation
       type: object
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
+        recipientType: { $ref: "#/components/schemas/RecipientType" }
         picture: { $ref: "#/components/schemas/Picture" }
         messagePreview:
           description: Last message preview
@@ -648,6 +661,13 @@ components:
       in: query
       required: true
       schema: { $ref: "#/components/schemas/Identifier" }
+
+    recipientType:
+      name: recipientType
+      description: Type of the recipient
+      in: query
+      required: true
+      schema: { $ref: "#/components/schemas/RecipientType" }
 
     messageID:
       name: messageID
