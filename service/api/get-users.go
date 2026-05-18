@@ -9,11 +9,6 @@ import (
 
 func (rt *_router) getUsers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	username := r.URL.Query().Get("username")
-	if username == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
 	if !IsUsernameValid(username) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
