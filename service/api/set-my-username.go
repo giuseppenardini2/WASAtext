@@ -26,7 +26,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	is_username_used, err := r.db.CheckUserUsername(username)
+	is_username_used, err := rt.db.CheckUserUsername(username)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -36,7 +36,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	if err = r.db.UpdateUserUsername(userID, username); err != nil {
+	if err = rt.db.UpdateUserUsername(userID, username); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
