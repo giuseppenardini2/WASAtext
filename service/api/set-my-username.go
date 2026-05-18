@@ -36,7 +36,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	if err = rt.db.UpdateUserUsername(userID, username); err != nil {
+	if err := rt.db.UpdateUserUsername(userID, username); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
