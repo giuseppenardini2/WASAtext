@@ -1,8 +1,20 @@
 package structs
 
+import "regexp"
+
 // A struct which represents a user
 type User struct {
 	ID       int    `json:"id"`       //User id
 	Username string `json:"username"` //User username
 	Picture  string `json:"picture"`  //User profile picture
+}
+
+func IsUsernameValid(username string) bool {
+	if username == "" || (len(username) < 3 || len(username) > 16) {
+		return false
+	}
+	if !regexp.MustCompile(`^.*?$`).MatchString(username) {
+		return false
+	}
+	return true
 }

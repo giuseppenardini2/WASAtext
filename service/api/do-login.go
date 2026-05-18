@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"wasatext/service/structs"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -14,7 +15,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
-	if !IsUsernameValid(username) {
+	if !structs.IsUsernameValid(username) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

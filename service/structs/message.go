@@ -38,3 +38,13 @@ func (message Message) GetRecipientType() (RecipientType, error) {
 	}
 	return RecipientGroup, errors.New("Recipient type error")
 }
+
+func IsRecipientTypeValid(recipientType string) (RecipientType, error) {
+	if recipientType == "user" {
+		return RecipientUser, nil
+	}
+	if recipientType == "group" {
+		return RecipientGroup, nil
+	}
+	return RecipientGroup, errors.New("Recipient type error")
+}

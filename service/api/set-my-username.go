@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"wasatext/service/structs"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -21,7 +22,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	username := r.URL.Query().Get("username")
-	if !IsUsernameValid(username) {
+	if !structs.IsUsernameValid(username) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
