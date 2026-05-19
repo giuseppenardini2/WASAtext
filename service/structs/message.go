@@ -39,7 +39,7 @@ func (message Message) GetRecipientType() (RecipientType, error) {
 	return RecipientGroup, errors.New("Recipient type error")
 }
 
-func IsRecipientTypeValid(recipientType string) (RecipientType, error) {
+func GetRecipientType(recipientType string) (RecipientType, error) {
 	if recipientType == "user" {
 		return RecipientUser, nil
 	}
