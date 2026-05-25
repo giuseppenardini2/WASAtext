@@ -1,0 +1,65 @@
+package database
+
+import "wasatext/service/structs"
+
+/*
+ * ADD OPERATIONS
+ */
+// Given a user ID and a group ID, add the user to the group
+func (db *appdbimpl) AddUserToGroupConversation(userID int, groupConversationID int) error {
+	query := "INSERT INTO users_group_conversations (user_id, group_conversation_id) VALUES (?, ?)"
+	_, err := db.c.Exec(query, userID, groupConversationID)
+	return err
+}
+
+/*
+ * DELETE OPERATIONS
+ */
+// Given a user ID and group ID, remove the user from that group
+func (db *appdbimpl) RemoveUserFromGroupConversation(userID int, groupConversationID int) error {
+	query := "DELETE FROM users_group_conversations WHERE user_id=? AND group_conversation_id=?"
+	_, err := db.c.Exec(query, userID, groupConversationID)
+	return err
+}
+
+/*
+ * GET OPERATIONS
+ */
+// Given a group ID, return the group members
+func (db *appdbimpl) GetGroupConversartionMembers(groupConversationsID int) ([]structs.User, error) {
+	query := `SELECT u.id, u.username, u.picture 
+		FROM users AS u, group_conversations_members AS gcm 
+		WHERE u.id=gcm.user_id AND gcm.group_conversation_id=?`
+	rows, err := db.c.Query(query, groupConversationsID)
+	if err != nil {
+		return nil, err
+	}
+
+	var users []structs.User
+	for rows.Next() {
+		var user structs.User
+		if err := rows.Scan(&user.ID, &user.Username, &user.Picture); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return users, err
+}
+
+/*
+ * CHECK OPERATIONS
+ */
+// Given a user ID and a group ID, return if the user is a member of the group
+func (db *appdbimpl) CheckGroupConversationMember(userID int, groupConversationID int) (bool, error) {
+	var count int
+
+	query := "SELECT COUNT(user_id) FROM group_conversations_members WHERE user_id=? AND group_conversation_id=?"
+	err := db.c.QueryRow(query, userID, groupConversationID).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	return count != 0, err
+}

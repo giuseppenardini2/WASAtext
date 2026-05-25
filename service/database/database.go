@@ -39,35 +39,43 @@ import (
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
 	AddUser(username string) (int64, error)
+	UpdateUserUsername(userID int, username string) error
+	UpdateUserPicture(userID int, picture string) error
 	GetUser(userID int) (structs.User, error)
 	GetUserByUsername(username string) (structs.User, error)
 	GetUsers(username string) ([]structs.User, error)
 	CheckUserUsername(username string) (bool, error)
-	UpdateUserPicture(userID int, picture string) error
-	UpdateUserUsername(userID int, username string) error
 
-	AddGroup(name string, picture string, userCreatorID int) (int64, error)
-	DeleteGroup(groupID int) error
-	GetGroup(groupID int) (structs.Group, error)
-	GetGroups(userID int) ([]structs.Group, error)
-	GetGroupMembers(groupID int) ([]structs.User, error)
-	UpdateGroupPicture(groupID int, picture string) error
-	AddMemberToGroup(userID int, groupID int) error
-	RemoveUserFromGroup(userID int, groupID int) error
-	CheckGroupMember(userID int, groupID int) (bool, error)
+	AddConversation() (int64, error)
+	GetConversations(userID int) ([]structs.ConversationPreview, error)
+	GetConversationType(conversationID int) (structs.ConversationType, error)
 
-	GetMessage(messageID int) (structs.Message, error)
-	GetMessages(userID int) ([]structs.Conversation, error)
-	GetMessagesByRecipient(userID int, recipientID int, recipientType structs.RecipientType) ([]structs.Message, error)
-	GetLastMessage(userID int, recipientID int, recipientType structs.RecipientType) (structs.Message, error) // TODO: Vedere se eliminare (Ultimo messaggio già preso in getMessages)
-	AddMessage(body string, sentDate string, picture string, senderID int, recipientID int, recipientType structs.RecipientType) (int64, error)
-	AddReplyMessage(body string, sentDate string, picture string, senderID int, recipientID int, recipientType structs.RecipientType, replyMessageID int) (int64, error)
-	DeleteMessage(messageID int) error
-	AddMessageReadByUser(userID int, messageID int) error
-	CheckReadMessage(messageID int) (bool, error)
-	AddReaction(userID int, messageID int, reaction string) error
-	DeleteReaction(userID int, messageID int) error
-	AddForwardedMessage(originalMessageID int, senderID int, recipientID int, recipientType structs.RecipientType, sentDate string) (int64, error)
+	AddPrivateConversation(firstUserID int, secondUserID int) (int64, error)
+
+	AddGroupConversation(name string, picture string, userCreatorID int) (int64, error)
+	DeleteGroupConversation(groupConversationID int) error
+	GetGroupConversation(groupConversationID int) (structs.Group, error)
+	UpdateGroupConversationPicture(groupConversationID int, picture string) error
+
+	AddUserToGroupConversation(userID int, groupConversationID int) error
+	RemoveUserFromGroupConversation(userID int, groupConversationID int) error
+	GetGroupConversartionMembers(groupConversationsID int) ([]structs.User, error)
+	CheckGroupConversationMember(userID int, groupConversationID int) (bool, error)
+
+	AddMessage(body string, sentDate string, picture string, senderID int, conversationID int) (int64, error)
+	AddForwardedMessage(originalMessageID int, originalConversationID int, senderID int, conversationID int, sentDate string) (int64, error)
+	AddReplyMessage(body string, sentDate string, picture string, senderID int, conversationID int, replyMessageID int) (int64, error)
+	DeleteMessage(messageID int, conversationID int) error
+	GetNewMessageID(conversationID int) (int64, error)
+	GetMessage(conversationID int, messageID int) (structs.Message, error)
+	GetMessagesByConversation(conversationID int) ([]structs.Message, error)
+	GetLastMessage(conversationID int) (structs.Message, error)
+
+	AddReadCheckmark(userID int, messageID int, conversationID int) error
+	CheckReadMessage(messageID int, conversationID int) (bool, error)
+
+	AddReaction(userID int, messageID int, conversationID int, reaction string) error
+	DeleteReaction(userID int, messageID int, conversationID int) error
 
 	Ping() error
 }
@@ -92,70 +100,109 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	// Create tables (if they not exists)
-	userQuery := `CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY,
+	usersQuery := `CREATE TABLE IF NOT EXISTS users (
+		id INTEGER,
 		username TEXT NOT NULL UNIQUE,
-		picture BLOB
+		picture BLOB,
+		PRIMARY KEY(id)
 	);`
-	if _, err := db.Exec(userQuery); err != nil {
+	if _, err := db.Exec(usersQuery); err != nil {
 		return nil, err
 	}
 
-	groupQuery := `CREATE TABLE IF NOT EXISTS groups (
-		id INTEGER PRIMARY KEY,
+	conversationsQuery := `CREATE TABLE IF NOT EXISTS conversations (
+		id INTEGER,
+		PRIMARY KEY(id)
+	);`
+	if _, err := db.Exec(conversationsQuery); err != nil {
+		return nil, err
+	}
+
+	privateConversationsQuery := `CREATE TABLE IF NOT EXISTS private_conversations (
+		id INTEGER,
+		first_user_id INTEGER NOT NULL,
+		second_user_id INTEGER NOT NULL,
+		PRIMARY KEY(id),
+		UNIQUE(first_user_id, second_user_id),
+		CONSTRAINT fk_private_conversations
+			FOREIGN KEY (id) REFERENCES conversations(id) ON DELETE CASCADE
+			FOREIGN KEY (first_user_id) REFERENCES users(id) ON DELETE CASCADE
+			FOREIGN KEY (second_user_id) REFERENCES users(id) ON DELETE CASCADE
+	);`
+	if _, err := db.Exec(privateConversationsQuery); err != nil {
+		return nil, err
+	}
+
+	groupConversationsQuery := `CREATE TABLE IF NOT EXISTS group_conversations (
+		id INTEGER,
 		name TEXT NOT NULL,
 		picture BLOB,
-		user_creator_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
+		user_creator_id INTEGER NOT NULL,
+		PRIMARY KEY(id),
+		CONSTRAINT fk_group_conversations
+			FOREIGN KEY(id) REFERENCES conversations(id) ON DELETE CASCADE
+			FOREIGN KEY(user_creator_id) REFERENCES users(id) ON DELETE CASCADE
 	);`
-	if _, err := db.Exec(groupQuery); err != nil {
+	if _, err := db.Exec(groupConversationsQuery); err != nil {
 		return nil, err
 	}
 
-	userGroupQuery := `CREATE TABLE IF NOT EXISTS users_groups (
-		user_id INTEGER REFERENCES users(id),
-		group_id INTEGER REFERENCES groups(id),
-		PRIMARY KEY(user_id, group_id)
+	usersGroupsConversationsQuery := `CREATE TABLE IF NOT EXISTS group_conversations_members (
+		user_id INTEGER,
+		group_conversation_id INTEGER,
+		PRIMARY KEY(user_id, group_id),
+		CONSTRAINT fk_group_conversations_members
+			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCEDE
+			FOREIGN KEY(group_conversation_id) REFERENCES group_conversations(id)
 	);`
-	if _, err := db.Exec(userGroupQuery); err != nil {
+	if _, err := db.Exec(usersGroupsConversationsQuery); err != nil {
 		return nil, err
 	}
 
-	messageQuery := `CREATE TABLE IF NOT EXISTS messages (
-		id INTEGER PRIMARY KEY,
+	messagesQuery := `CREATE TABLE IF NOT EXISTS messages (
+		id INTEGER,
+		conversation_id INTEGER,
 		body TEXT NOT NULL,
 		sent_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
 		picture BLOB,
-		sender_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-		recipient_user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-		recipient_group_id INTEGER REFERENCES groups(id) ON DELETE CASCADE,
-		reply_message_id INTEGER REFERENCES messages(id) ON DELETE CASCADE,
-		forwarded_message_id INTEGER REFERENCES messages(id) ON DELETE CASCADE,
-		CHECK(
-			(recipient_user_id IS NOT NULL AND recipient_group_id IS NULL) 
-			OR
-			(recipient_user_id IS NULL AND recipient_group_id IS NOT NULL)
-		)
+		sender_id INTEGER NOT NULL,
+		reply_message_id INTEGER,
+		forwarded_message_id INTEGER,
+		PRIMARY KEY(id, conversation_id),
+		CONSTRAINT fk_messages
+			FOREIGN KEY(conversation_id) REFERENCES conversations(id) ON DELETE CASCADE
+			FOREIGN KEY(sender_id) REFERENCES users(id) ON DELETE CASCADE
+			FOREIGN KEY(reply_message_id) REFERENCES messages(id) ON DELETE CASCADE
+			FOREIGN KEY(forwarded_message_id) REFERENCES messages(id) ON DELETE CASCADE
 	);`
-	if _, err := db.Exec(messageQuery); err != nil {
+	if _, err := db.Exec(messagesQuery); err != nil {
 		return nil, err
 	}
 
-	userReadsMessageQuery := `CREATE TABLE IF NOT EXISTS users_read_messages (
-		user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-		message_id INTEGER REFERENCES messages(id) ON DELETE CASCADE,
-		PRIMARY KEY(user_id, message_id)
+	usersReadMessagesQuery := `CREATE TABLE IF NOT EXISTS read_checkmarks (
+		user_id INTEGER,
+		message_id INTEGER,
+		conversation_id INTEGER,
+		PRIMARY KEY(user_id, message_id, conversation_id),
+		CONSTRAINT fk_read_checkmarks
+			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+			FOREING KEY(message_id, conversation_id) REFERENCES messages(id, conversation_id) ON DELETE CASCADE
 	);`
-	if _, err := db.Exec(userReadsMessageQuery); err != nil {
+	if _, err := db.Exec(usersReadMessagesQuery); err != nil {
 		return nil, err
 	}
 
-	userReactsMessageQuery := `CREATE TABLE IF NOT EXISTS users_react_messages (
-		user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-		message_id INTEGER REFERENCES messages(id) ON DELETE CASCADE,
+	usersReactMessagesQuery := `CREATE TABLE IF NOT EXISTS reactions (
+		user_id INTEGER,
+		message_id INTEGER,
+		conversation_id INTEGER,
 		reaction TEXT NOT NULL,
-		PRIMARY KEY(user_id, message_id)
+		PRIMARY KEY(user_id, message_id, conversation_id),
+		CONSTRAINT fk_reactions
+			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+			FOREIGN KEY(message_id, conversation_id) REFERENCES messages(id, conversation_id) ON DELETE CASCADE
 	);`
-	if _, err := db.Exec(userReactsMessageQuery); err != nil {
+	if _, err := db.Exec(usersReactMessagesQuery); err != nil {
 		return nil, err
 	}
 
