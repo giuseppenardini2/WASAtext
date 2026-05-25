@@ -290,7 +290,7 @@ paths:
         - $ref: "#/components/parameters/conversationID"
         - $ref: "#/components/parameters/messageID"
     
-    post: 
+    post:
       operationId: commentMessage
       tags: ["messages"]
       summary: Comment a message
@@ -484,6 +484,15 @@ components:
       maxLength: 16
       example: "SignorG"
 
+    Text:
+      title: Text
+      description: This object represent a message text
+      type: string
+      pattern: "[^\\\\]"
+      minLength: 0
+      maxLength: 200
+      example: "Hello Enzo"
+
     Picture:
       title: Picture
       description: User or group picture
@@ -569,13 +578,7 @@ components:
       type: object
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
-        body:
-          description: Message body
-          type: string
-          pattern: "[^\\\\]"
-          minLength: 1
-          maxLength: 200
-          example: "Hello Enzo"
+        body: { $ref: "#/components/schemas/Text" }
         picture: { $ref: "#/components/schemas/Picture" }
         date:
           description: Message send date
@@ -642,6 +645,7 @@ components:
       required:
         - id
         - name
+        - partecipants
 
     Error:
       title: Error

@@ -26,6 +26,7 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
+	// TODO: Prendere i messaggi
 	recipientID, err := strconv.Atoi(r.URL.Query().Get("recipientID"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
