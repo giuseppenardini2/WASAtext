@@ -8,6 +8,7 @@ import (
 /*
  * ADD OPERATIONS
  */
+
 func (db *appdbimpl) AddReadCheckmark(userID int, messageID int, conversationID int) error {
 	query := "INSERT INTO users_read_messages (user_id, message_id, conversation_id) VALUES (?, ?, ?)"
 	_, err := db.c.Exec(query, userID, messageID, conversationID)
@@ -17,6 +18,7 @@ func (db *appdbimpl) AddReadCheckmark(userID int, messageID int, conversationID 
 /*
  * CHECK OPERATIONS
  */
+
 func (db *appdbimpl) CheckReadMessage(messageID int, conversationID int) (bool, error) {
 	// Check if the recipient of the message is a user or a group
 	conversationType, err := db.GetConversationType(conversationID)

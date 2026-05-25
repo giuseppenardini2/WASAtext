@@ -8,6 +8,7 @@ import (
 /*
  * ADD OPERATIONS
  */
+
 func (db *appdbimpl) AddConversation() (int64, error) {
 	query := "INSERT INTO conversations DEFAULT VALUES"
 	result, err := db.c.Exec(query)
@@ -20,6 +21,7 @@ func (db *appdbimpl) AddConversation() (int64, error) {
 /*
  * GET OPERATIONS
  */
+
 func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview, error) {
 	var conversations []structs.ConversationPreview
 

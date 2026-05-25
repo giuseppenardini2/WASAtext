@@ -5,7 +5,7 @@ import "wasatext/service/structs"
 /*
  * ADD OPERATIONS
  */
-// Add a user and return its ID
+
 func (db *appdbimpl) AddUser(username string) (int64, error) {
 	query := "INSERT INTO users (username) VALUES (?)"
 	result, err := db.c.Exec(query, username)
@@ -18,14 +18,13 @@ func (db *appdbimpl) AddUser(username string) (int64, error) {
 /*
  * UPDATE OPERATIONS
  */
-// Given a user ID and a username, update the username of the user
+
 func (db *appdbimpl) UpdateUserUsername(userID int, username string) error {
 	query := "UPDATE users SET username=? WHERE id=?"
 	_, err := db.c.Exec(query, username, userID)
 	return err
 }
 
-// Given a user ID and a profile picture, update the profile picture of the user
 func (db *appdbimpl) UpdateUserPicture(userID int, picture string) error {
 	query := "UPDATE users SET picture=? WHERE id=?"
 	_, err := db.c.Exec(query, picture, userID)
@@ -35,7 +34,7 @@ func (db *appdbimpl) UpdateUserPicture(userID int, picture string) error {
 /*
  * GET OPERATIONS
  */
-// Given a user ID, return the user
+
 func (db *appdbimpl) GetUser(userID int) (structs.User, error) {
 	var user structs.User
 
@@ -44,7 +43,6 @@ func (db *appdbimpl) GetUser(userID int) (structs.User, error) {
 	return user, err
 }
 
-// Given a username, return the user
 func (db *appdbimpl) GetUserByUsername(username string) (structs.User, error) {
 	var user structs.User
 
@@ -53,7 +51,6 @@ func (db *appdbimpl) GetUserByUsername(username string) (structs.User, error) {
 	return user, err
 }
 
-// Given a username, return the users that corresponds to that username
 func (db *appdbimpl) GetUsers(username string) ([]structs.User, error) {
 	query := "SELECT id, username, picture FROM users WHERE username LIKE concat(?, '%')"
 	rows, err := db.c.Query(query, username)
@@ -78,7 +75,7 @@ func (db *appdbimpl) GetUsers(username string) ([]structs.User, error) {
 /*
  * CHECK OPERATIONS
  */
-// Given a username, return if the username is already used
+
 func (db *appdbimpl) CheckUserUsername(username string) (bool, error) {
 	var count int
 

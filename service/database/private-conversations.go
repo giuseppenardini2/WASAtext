@@ -3,6 +3,7 @@ package database
 /*
  * ADD OPERATIONS
  */
+
 func (db *appdbimpl) AddPrivateConversation(firstUserID int, secondUserID int) (int64, error) {
 	privateConversationID, err := db.AddConversation()
 	if err != nil {

@@ -5,7 +5,7 @@ import "wasatext/service/structs"
 /*
  * ADD OPERATIONS
  */
-// Given a user ID and a group ID, add the user to the group
+
 func (db *appdbimpl) AddUserToGroupConversation(userID int, groupConversationID int) error {
 	query := "INSERT INTO users_group_conversations (user_id, group_conversation_id) VALUES (?, ?)"
 	_, err := db.c.Exec(query, userID, groupConversationID)
@@ -15,7 +15,7 @@ func (db *appdbimpl) AddUserToGroupConversation(userID int, groupConversationID 
 /*
  * DELETE OPERATIONS
  */
-// Given a user ID and group ID, remove the user from that group
+
 func (db *appdbimpl) RemoveUserFromGroupConversation(userID int, groupConversationID int) error {
 	query := "DELETE FROM users_group_conversations WHERE user_id=? AND group_conversation_id=?"
 	_, err := db.c.Exec(query, userID, groupConversationID)
@@ -25,7 +25,7 @@ func (db *appdbimpl) RemoveUserFromGroupConversation(userID int, groupConversati
 /*
  * GET OPERATIONS
  */
-// Given a group ID, return the group members
+
 func (db *appdbimpl) GetGroupConversartionMembers(groupConversationsID int) ([]structs.User, error) {
 	query := `SELECT u.id, u.username, u.picture 
 		FROM users AS u, group_conversations_members AS gcm 
@@ -52,7 +52,7 @@ func (db *appdbimpl) GetGroupConversartionMembers(groupConversationsID int) ([]s
 /*
  * CHECK OPERATIONS
  */
-// Given a user ID and a group ID, return if the user is a member of the group
+
 func (db *appdbimpl) CheckGroupConversationMember(userID int, groupConversationID int) (bool, error) {
 	var count int
 

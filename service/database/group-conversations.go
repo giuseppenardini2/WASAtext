@@ -5,6 +5,7 @@ import "wasatext/service/structs"
 /*
  * ADD OPERATIONS
  */
+
 func (db *appdbimpl) AddGroupConversation(name string, picture string, userCreatorID int) (int64, error) {
 	groupConversationID, err := db.AddConversation() //2DO: Come gestire gli id
 	if err != nil {
@@ -22,7 +23,7 @@ func (db *appdbimpl) AddGroupConversation(name string, picture string, userCreat
 /*
  * UPDATE OPERATIONS
  */
-// Given a group ID and a profile picture, update the profile picture of the group
+
 func (db *appdbimpl) UpdateGroupConversationPicture(groupConversationID int, picture string) error {
 	query := "UPDATE group_conversations SET picture=? WHERE id=?"
 	_, err := db.c.Exec(query, picture, groupConversationID)
@@ -32,7 +33,7 @@ func (db *appdbimpl) UpdateGroupConversationPicture(groupConversationID int, pic
 /*
  * DELETE OPERATIONS
  */
-// Given a group ID, delete the group
+
 func (db *appdbimpl) DeleteGroupConversation(groupConversationID int) error {
 	query := "DELETE FROM group_conversations WHERE id=?"
 	_, err := db.c.Exec(query, groupConversationID)
@@ -42,7 +43,7 @@ func (db *appdbimpl) DeleteGroupConversation(groupConversationID int) error {
 /*
  * GET OPERATIONS
  */
-// Given a group ID, return the group
+
 func (db *appdbimpl) GetGroupConversation(groupConversationID int) (structs.Group, error) {
 	var group structs.Group
 

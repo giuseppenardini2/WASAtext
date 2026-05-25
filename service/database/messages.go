@@ -5,7 +5,7 @@ import "wasatext/service/structs"
 /*
  * ADD OPERATIONS
  */
-// Add a new message
+
 func (db *appdbimpl) AddMessage(body string, sentDate string, picture string, senderID int, conversationID int) (int64, error) {
 	messageID, err := db.GetNewMessageID(conversationID)
 	if err != nil {
@@ -29,7 +29,6 @@ func (db *appdbimpl) AddMessage(body string, sentDate string, picture string, se
 	return messageID, nil
 }
 
-// Add a forwarded message
 func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversationID int, senderID int, conversationID int, sentDate string) (int64, error) {
 	// Get the body and picture of the message to forward to
 	var body, picture string
@@ -88,6 +87,7 @@ func (db *appdbimpl) AddReplyMessage(body string, sentDate string, picture strin
 /*
  * DELETE OPERATIONS
  */
+
 func (db *appdbimpl) DeleteMessage(messageID int, conversationID int) error {
 	query := "DELETE FROM messages WHERE id=? AND conversation_id=?"
 	_, err := db.c.Exec(query, messageID, conversationID)
@@ -97,7 +97,7 @@ func (db *appdbimpl) DeleteMessage(messageID int, conversationID int) error {
 /*
  * GET OPERATIONS
  */
-// Get a new message ID
+
 func (db *appdbimpl) GetNewMessageID(conversationID int) (int64, error) {
 	var maxID int64
 	query := "SELECT MAX(id) FROM messages WHERE conversation_id=?"
@@ -107,7 +107,6 @@ func (db *appdbimpl) GetNewMessageID(conversationID int) (int64, error) {
 	return maxID + 1, nil
 }
 
-// Get a message
 func (db *appdbimpl) GetMessage(conversationID int, messageID int) (structs.Message, error) {
 	var message structs.Message
 
