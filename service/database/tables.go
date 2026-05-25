@@ -3,6 +3,7 @@ package database
 import "database/sql"
 
 func createTables(db *sql.DB) error {
+	// Users
 	usersQuery := `CREATE TABLE IF NOT EXISTS users (
 		id INTEGER,
 		username TEXT NOT NULL UNIQUE,
@@ -13,6 +14,7 @@ func createTables(db *sql.DB) error {
 		return err
 	}
 
+	// Conversations
 	conversationsQuery := `CREATE TABLE IF NOT EXISTS conversations (
 		id INTEGER,
 		PRIMARY KEY(id)
@@ -62,6 +64,7 @@ func createTables(db *sql.DB) error {
 		return err
 	}
 
+	// Messages
 	messagesQuery := `CREATE TABLE IF NOT EXISTS messages (
 		id INTEGER,
 		conversation_id INTEGER,
