@@ -85,6 +85,9 @@ paths:
           $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}:
+    parameters:
+      - $ref: "#/components/parameters/userID"
+
     get:
       operationId: getMyConversations
       tags: ["users"]
@@ -93,8 +96,6 @@ paths:
         Return a list of user conversation
       security:
         - bearerAuth: []
-      parameters:
-      - $ref: "#/components/parameters/userID"
       responses:
         "200":
           description: List of conversations
@@ -111,6 +112,9 @@ paths:
           $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}/username:
+    parameters:
+      - $ref: "#/components/parameters/userID"
+
     put:
       operationId: setMyUserName
       tags: ["users"]
@@ -119,8 +123,6 @@ paths:
         Set the user username
       security:
         - bearerAuth: []
-      parameters:
-      - $ref: "#/components/parameters/userID"
       requestBody:
         description: New username
         content:
@@ -145,6 +147,9 @@ paths:
           $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}/photos:
+    parameters:
+        - $ref: "#/components/parameters/userID"
+
     put:
       operationId: setMyPhoto
       tags: ["users"]
@@ -153,8 +158,6 @@ paths:
         Set the user profile picture
       security:
         - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/userID"
       requestBody:
         content:
           application/json:
@@ -181,6 +184,9 @@ paths:
           $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}/conversations:
+    parameters:
+        - $ref: "#/components/parameters/userID"
+
     get:
       operationId: getConversation
       tags: ["conversations"]
@@ -190,7 +196,6 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/recipientID"
       responses:
         "200":
@@ -208,6 +213,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}/conversations/{conversationID}/messages:
+    parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/conversationID"
+
     post:
       operationId: sendMessage
       tags: ["messages"]
@@ -217,8 +226,11 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - $ref: "#/components/parameters/userID"
-        - $ref: "#/components/parameters/conversationID"
+        - name: replyMessage
+          description: ID of the message to which reply
+          in: query
+          required: false
+          schema: { $ref: "#/components/schemas/Identifier" }
       requestBody:
         content:
           application/json:
@@ -273,6 +285,11 @@ paths:
           $ref: "#/components/responses/NotFound"
 
   /users/{userID}/conversations/{conversationID}/messages/{messageID}/reactions:
+    parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/conversationID"
+        - $ref: "#/components/parameters/messageID"
+    
     post: 
       operationId: commentMessage
       tags: ["messages"]
@@ -281,10 +298,6 @@ paths:
         Comment a message
       security:
         - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/userID"
-        - $ref: "#/components/parameters/conversationID"
-        - $ref: "#/components/parameters/messageID"
       requestBody:
         content:
           application/json:
@@ -298,6 +311,12 @@ paths:
               schema: { $ref: "#/components/schemas/Reaction" }
 
   /users/{userID}/conversations/{conversationID}/messages/{messageID}/reactions/{reactionID}:
+    parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/conversationID"
+        - $ref: "#/components/parameters/messageID"
+        - $ref: "#/components/parameters/reactionID"
+    
     delete:
       operationId: uncommentMessage
       tags: ["messages"]
@@ -306,11 +325,6 @@ paths:
         Uncomment a message
       security:
         - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/userID"
-        - $ref: "#/components/parameters/conversationID"
-        - $ref: "#/components/parameters/messageID"
-        - $ref: "#/components/parameters/reactionID"
       responses:
         "204": 
           description: Message uncomment successfully
@@ -318,6 +332,9 @@ paths:
           $ref: "#/components/responses/NotFound"
 
   /users/{userID}/groups:
+    parameters:
+        - $ref: "#/components/parameters/userID"
+
     post:
       operationId: createGroup
       tags: ["groups"]
@@ -326,8 +343,6 @@ paths:
         Create a group
       security:
         - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/userID"
       requestBody:
         content:
           application/json:
@@ -386,6 +401,10 @@ paths:
           $ref: "#/components/responses/NotFound"
 
   /users/{userID}/groups/{groupID}/participants:
+    parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/groupID"
+    
     put:
       operationId: addToGroup
       tags: ["groups"]
@@ -394,9 +413,6 @@ paths:
         Add the current user to a group
       security:
         - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/userID"
-        - $ref: "#/components/parameters/groupID"
       requestBody:
         content:
           application/json:
@@ -412,6 +428,10 @@ paths:
           $ref: "#/components/responses/NotFound"
 
   /users/{userID}/groups/{groupID}/photos:
+    parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/groupID"
+
     put:
       operationId: setGroupPhoto
       tags: ["groups"]
@@ -420,9 +440,6 @@ paths:
         Set the group profile picture
       security:
         - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/userID"
-        - $ref: "#/components/parameters/groupID"
       requestBody:
         content:
           application/json:
