@@ -43,13 +43,13 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 		) message_sent_date
 		FROM users AS u, private_conversations AS pc
 		WHERE (pc.first_user_id=? OR pc.second_user_id=?) AND u.id!=? AND (pc.first_user_id=u.id OR pc.second_user_id=u.id)`
-	rows, err := db.c.Query(query1, userID, userID, userID, userID, userID, userID)
+	rows, err := db.c.Query(query1, userID, userID, userID)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
 		var conversationPreview structs.ConversationPreview
-		conversationPreview.Type = structs.PrivateConversation
+		conversationPreview.Type = structs.PrivateConversationType
 		if err := rows.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPicture, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePicture, &conversationPreview.LastMessageSentDate); err != nil {
 			return nil, err
 		}
@@ -77,13 +77,13 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 		) message_sent_date
 	FROM groups_conversations AS gc, group_conversations_members AS gcm
 	WHERE gcm.user_id=? AND gcm.group_id=gc.id`
-	rows, err = db.c.Query(query2, userID, userID, userID)
+	rows, err = db.c.Query(query2, userID)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
 		var conversationPreview structs.ConversationPreview
-		conversationPreview.Type = structs.GroupConversation
+		conversationPreview.Type = structs.GroupConversationType
 		if err := rows.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPicture, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePicture, &conversationPreview.LastMessageSentDate); err != nil {
 			return nil, err
 		}
@@ -101,19 +101,19 @@ func (db *appdbimpl) GetConversationType(conversationID int) (structs.Conversati
 
 	query1 := "SELECT COUNT(id) FROM private_conversations WHERE id=?"
 	if err := db.c.QueryRow(query1, conversationID).Scan(&count); err != nil {
-		return structs.PrivateConversation, err
+		return structs.PrivateConversationType, err
 	}
 	if count != 0 {
-		return structs.PrivateConversation, nil
+		return structs.PrivateConversationType, nil
 	}
 
 	query2 := "SELECT COUNT(id) FROM group_conversations WHERE id=?"
 	if err := db.c.QueryRow(query2, conversationID).Scan(&count); err != nil {
-		return structs.GroupConversation, err
+		return structs.GroupConversationType, err
 	}
 	if count != 0 {
-		return structs.GroupConversation, nil
+		return structs.GroupConversationType, nil
 	}
 
-	return structs.GroupConversation, errors.New("Conversation type error")
+	return structs.GroupConversationType, errors.New("Conversation type error")
 }

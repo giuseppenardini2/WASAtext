@@ -20,7 +20,7 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 		return
 	}
 
-	conversations, err := rt.db.GetMessages(userID)
+	conversations, err := rt.db.GetConversations(userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

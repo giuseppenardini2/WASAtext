@@ -8,15 +8,14 @@ import (
 type ConversationType int
 
 const (
-	PrivateConversation ConversationType = iota
-	GroupConversation
+	PrivateConversationType ConversationType = iota
+	GroupConversationType
 )
 
 func (recipient_type ConversationType) String() string {
-	return [...]string{"PrivateConversation", "GroupConversation"}[recipient_type]
+	return [...]string{"PrivateConversationType", "GroupConversationType"}[recipient_type]
 }
 
-// A struct which represents a conversation
 type ConversationPreview struct {
 	ID                  int              `json:"id"`                  //Recipient ID
 	Type                ConversationType `json:"type"`                //Recipient type
@@ -27,15 +26,13 @@ type ConversationPreview struct {
 	LastMessageSentDate time.Time        `json:"lastMessageSentDate"` //Last message sent date with the recipient
 }
 
-// A struct which represents a group
-type Group struct {
+type GroupConversation struct {
 	ID            int    `json:"id"`            //Group ID
 	Name          string `json:"name"`          //Group name
 	Picture       string `json:"picture"`       //Group picture
 	UserCreatorID int    `json:"userCreatorID"` //ID of the user who created the group
 }
 
-// Check if a group name is valid
 func IsGroupNameValid(groupName string) bool {
 	if groupName == "" || (len(groupName) < 3 || len(groupName) > 20) {
 		return false

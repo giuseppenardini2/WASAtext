@@ -197,7 +197,7 @@ paths:
           description: Conversation
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Conversation" }
+              schema: { $ref: "#/components/schemas/Messages" }
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -230,6 +230,10 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Message" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}/conversations/{conversationID}/messages/{messageID}:
     parameters:
@@ -568,6 +572,21 @@ components:
         - id
         - body
         - date
+
+    Messages:
+      title: Messages
+      description: This object represents a list of message object
+      type: object
+      properties:
+        messagesList:
+          description: List of messages
+          type: array
+          items: { $ref: "#/components/schemas/Message" }
+          uniqueItems: true
+          minItems: 0
+          maxItems: 50
+      required:
+        - messagesList
 
     Reaction:
       title: Message reaction

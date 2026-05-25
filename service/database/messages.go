@@ -117,7 +117,7 @@ func (db *appdbimpl) GetMessage(conversationID int, messageID int) (structs.Mess
 	return message, err
 }
 
-func (db *appdbimpl) GetMessagesByConversation(conversationID int) ([]structs.Message, error) {
+func (db *appdbimpl) GetMessages(conversationID int) ([]structs.Message, error) {
 	query := `SELECT id, body, sent_date, COALESCE(picture, ""), sender_id, conversation_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
 		FROM messages
 		WHERE conversation_id=?

@@ -36,9 +36,9 @@ func (db *appdbimpl) CheckReadMessage(messageID int, conversationID int) (bool, 
 		return false, err
 	}
 	switch conversationType {
-	case structs.PrivateConversation:
+	case structs.PrivateConversationType:
 		return usersReadMessageNumber != 0, err
-	case structs.GroupConversation:
+	case structs.GroupConversationType:
 		var groupMembersNumber int
 		query3 := `SELECT COUNT(gcm.user_id)
 			FROM group_conversations_members AS gcm, messages AS m

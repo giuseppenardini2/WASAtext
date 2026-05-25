@@ -54,7 +54,7 @@ type AppDatabase interface {
 
 	AddGroupConversation(name string, picture string, userCreatorID int) (int64, error)
 	DeleteGroupConversation(groupConversationID int) error
-	GetGroupConversation(groupConversationID int) (structs.Group, error)
+	GetGroupConversation(groupConversationID int) (structs.GroupConversation, error)
 	UpdateGroupConversationPicture(groupConversationID int, picture string) error
 
 	AddUserToGroupConversation(userID int, groupConversationID int) error
@@ -68,7 +68,7 @@ type AppDatabase interface {
 	DeleteMessage(messageID int, conversationID int) error
 	GetNewMessageID(conversationID int) (int64, error)
 	GetMessage(conversationID int, messageID int) (structs.Message, error)
-	GetMessagesByConversation(conversationID int) ([]structs.Message, error)
+	GetMessages(conversationID int) ([]structs.Message, error)
 	GetLastMessage(conversationID int) (structs.Message, error)
 
 	AddReadCheckmark(userID int, messageID int, conversationID int) error

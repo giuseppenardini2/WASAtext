@@ -44,8 +44,8 @@ func (db *appdbimpl) DeleteGroupConversation(groupConversationID int) error {
  * GET OPERATIONS
  */
 
-func (db *appdbimpl) GetGroupConversation(groupConversationID int) (structs.Group, error) {
-	var group structs.Group
+func (db *appdbimpl) GetGroupConversation(groupConversationID int) (structs.GroupConversation, error) {
+	var group structs.GroupConversation
 
 	query := "SELECT id, name, picture, user_creator_id FROM group_conversations WHERE id=?"
 	err := db.c.QueryRow(query, groupConversationID).Scan(&group.ID, &group.Name, &group.Picture, &group.UserCreatorID)
