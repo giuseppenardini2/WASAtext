@@ -48,7 +48,7 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 		Picture string `json:"picture"`
 	}
 	var messagePart MessagePart
-	if err := json.NewDecoder(r.Body).Decode(messagePart); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&messagePart); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -76,7 +76,7 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 		}
 	}
 
-	message, err := rt.db.GetMessage(conversationID, messageID)
+	message, err := rt.db.GetMessage(conversationID, int(messageID)) // TODO: Rivedere. Tutto int64 o no?
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

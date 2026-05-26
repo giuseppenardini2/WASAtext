@@ -226,7 +226,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: replyMessageID
+        - name: replyMessage
           description: ID of the message to which reply
           in: query
           required: false
@@ -275,7 +275,13 @@ paths:
           description: Message
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Identifier" }
+              schema: { $ref: "#/components/schemas/Message" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
     delete:
       operationId: deleteMessage

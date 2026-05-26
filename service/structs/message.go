@@ -2,7 +2,7 @@ package structs
 
 // A struct which represent a message of a conversation
 type Message struct {
-	ID                 int64  `json:"id"`                 //Message ID
+	ID                 int    `json:"id"`                 //Message ID
 	ConversationID     int    `json:"conversationID"`     //Conversation ID
 	Body               string `json:"body"`               //Message body
 	SentDate           string `json:"sentDate"`           //Message sent time
