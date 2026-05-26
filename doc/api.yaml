@@ -293,9 +293,13 @@ paths:
         - bearerAuth: []
       responses:
         "204":
-          description: Message deleted successfully
-        "404":
-          $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}/conversations/{conversationID}/messages/{messageID}/reactions:
     parameters:
@@ -340,7 +344,7 @@ paths:
         - bearerAuth: []
       responses:
         "204": 
-          description: Message uncomment successfully
+          $ref: "#/components/responses/NoContent"
         "404":
           $ref: "#/components/responses/NotFound"
 
@@ -409,7 +413,7 @@ paths:
         - bearerAuth: []
       responses:
         "204":
-          description: Group left successfully
+          $ref: "#/components/responses/NoContent"
         "404":
           $ref: "#/components/responses/NotFound"
 
@@ -735,6 +739,9 @@ components:
 
   #-- RESPONSES
   responses:
+    NoContent:
+      description: The server successfully processed the request, and is not returning any content
+
     BadRequest:
       description: The server cannot or will not process the request due to something that is perceived to be a client error
       content:
