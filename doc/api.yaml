@@ -226,7 +226,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: replyMessage
+        - name: replyMessageID
           description: ID of the message to which reply
           in: query
           required: false
@@ -234,7 +234,12 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/Message" }
+            schema:
+              description: Message parts
+              type: object
+              properties:
+                body: { $ref: "#/components/schemas/Text" }
+                picture: { $ref: "#/components/schemas/Picture" }
         required: true
       responses:
         "201":
@@ -244,6 +249,8 @@ paths:
               schema: { $ref: "#/components/schemas/Message" }
         "400":
           $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/InternalServerError"
 

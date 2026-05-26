@@ -26,14 +26,13 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	// TODO: Prendere i messaggi
-	recipientID, err := strconv.Atoi(r.URL.Query().Get("recipientID"))
+	replyMessageID, err := strconv.Atoi(r.URL.Query().Get("replyMessageID"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	messages, err := rt.db.GetMessages(recipientID)
+	messages, err := rt.db.GetMessages(replyMessageID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
