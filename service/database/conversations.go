@@ -147,7 +147,7 @@ func (db *appdbimpl) CheckUserConversation(userID int, conversationID int) error
 	}
 
 	if count == 0 {
-		return errors.New("User not present in conversation")
+		return ResourceNotFoundError
 	}
 	return nil
 

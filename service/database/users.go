@@ -1,7 +1,6 @@
 package database
 
 import (
-	"errors"
 	"wasatext/service/structs"
 )
 
@@ -88,7 +87,7 @@ func (db *appdbimpl) CheckUserUsername(username string) error {
 		return err
 	}
 	if count == 0 {
-		return errors.New("Username already used")
+		return ResourceNotFoundError
 	}
 	return nil
 }
