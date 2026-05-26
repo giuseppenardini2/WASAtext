@@ -44,11 +44,12 @@ type AppDatabase interface {
 	GetUser(userID int) (structs.User, error)
 	GetUserByUsername(username string) (structs.User, error)
 	GetUsers(username string) ([]structs.User, error)
-	CheckUserUsername(username string) (bool, error)
+	CheckUserUsername(username string) error
 
 	AddConversation() (int64, error)
 	GetConversations(userID int) ([]structs.ConversationPreview, error)
 	GetConversationType(conversationID int) (structs.ConversationType, error)
+	CheckUserConversation(userID int, conversationID int) error
 
 	AddPrivateConversation(firstUserID int, secondUserID int) (int64, error)
 
@@ -60,11 +61,10 @@ type AppDatabase interface {
 	AddUserToGroupConversation(userID int, groupConversationID int) error
 	RemoveUserFromGroupConversation(userID int, groupConversationID int) error
 	GetGroupConversartionMembers(groupConversationsID int) ([]structs.User, error)
-	CheckGroupConversationMember(userID int, groupConversationID int) (bool, error)
 
-	AddMessage(body string, sentDate string, picture string, senderID int, conversationID int) (int64, error)
-	AddForwardedMessage(originalMessageID int, originalConversationID int, senderID int, conversationID int, sentDate string) (int64, error)
-	AddReplyMessage(body string, sentDate string, picture string, senderID int, conversationID int, replyMessageID int) (int64, error)
+	AddMessage(body string, picture string, senderID int, conversationID int) (int64, error)
+	AddReplyMessage(body string, picture string, senderID int, conversationID int, replyMessageID int) (int64, error)
+	AddForwardedMessage(originalMessageID int, originalConversationID int, senderID int, conversationID int) (int64, error)
 	DeleteMessage(messageID int, conversationID int) error
 	GetNewMessageID(conversationID int) (int64, error)
 	GetMessage(conversationID int, messageID int) (structs.Message, error)
@@ -72,7 +72,7 @@ type AppDatabase interface {
 	GetLastMessage(conversationID int) (structs.Message, error)
 
 	AddReadCheckmark(userID int, messageID int, conversationID int) error
-	CheckReadMessage(messageID int, conversationID int) (bool, error)
+	CheckReadMessage(messageID int, conversationID int) error
 
 	AddReaction(userID int, messageID int, conversationID int, reaction string) error
 	DeleteReaction(userID int, messageID int, conversationID int) error

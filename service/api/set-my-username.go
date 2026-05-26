@@ -27,12 +27,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	is_username_used, err := rt.db.CheckUserUsername(username)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	if is_username_used {
+	if err := rt.db.CheckUserUsername(username); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

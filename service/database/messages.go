@@ -1,19 +1,21 @@
 package database
 
-import "wasatext/service/structs"
+import (
+	"wasatext/service/structs"
+)
 
 /*
  * ADD OPERATIONS
  */
 
-func (db *appdbimpl) AddMessage(body string, sentDate string, picture string, senderID int, conversationID int) (int64, error) {
+func (db *appdbimpl) AddMessage(body string, picture string, senderID int, conversationID int) (int64, error) {
 	messageID, err := db.GetNewMessageID(conversationID)
 	if err != nil {
 		return -1, err
 	}
 
-	query := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id) VALUES (?, ?, ?, ?, ?)"
-	if _, err := db.c.Exec(query, messageID, conversationID, body, sentDate, senderID); err != nil {
+	query := "INSERT INTO messages (id, conversation_id, body, sender_id) VALUES (?, ?, ?, ?)"
+	if _, err := db.c.Exec(query, messageID, conversationID, body, senderID); err != nil {
 		return -1, err
 	}
 
@@ -29,7 +31,29 @@ func (db *appdbimpl) AddMessage(body string, sentDate string, picture string, se
 	return messageID, nil
 }
 
-func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversationID int, senderID int, conversationID int, sentDate string) (int64, error) {
+func (db *appdbimpl) AddReplyMessage(body string, picture string, senderID int, conversationID int, replyMessageID int) (int64, error) {
+	messageID, err := db.GetNewMessageID(conversationID)
+	if err != nil {
+		return -1, err
+	}
+
+	query := "INSERT INTO messages (id, conversation_id, body, sender_id, reply_message_id) VALUES (?, ?, ?, ?, ?)"
+	if _, err := db.c.Exec(query, messageID, conversationID, body, senderID, replyMessageID); err != nil {
+		return -1, err
+	}
+
+	if picture != "" {
+		query := "UPDATE messages SET picture=? WHERE id=?"
+		_, err = db.c.Exec(query, picture, messageID)
+		if err != nil {
+			return -1, err
+		}
+	}
+
+	return messageID, nil
+}
+
+func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversationID int, senderID int, conversationID int) (int64, error) {
 	// Get the body and picture of the message to forward to
 	var body, picture string
 
@@ -46,33 +70,11 @@ func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversa
 	}
 
 	query2 := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id, forwarded_message_id) VALUES (?, ?, ?, ?, ?, ?)"
-	if _, err := db.c.Exec(query2, messageID, conversationID, body, sentDate, senderID, originalMessageID); err != nil {
+	if _, err := db.c.Exec(query2, messageID, conversationID, body, senderID, originalMessageID); err != nil {
 		return -1, err
 	}
 
 	// Add the picture of the message if it is present
-	if picture != "" {
-		query := "UPDATE messages SET picture=? WHERE id=?"
-		_, err = db.c.Exec(query, picture, messageID)
-		if err != nil {
-			return -1, err
-		}
-	}
-
-	return messageID, nil
-}
-
-func (db *appdbimpl) AddReplyMessage(body string, sentDate string, picture string, senderID int, conversationID int, replyMessageID int) (int64, error) {
-	messageID, err := db.GetNewMessageID(conversationID)
-	if err != nil {
-		return -1, err
-	}
-
-	query := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id, reply_message_id) VALUES (?, ?, ?, ?, ?, ?)"
-	if _, err := db.c.Exec(query, messageID, conversationID, body, sentDate, senderID, replyMessageID); err != nil {
-		return -1, err
-	}
-
 	if picture != "" {
 		query := "UPDATE messages SET picture=? WHERE id=?"
 		_, err = db.c.Exec(query, picture, messageID)

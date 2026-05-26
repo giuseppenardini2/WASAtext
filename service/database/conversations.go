@@ -117,3 +117,38 @@ func (db *appdbimpl) GetConversationType(conversationID int) (structs.Conversati
 
 	return structs.GroupConversationType, errors.New("Conversation type error")
 }
+
+/*
+ * CHECK OPERATIONS
+ */
+
+func (db *appdbimpl) CheckUserConversation(userID int, conversationID int) error {
+	conversationType, err := db.GetConversationType(conversationID)
+	if err != nil {
+		return err
+	}
+
+	var count int
+	switch conversationType {
+	case structs.PrivateConversationType:
+		query := `SELECT COUNT(user_id) 
+		FROM private_conversations 
+		WHERE (conversation_id=? AND (first_user_id=? OR second_user_id=?)`
+		if err := db.c.QueryRow(query, conversationID, userID, userID).Scan(&count); err != nil {
+			return err
+		}
+	case structs.GroupConversationType:
+		query := `SELECT COUNT(user_id) 
+			FROM group_conversations_members 
+			WHERE user_id=? AND group_conversation_id=?`
+		if err := db.c.QueryRow(query, userID, conversationID).Scan(&count); err != nil {
+			return err
+		}
+	}
+
+	if count == 0 {
+		return errors.New("User not present in conversation")
+	}
+	return nil
+
+}

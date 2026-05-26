@@ -19,11 +19,11 @@ func (db *appdbimpl) AddReadCheckmark(userID int, messageID int, conversationID 
  * CHECK OPERATIONS
  */
 
-func (db *appdbimpl) CheckReadMessage(messageID int, conversationID int) (bool, error) {
+func (db *appdbimpl) CheckReadMessage(messageID int, conversationID int) error {
 	// Check if the recipient of the message is a user or a group
 	conversationType, err := db.GetConversationType(conversationID)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// If the recipient is a user, check if that user read the message. Else if it is a group, check if all group members read the message
@@ -33,11 +33,14 @@ func (db *appdbimpl) CheckReadMessage(messageID int, conversationID int) (bool, 
 			WHERE message_id=? AND conversation_id=?`
 	err = db.c.QueryRow(query2, messageID, conversationID).Scan(&usersReadMessageNumber)
 	if err != nil || usersReadMessageNumber == 0 {
-		return false, err
+		return err
 	}
 	switch conversationType {
 	case structs.PrivateConversationType:
-		return usersReadMessageNumber != 0, err
+		if usersReadMessageNumber == 0 {
+			errors.New("Message not read")
+		}
+		return nil
 	case structs.GroupConversationType:
 		var groupMembersNumber int
 		query3 := `SELECT COUNT(gcm.user_id)
@@ -45,10 +48,13 @@ func (db *appdbimpl) CheckReadMessage(messageID int, conversationID int) (bool, 
 			WHERE m.id=? AND m.conversation_id=? AND ugcm.group_conversation_id=m.conversation_id`
 		err = db.c.QueryRow(query3, messageID, conversationID).Scan(&groupMembersNumber)
 		if err != nil {
-			return false, err
+			return err
 		}
-		return usersReadMessageNumber == groupMembersNumber, err
+		if usersReadMessageNumber != groupMembersNumber {
+			errors.New("Message not read")
+		}
+		return nil
 	default:
-		return false, errors.New("An error occurs in the recipient type")
+		return errors.New("An error occurs in the recipient type")
 	}
 }

@@ -1,6 +1,9 @@
 package database
 
-import "wasatext/service/structs"
+import (
+	"errors"
+	"wasatext/service/structs"
+)
 
 /*
  * ADD OPERATIONS
@@ -76,13 +79,16 @@ func (db *appdbimpl) GetUsers(username string) ([]structs.User, error) {
  * CHECK OPERATIONS
  */
 
-func (db *appdbimpl) CheckUserUsername(username string) (bool, error) {
+func (db *appdbimpl) CheckUserUsername(username string) error {
 	var count int
 
 	query := "SELECT COUNT(id) FROM users WHERE username=?"
 	err := db.c.QueryRow(query, username).Scan(&count)
 	if err != nil {
-		return false, err
+		return err
 	}
-	return count != 0, err
+	if count == 0 {
+		return errors.New("Username already used")
+	}
+	return nil
 }

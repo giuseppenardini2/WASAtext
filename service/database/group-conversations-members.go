@@ -1,6 +1,8 @@
 package database
 
-import "wasatext/service/structs"
+import (
+	"wasatext/service/structs"
+)
 
 /*
  * ADD OPERATIONS
@@ -47,19 +49,4 @@ func (db *appdbimpl) GetGroupConversartionMembers(groupConversationsID int) ([]s
 		return nil, err
 	}
 	return users, err
-}
-
-/*
- * CHECK OPERATIONS
- */
-
-func (db *appdbimpl) CheckGroupConversationMember(userID int, groupConversationID int) (bool, error) {
-	var count int
-
-	query := "SELECT COUNT(user_id) FROM group_conversations_members WHERE user_id=? AND group_conversation_id=?"
-	err := db.c.QueryRow(query, userID, groupConversationID).Scan(&count)
-	if err != nil {
-		return false, err
-	}
-	return count != 0, err
 }

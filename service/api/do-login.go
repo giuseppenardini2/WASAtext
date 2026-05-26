@@ -20,18 +20,15 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
-	is_username_exists, err := rt.db.CheckUserUsername(username)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+	if err := rt.db.CheckUserUsername(username); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if !is_username_exists {
-		_, err := rt.db.AddUser(username) // Come rendere nulla la stringa ?
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
+	_, err := rt.db.AddUser(username)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	user, err := rt.db.GetUserByUsername(username)
