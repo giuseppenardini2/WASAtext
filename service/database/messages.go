@@ -112,10 +112,10 @@ func (db *appdbimpl) GetNewMessageID(conversationID int) (int64, error) {
 func (db *appdbimpl) GetMessage(conversationID int, messageID int) (structs.Message, error) {
 	var message structs.Message
 
-	query1 := `SELECT id, conversation_id, body, sent_date, COALESCE(picture, ""), sender_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
+	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture, ""), sender_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
 		FROM messages
 		WHERE id=? AND conversation_id=?`
-	err := db.c.QueryRow(query1, messageID, conversationID).Scan(&message.ID, &message.SentDate, &message.Picture, &message.SenderID, &message.ConversationID, &message.ReplyMessageID, &message.ForwardedMessageID)
+	err := db.c.QueryRow(query, messageID, conversationID).Scan(&message.ID, &message.SentDate, &message.Picture, &message.SenderID, &message.ConversationID, &message.ReplyMessageID, &message.ForwardedMessageID)
 	return message, err
 }
 

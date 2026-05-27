@@ -100,9 +100,9 @@ func createTables(db *sql.DB) error {
 
 	usersReactMessagesQuery := `CREATE TABLE IF NOT EXISTS reactions (
 		user_id INTEGER,
-		message_id INTEGER,
 		conversation_id INTEGER,
-		reaction TEXT NOT NULL,
+		message_id INTEGER,
+		emoji TEXT NOT NULL,
 		PRIMARY KEY(user_id, message_id, conversation_id),
 		CONSTRAINT fk_reactions
 			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
