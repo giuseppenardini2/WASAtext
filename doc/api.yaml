@@ -76,7 +76,7 @@ paths:
           description: List of users
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Users" }
+              schema: { $ref: "#/components/schemas/UserCollection" }
         "400":
           $ref: "#/components/responses/BadRequest"
         "404":
@@ -101,7 +101,7 @@ paths:
           description: List of conversations
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Conversations" }
+              schema: { $ref: "#/components/schemas/ConversationPreviewCollection" }
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -202,7 +202,7 @@ paths:
           description: Conversation
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Messages" }
+              schema: { $ref: "#/components/schemas/MessageCollection" }
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -537,7 +537,7 @@ components:
         - username
         - profilePicture
     
-    Users:
+    UserCollection:
       title: Users
       description: This object represents a list of user object
       type: object
@@ -552,8 +552,8 @@ components:
       required:
         - usersList
 
-    Conversation:
-      title: Conversation
+    ConversationPreview:
+      title: Conversation preview
       description: This object represents a single conversation
       type: object
       properties:
@@ -580,20 +580,20 @@ components:
         - messagePreview
         - date
 
-    Conversations:
-      title: Conversations
-      description: This object represents a list of conversation object
+    ConversationPreviewCollection:
+      title: Conversation previews
+      description: This object represents a list of conversation previews object
       type: object
       properties:
-        conversationsList:
+        conversationPrewiewList:
           description: Conversations of the current user
           type: array
-          items: { $ref: "#/components/schemas/Conversation" }
+          items: { $ref: "#/components/schemas/ConversationPreview" }
           uniqueItems: true
           minItems: 0
           maxItems: 50
       required:
-        - conversationsList
+        - conversationPrewiewList
           
     Message:
       title: Message
@@ -616,7 +616,7 @@ components:
         - body
         - date
 
-    Messages:
+    MessageCollection:
       title: Messages
       description: This object represents a list of message object
       type: object
@@ -664,7 +664,7 @@ components:
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
         name: { $ref: "#/components/schemas/GroupName" }
-        partecipants: { $ref: "#/components/schemas/Users" }
+        partecipants: { $ref: "#/components/schemas/UserCollection" }
       required:
         - id
         - name
