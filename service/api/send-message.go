@@ -76,7 +76,7 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 		}
 	}
 
-	message, err := rt.db.GetMessage(conversationID, int(messageID)) // TODO: Rivedere. Tutto int64 o no?
+	message, err := rt.db.GetMessage(conversationID, int(messageID))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
