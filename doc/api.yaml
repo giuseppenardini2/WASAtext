@@ -542,7 +542,7 @@ components:
       description: This object represents a list of user object
       type: object
       properties:
-        usersList:
+        users:
           description: Users
           type: array
           items: { $ref: "#/components/schemas/User" }
@@ -550,7 +550,7 @@ components:
           minItems: 0
           maxItems: 50
       required:
-        - usersList
+        - users
 
     ConversationPreview:
       title: Conversation preview
@@ -585,7 +585,7 @@ components:
       description: This object represents a list of conversation previews object
       type: object
       properties:
-        conversationPrewiewList:
+        conversationPrewiews:
           description: Conversations of the current user
           type: array
           items: { $ref: "#/components/schemas/ConversationPreview" }
@@ -593,7 +593,7 @@ components:
           minItems: 0
           maxItems: 50
       required:
-        - conversationPrewiewList
+        - conversationPrewiews
           
     Message:
       title: Message
@@ -621,7 +621,7 @@ components:
       description: This object represents a list of message object
       type: object
       properties:
-        messagesList:
+        messages:
           description: List of messages
           type: array
           items: { $ref: "#/components/schemas/Message" }
@@ -629,7 +629,7 @@ components:
           minItems: 0
           maxItems: 50
       required:
-        - messagesList
+        - messages
 
     Reaction:
       title: Message reaction
