@@ -70,6 +70,7 @@ type AppDatabase interface {
 	GetMessage(conversationID int, messageID int) (structs.Message, error)
 	GetMessages(conversationID int) ([]structs.Message, error)
 	GetLastMessage(conversationID int) (structs.Message, error)
+	CheckMessageConversation(messageID int, conversationID int) error
 
 	AddReadCheckmark(userID int, messageID int, conversationID int) error
 	CheckReadMessage(messageID int, conversationID int) error

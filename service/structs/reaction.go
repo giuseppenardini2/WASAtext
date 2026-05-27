@@ -1,6 +1,6 @@
 package structs
 
-var acceptedEmojis = []string{
+var acceptedEmojis = [...]string{
 	"👍", "👍",
 	"🙂", "🙁", "😭", "😍", "😎", "😏",
 	"❤️", "💔",
@@ -9,13 +9,14 @@ var acceptedEmojis = []string{
 
 // A struct which represent a message of a conversation
 type Reaction struct {
+	ID             int    `json:"id"`             // Reaction ID
 	UserID         int    `json:"userID"`         // User ID
 	ConversationID int    `json:"conversationID"` // Conversation ID
 	MessageID      int    `json:"messageID"`      // Message ID
 	Emoji          string `json:"emoji"`          // Emoji
 }
 
-func IsReactionValid(emoji string) bool {
+func IsEmojiValid(emoji string) bool {
 	if len(emoji) != 1 {
 		return false
 	}

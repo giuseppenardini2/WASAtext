@@ -153,3 +153,21 @@ func (db *appdbimpl) GetLastMessage(conversationID int) (structs.Message, error)
 	err := db.c.QueryRow(query, conversationID).Scan(&message.ID, &message.ConversationID, &message.SentDate, &message.Picture, &message.SenderID, &message.ReplyMessageID, &message.ForwardedMessageID)
 	return message, err
 }
+
+/*
+ * CHECK OPERATIONS
+ */
+
+func (db *appdbimpl) CheckMessageConversation(messageID int, conversationID int) error {
+	var count int
+
+	query := "SELECT COUNT(id) FROM messages WHERE id=? AND conversation_id=?"
+	err := db.c.QueryRow(query, messageID, conversationID).Scan(&count)
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return ResourceNotFoundError
+	}
+	return nil
+}

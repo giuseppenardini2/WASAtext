@@ -50,3 +50,21 @@ func (db *appdbimpl) GetGroupConversartionMembers(groupConversationsID int) ([]s
 	}
 	return users, err
 }
+
+/*
+ * CHECK OPERATIONS
+ */
+
+func (db *appdbimpl) CheckGroupConversationMember(userID int, groupConversationID int) error {
+	var count int
+
+	query := "SELECT COUNT(id) FROM group_conversations_members WHERE user_id=? AND group_id=?"
+	err := db.c.QueryRow(query, userID, groupConversationID).Scan(&count)
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return ResourceNotFoundError
+	}
+	return nil
+}
