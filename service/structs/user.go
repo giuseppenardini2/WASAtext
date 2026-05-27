@@ -2,11 +2,10 @@ package structs
 
 import "regexp"
 
-// A struct which represents a user
 type User struct {
-	ID       int    `json:"id"`       //User id
-	Username string `json:"username"` //User username
-	Picture  string `json:"picture"`  //User profile picture
+	ID       int    `json:"id"`       // User id
+	Username string `json:"username"` // User username
+	Picture  string `json:"picture"`  // User profile picture
 }
 
 func IsUsernameValid(username string) bool {
