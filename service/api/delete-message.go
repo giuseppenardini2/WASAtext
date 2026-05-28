@@ -37,6 +37,7 @@ func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
+	// Prepare the response
 	if err := rt.db.DeleteMessage(messageID, conversationID); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

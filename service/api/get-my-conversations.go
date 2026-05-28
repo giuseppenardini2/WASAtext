@@ -9,6 +9,7 @@ import (
 )
 
 func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	// Get parameters
 	userID, err := strconv.Atoi(ps.ByName("userID"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -20,6 +21,7 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 		return
 	}
 
+	// Prepare the response
 	conversations, err := rt.db.GetConversations(userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

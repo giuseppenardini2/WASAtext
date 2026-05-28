@@ -75,10 +75,12 @@ type AppDatabase interface {
 	AddReadCheckmark(userID int, messageID int, conversationID int) error
 	CheckReadMessage(messageID int, conversationID int) error
 
-	AddReaction(userID int, conversationID int, messageID int, emoji string) error
-	DeleteReaction(userID int, conversationID int, messageID int) error
-	GetReaction(userID int, conversationID int, messageID int) (structs.Reaction, error)
+	AddReaction(userID int, conversationID int, messageID int, emoji string) (int64, error)
+	DeleteReaction(reactionID int, conversationID int, messageID int) error
+	GetNewReactionID(conversationID int, messageID int) (int64, error)
+	GetReaction(reactionID int, conversationID int, messageID int) (structs.Reaction, error)
 	GetReactions(conversationID int, messageID int) ([]structs.Reaction, error)
+	CheckUserReaction(userID int, reactionID int, messageID int, conversationID int) error
 
 	Ping() error
 }

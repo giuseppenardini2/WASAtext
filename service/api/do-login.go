@@ -9,6 +9,7 @@ import (
 )
 
 func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	// Get parameters
 	username := ps.ByName("username")
 	if username == "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -31,6 +32,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
+	// Prepare the response
 	user, err := rt.db.GetUserByUsername(username)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

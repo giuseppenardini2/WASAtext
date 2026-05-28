@@ -9,12 +9,14 @@ import (
 )
 
 func (rt *_router) getUsers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	// Get parameters
 	username := r.URL.Query().Get("username")
 	if !structs.IsUsernameValid(username) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
+	// Prepare the response
 	users, err := rt.db.GetUsers(username)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
