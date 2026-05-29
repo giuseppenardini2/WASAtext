@@ -60,12 +60,13 @@ func (rt *_router) commentMessage(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	// Prepare the response
-	if err := rt.db.AddReaction(userID, conversationID, messageID, reactionPart.Emoji); err != nil {
+	reactionID, err := rt.db.AddReaction(userID, conversationID, messageID, reactionPart.Emoji)
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	reaction, err := rt.db.GetReaction(userID, conversationID, messageID)
+	reaction, err := rt.db.GetReaction(int(reactionID), conversationID, messageID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -77,5 +78,4 @@ func (rt *_router) commentMessage(w http.ResponseWriter, r *http.Request, ps htt
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
 }
