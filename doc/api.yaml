@@ -353,10 +353,14 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        "204": 
+        "204":
           $ref: "#/components/responses/NoContent"
-        "404":
-          $ref: "#/components/responses/NotFound"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}/groups:
     parameters:
