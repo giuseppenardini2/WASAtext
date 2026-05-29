@@ -95,6 +95,20 @@ func (db *appdbimpl) GetUsers(username string) ([]structs.User, error) {
  * CHECK OPERATIONS
  */
 
+func (db *appdbimpl) CheckUser(userID int) error {
+	var count int
+
+	query := "SELECT COUNT(id) FROM users WHERE id=?"
+	err := db.c.QueryRow(query, userID).Scan(&count)
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return NonexistentResource
+	}
+	return nil
+}
+
 func (db *appdbimpl) CheckUserUsername(username string) error {
 	var count int
 

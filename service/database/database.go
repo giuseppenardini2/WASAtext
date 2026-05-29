@@ -44,6 +44,7 @@ type AppDatabase interface {
 	GetUser(userID int) (structs.User, error)
 	GetUserByUsername(username string) (structs.User, error)
 	GetUsers(username string) ([]structs.User, error)
+	CheckUser(userID int) error
 	CheckUserUsername(username string) error
 
 	AddConversation() (int64, error)

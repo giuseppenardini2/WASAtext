@@ -408,7 +408,12 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/Group" }
+            schema:
+              description: Message parts
+              type: object
+              properties:
+                groupName: { $ref: "#/components/schemas/GroupName" }
+                partecipants: { $ref: "#/components/schemas/UserCollection" }
         required: true
       responses:
         "201":
@@ -416,6 +421,12 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Group" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}/groups/{groupID}:
     parameters:
@@ -445,8 +456,12 @@ paths:
           content: 
             application/json:
               schema: { $ref: "#/components/schemas/GroupName" }
-        "404":
-          $ref: "#/components/responses/NotFound"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
     delete:
       operationId: leaveGroup
