@@ -66,13 +66,7 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	// Prepare the response
-	forwardedMessageID, err := rt.db.AddForwardedMessage(messageID, conversationID, userID, recipientID)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	message, err := rt.db.GetMessage(conversationID, int(forwardedMessageID))
+	message, err := rt.db.AddForwardedMessage(messageID, conversationID, userID, recipientID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

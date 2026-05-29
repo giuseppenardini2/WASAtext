@@ -38,7 +38,7 @@ import (
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	AddUser(username string) (int64, error)
+	AddUser(username string, picture string) (structs.User, error)
 	UpdateUserUsername(userID int, username string) error
 	UpdateUserPicture(userID int, picture string) error
 	GetUser(userID int) (structs.User, error)
@@ -53,7 +53,7 @@ type AppDatabase interface {
 
 	AddPrivateConversation(firstUserID int, secondUserID int) (int64, error)
 
-	AddGroupConversation(name string, picture string, userCreatorID int) (int64, error)
+	AddGroupConversation(name string, picture string, userCreatorID int) (structs.GroupConversation, error)
 	DeleteGroupConversation(groupConversationID int) error
 	GetGroupConversation(groupConversationID int) (structs.GroupConversation, error)
 	UpdateGroupConversationPicture(groupConversationID int, picture string) error
@@ -62,9 +62,9 @@ type AppDatabase interface {
 	RemoveUserFromGroupConversation(userID int, groupConversationID int) error
 	GetGroupConversartionMembers(groupConversationsID int) ([]structs.User, error)
 
-	AddMessage(body string, picture string, senderID int, conversationID int) (int64, error)
-	AddReplyMessage(body string, picture string, senderID int, conversationID int, replyMessageID int) (int64, error)
-	AddForwardedMessage(originalMessageID int, originalConversationID int, senderID int, conversationID int) (int64, error)
+	AddMessage(body string, picture string, senderID int, conversationID int) (structs.Message, error)
+	AddReplyMessage(body string, picture string, senderID int, conversationID int, replyMessageID int) (structs.Message, error)
+	AddForwardedMessage(originalMessageID int, originalConversationID int, senderID int, conversationID int) (structs.Message, error)
 	DeleteMessage(messageID int, conversationID int) error
 	GetNewMessageID(conversationID int) (int64, error)
 	GetMessage(conversationID int, messageID int) (structs.Message, error)
@@ -75,7 +75,7 @@ type AppDatabase interface {
 	AddReadCheckmark(userID int, messageID int, conversationID int) error
 	CheckReadMessage(messageID int, conversationID int) error
 
-	AddReaction(userID int, conversationID int, messageID int, emoji string) (int64, error)
+	AddReaction(userID int, conversationID int, messageID int, emoji string) (structs.Reaction, error)
 	DeleteReaction(reactionID int, conversationID int, messageID int) error
 	GetNewReactionID(conversationID int, messageID int) (int64, error)
 	GetReaction(reactionID int, conversationID int, messageID int) (structs.Reaction, error)

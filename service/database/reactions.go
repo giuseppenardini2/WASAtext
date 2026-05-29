@@ -6,15 +6,21 @@ import "wasatext/service/structs"
  * ADD OPERATIONS
  */
 
-func (db *appdbimpl) AddReaction(userID int, conversationID int, messageID int, emoji string) (int64, error) {
+func (db *appdbimpl) AddReaction(userID int, conversationID int, messageID int, emoji string) (structs.Reaction, error) {
 	reactionID, err := db.GetNewReactionID(conversationID, messageID)
 	if err != nil {
-		return -1, err
+		return structs.Reaction{}, err
 	}
 
 	query := "INSERT INTO reactions (id, conversation_id, message_id, user_id, emoji) VALUES (?, ?, ?, ?)"
 	_, err = db.c.Exec(query, reactionID, conversationID, messageID, userID, emoji)
-	return reactionID, err
+	return structs.Reaction{
+		ID:             int(reactionID),
+		UserID:         userID,
+		ConversationID: conversationID,
+		MessageID:      messageID,
+		Emoji:          emoji,
+	}, err
 }
 
 /*

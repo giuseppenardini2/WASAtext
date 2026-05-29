@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"wasatext/service/structs"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -59,27 +60,21 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Prepare the response
-	var messageID int64 // Add the message to DB
+	var message structs.Message // Add the message to DB
 	if replyMessageID != -1 {
 		var err error
-		messageID, err = rt.db.AddReplyMessage(messagePart.Body, messagePart.Picture, userID, conversationID, replyMessageID)
+		message, err = rt.db.AddReplyMessage(messagePart.Body, messagePart.Picture, userID, conversationID, replyMessageID)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	} else {
 		var err error
-		messageID, err = rt.db.AddMessage(messagePart.Body, messagePart.Picture, userID, conversationID)
+		message, err = rt.db.AddMessage(messagePart.Body, messagePart.Picture, userID, conversationID)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-	}
-
-	message, err := rt.db.GetMessage(conversationID, int(messageID))
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
 	}
 
 	w.WriteHeader(http.StatusCreated)

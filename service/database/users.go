@@ -8,13 +8,30 @@ import (
  * ADD OPERATIONS
  */
 
-func (db *appdbimpl) AddUser(username string) (int64, error) {
+func (db *appdbimpl) AddUser(username string, picture string) (structs.User, error) {
 	query := "INSERT INTO users (username) VALUES (?)"
 	result, err := db.c.Exec(query, username)
 	if err != nil {
-		return -1, err
+		return structs.User{}, err
 	}
-	return result.LastInsertId()
+
+	userID, err := result.LastInsertId()
+	if err != nil {
+		return structs.User{}, err
+	}
+
+	if picture != "" {
+		query := "UPDATE users SET picture=? WHERE id=?"
+		if _, err := db.c.Exec(query, picture, userID); err != nil {
+			return structs.User{}, err
+		}
+	}
+
+	return structs.User{
+		ID:       int(userID),
+		Username: username,
+		Picture:  picture,
+	}, nil
 }
 
 /*

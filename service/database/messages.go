@@ -8,15 +8,16 @@ import (
  * ADD OPERATIONS
  */
 
-func (db *appdbimpl) AddMessage(body string, picture string, senderID int, conversationID int) (int64, error) {
+func (db *appdbimpl) AddMessage(body string, picture string, senderID int, conversationID int) (structs.Message, error) {
 	messageID, err := db.GetNewMessageID(conversationID)
 	if err != nil {
-		return -1, err
+		return structs.Message{}, err
 	}
 
-	query := "INSERT INTO messages (id, conversation_id, body, sender_id) VALUES (?, ?, ?, ?)"
-	if _, err := db.c.Exec(query, messageID, conversationID, body, senderID); err != nil {
-		return -1, err
+	sentDate := structs.SentDateNow()
+	query := "INSERT INTO messages (id, conversation_id, body, sent_date sender_id) VALUES (?, ?, ?, ?, ?)"
+	if _, err := db.c.Exec(query, messageID, conversationID, body, sentDate, senderID); err != nil {
+		return structs.Message{}, err
 	}
 
 	// Add the picture of the message if it is present
@@ -24,54 +25,74 @@ func (db *appdbimpl) AddMessage(body string, picture string, senderID int, conve
 		query := "UPDATE messages SET picture=? WHERE id=?"
 		_, err = db.c.Exec(query, picture, messageID)
 		if err != nil {
-			return -1, err
+			return structs.Message{}, err
 		}
 	}
 
-	return messageID, nil
+	return structs.Message{
+		ID:                 int(messageID),
+		ConversationID:     conversationID,
+		Body:               body,
+		SentDate:           sentDate,
+		Picture:            picture,
+		SenderID:           senderID,
+		ReplyMessageID:     -1,
+		ForwardedMessageID: -1,
+	}, nil
 }
 
-func (db *appdbimpl) AddReplyMessage(body string, picture string, senderID int, conversationID int, replyMessageID int) (int64, error) {
+func (db *appdbimpl) AddReplyMessage(body string, picture string, senderID int, conversationID int, replyMessageID int) (structs.Message, error) {
 	messageID, err := db.GetNewMessageID(conversationID)
 	if err != nil {
-		return -1, err
+		return structs.Message{}, err
 	}
 
-	query := "INSERT INTO messages (id, conversation_id, body, sender_id, reply_message_id) VALUES (?, ?, ?, ?, ?)"
-	if _, err := db.c.Exec(query, messageID, conversationID, body, senderID, replyMessageID); err != nil {
-		return -1, err
+	sentDate := structs.SentDateNow()
+	query := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id, reply_message_id) VALUES (?, ?, ?, ?, ?, ?)"
+	if _, err := db.c.Exec(query, messageID, conversationID, body, sentDate, senderID, replyMessageID); err != nil {
+		return structs.Message{}, err
 	}
 
 	if picture != "" {
 		query := "UPDATE messages SET picture=? WHERE id=?"
 		_, err = db.c.Exec(query, picture, messageID)
 		if err != nil {
-			return -1, err
+			return structs.Message{}, err
 		}
 	}
 
-	return messageID, nil
+	return structs.Message{
+		ID:                 int(messageID),
+		ConversationID:     conversationID,
+		Body:               body,
+		SentDate:           sentDate,
+		Picture:            picture,
+		SenderID:           senderID,
+		ReplyMessageID:     replyMessageID,
+		ForwardedMessageID: -1,
+	}, nil
 }
 
-func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversationID int, senderID int, conversationID int) (int64, error) {
+func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversationID int, senderID int, conversationID int) (structs.Message, error) {
 	// Get the body and picture of the message to forward to
 	var body, picture string
 
 	query1 := `SELECT body, COALESCE(picture, "") FROM messages WHERE id=? AND conversation_id=?`
 	err := db.c.QueryRow(query1, originalMessageID, originalConversationID).Scan(&body, &picture)
 	if err != nil {
-		return -1, err
+		return structs.Message{}, err
 	}
 
 	// Create a new message with the same body and picture of the message to forward to
 	messageID, err := db.GetNewMessageID(conversationID)
 	if err != nil {
-		return -1, err
+		return structs.Message{}, err
 	}
 
+	sentDate := structs.SentDateNow()
 	query2 := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id, forwarded_message_id) VALUES (?, ?, ?, ?, ?, ?)"
-	if _, err := db.c.Exec(query2, messageID, conversationID, body, senderID, originalMessageID); err != nil {
-		return -1, err
+	if _, err := db.c.Exec(query2, messageID, conversationID, body, sentDate, senderID, originalMessageID); err != nil {
+		return structs.Message{}, err
 	}
 
 	// Add the picture of the message if it is present
@@ -79,11 +100,20 @@ func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversa
 		query := "UPDATE messages SET picture=? WHERE id=?"
 		_, err = db.c.Exec(query, picture, messageID)
 		if err != nil {
-			return -1, err
+			return structs.Message{}, err
 		}
 	}
 
-	return messageID, nil
+	return structs.Message{
+		ID:                 int(messageID),
+		ConversationID:     conversationID,
+		Body:               body,
+		SentDate:           sentDate,
+		Picture:            picture,
+		SenderID:           senderID,
+		ReplyMessageID:     -1,
+		ForwardedMessageID: originalMessageID,
+	}, nil
 }
 
 /*

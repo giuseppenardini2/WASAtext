@@ -6,18 +6,31 @@ import "wasatext/service/structs"
  * ADD OPERATIONS
  */
 
-func (db *appdbimpl) AddGroupConversation(name string, picture string, userCreatorID int) (int64, error) {
+func (db *appdbimpl) AddGroupConversation(name string, picture string, userCreatorID int) (structs.GroupConversation, error) {
 	groupConversationID, err := db.AddConversation() //2DO: Come gestire gli id
 	if err != nil {
-		return -1, err
+		return structs.GroupConversation{}, err
 	}
 
 	query := "INSERT INTO group_conversations (id, name, picture, user_creator_id) VALUES (?, ?, ?)"
 	_, err = db.c.Exec(query, groupConversationID, name, picture, userCreatorID)
 	if err != nil {
-		return -1, err
+		return structs.GroupConversation{}, err
 	}
-	return groupConversationID, nil
+
+	if picture != "" {
+		query := "UPDATE group_conversations SET picture=? WHERE id=?"
+		if _, err := db.c.Exec(query, picture, groupConversationID); err != nil {
+			return structs.GroupConversation{}, err
+		}
+	}
+
+	return structs.GroupConversation{
+		ID:            int(groupConversationID),
+		Name:          name,
+		Picture:       picture,
+		UserCreatorID: userCreatorID,
+	}, nil
 }
 
 /*
