@@ -38,7 +38,7 @@ func (db *appdbimpl) CheckReadMessage(messageID int, conversationID int) error {
 	switch conversationType {
 	case structs.PrivateConversationType:
 		if usersReadMessageNumber == 0 {
-			return ResourceNotFoundError
+			return NonexistentResource
 		}
 		return nil
 	case structs.GroupConversationType:
@@ -51,7 +51,7 @@ func (db *appdbimpl) CheckReadMessage(messageID int, conversationID int) error {
 			return err
 		}
 		if usersReadMessageNumber != groupMembersNumber {
-			return ResourceNotFoundError
+			return NonexistentResource
 		}
 		return nil
 	default:

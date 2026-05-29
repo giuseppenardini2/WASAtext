@@ -149,28 +149,32 @@ func (db *appdbimpl) GetMessage(conversationID int, messageID int) (structs.Mess
 	return message, err
 }
 
-func (db *appdbimpl) GetMessages(conversationID int) ([]structs.Message, error) {
+func (db *appdbimpl) GetMessages(conversationID int) (structs.Conversation, error) {
 	query := `SELECT id, body, sent_date, COALESCE(picture, ""), sender_id, conversation_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
 		FROM messages
 		WHERE conversation_id=?
 		ORDER BY sent_date DESC`
 	rows, err := db.c.Query(query, conversationID)
 	if err != nil {
-		return nil, err
+		return structs.Conversation{}, err
 	}
 
 	var messages []structs.Message
 	for rows.Next() {
 		var message structs.Message
 		if err := rows.Scan(&message.ID, &message.ConversationID, &message.Body, &message.SentDate, &message.Picture, &message.SenderID, &message.ReplyMessageID, &message.ForwardedMessageID); err != nil {
-			return nil, err
+			return structs.Conversation{}, err
 		}
 		messages = append(messages, message)
 	}
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return structs.Conversation{}, err
 	}
-	return messages, nil
+
+	return structs.Conversation{
+		ID:       conversationID,
+		Messages: messages,
+	}, nil
 }
 
 func (db *appdbimpl) GetLastMessage(conversationID int) (structs.Message, error) {
@@ -197,7 +201,7 @@ func (db *appdbimpl) CheckMessageConversation(messageID int, conversationID int)
 		return err
 	}
 	if count == 0 {
-		return ResourceNotFoundError
+		return NonexistentResource
 	}
 	return nil
 }

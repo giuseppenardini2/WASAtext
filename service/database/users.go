@@ -104,7 +104,7 @@ func (db *appdbimpl) CheckUserUsername(username string) error {
 		return err
 	}
 	if count == 0 {
-		return ResourceNotFoundError
+		return NonexistentResource
 	}
 	return nil
 }

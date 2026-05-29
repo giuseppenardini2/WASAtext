@@ -28,7 +28,7 @@ func (rt *_router) getConversation(w http.ResponseWriter, r *http.Request, ps ht
 	}
 
 	// Prepare the response
-	messages, err := rt.db.GetMessages(recipientID)
+	conversation, err := rt.db.GetMessages(recipientID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -36,7 +36,7 @@ func (rt *_router) getConversation(w http.ResponseWriter, r *http.Request, ps ht
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("content-type", "application/json")
-	if err := json.NewEncoder(w).Encode(messages); err != nil {
+	if err := json.NewEncoder(w).Encode(conversation); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

@@ -17,3 +17,21 @@ func (db *appdbimpl) AddPrivateConversation(firstUserID int, secondUserID int) (
 	}
 	return privateConversationID, nil
 }
+
+/*
+ * CHECK OPERATIONS
+ */
+
+func (db *appdbimpl) CheckUserPrivateConversation(firstUserID int, secondUserID int) error {
+	var count int
+
+	query := "SELECT COUNT(id) FROM private_conversations WHERE (first_user_id=? AND second_user_id=?) OR (first_user_id=? AND second_user_id=?) "
+	err := db.c.QueryRow(query, firstUserID, secondUserID, secondUserID, firstUserID).Scan(&count)
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return NonexistentResource
+	}
+	return nil
+}

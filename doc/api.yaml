@@ -187,6 +187,37 @@ paths:
     parameters:
         - $ref: "#/components/parameters/userID"
 
+    post:
+      operationId: createConversation
+      tags: ["conversations"]
+      summary: Create conversation
+      description: |-
+        Create a conversation
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Recipient user ID
+        content:
+          application/json:
+            schema:
+              description: Recipient user ID
+              type: object
+              properties:
+                recipient: { $ref: "#/components/schemas/Identifier" }
+        required: true
+      responses:
+        "201":
+          description: Conversation created successful
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Conversation" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
     get:
       operationId: getConversation
       tags: ["conversations"]
@@ -202,7 +233,7 @@ paths:
           description: Conversation
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/MessageCollection" }
+              schema: { $ref: "#/components/schemas/Conversation" }
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -570,9 +601,26 @@ components:
       required:
         - users
 
+    Conversation:
+      title: Conversation 
+      description: This object represents a single conversation
+      type: object
+      properties:
+        id: { $ref: "#/components/schemas/Identifier" }
+        messages:
+          description: List of messages
+          type: array
+          items: { $ref: "#/components/schemas/Message" }
+          uniqueItems: true
+          minItems: 0
+          maxItems: 50
+      required:
+        - id
+        - messages
+
     ConversationPreview:
       title: Conversation preview
-      description: This object represents a single conversation
+      description: This object represents a single conversation preview
       type: object
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
@@ -619,21 +667,6 @@ components:
         - id
         - body
         - date
-
-    MessageCollection:
-      title: Messages
-      description: This object represents a list of message object
-      type: object
-      properties:
-        messages:
-          description: List of messages
-          type: array
-          items: { $ref: "#/components/schemas/Message" }
-          uniqueItems: true
-          minItems: 0
-          maxItems: 50
-      required:
-        - messages
 
     Emoji:
       title: Emoji

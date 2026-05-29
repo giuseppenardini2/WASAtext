@@ -64,7 +64,7 @@ func (db *appdbimpl) CheckGroupConversationMember(userID int, groupConversationI
 		return err
 	}
 	if count == 0 {
-		return ResourceNotFoundError
+		return NonexistentResource
 	}
 	return nil
 }

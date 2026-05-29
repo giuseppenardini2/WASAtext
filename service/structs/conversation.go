@@ -26,8 +26,13 @@ type ConversationPreview struct {
 	LastMessageSentDate time.Time        `json:"lastMessageSentDate"` // Last message sent date with the recipient
 }
 
+type Conversation struct {
+	ID       int       `json:"id"`       // Conversation ID
+	Messages []Message `json:"messages"` // Conversation messages
+}
+
 type GroupConversation struct {
-	ID            int    `json:"id"`            // Group ID
+	ID            int    `json:"id"`            // Group ID (corresponding to conversation ID)
 	Name          string `json:"name"`          // Group name
 	Picture       string `json:"picture"`       // Group picture
 	UserCreatorID int    `json:"userCreatorID"` // ID of the user who created the group
