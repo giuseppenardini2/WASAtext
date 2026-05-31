@@ -473,19 +473,24 @@ paths:
         Add the current user to a group
       security:
         - bearerAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema: { $ref: "#/components/schemas/User" }
-        required: true
+      parameters:
+        - name: userToAddID
+          description: ID of the new user to add
+          in: query
+          required: true
+          schema: { $ref: "#/components/schemas/Identifier" }
       responses:
         "200":
           description: ID of the user added to the group
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Identifier"}
-        "404":
-          $ref: "#/components/responses/NotFound"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
     delete:
       operationId: leaveGroup
