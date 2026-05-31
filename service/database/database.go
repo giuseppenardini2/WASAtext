@@ -62,8 +62,8 @@ type AppDatabase interface {
 	UpdateGroupConversationPicture(groupConversationID int, picture string) error
 	CheckGroupConversation(groupConversationID int) error
 
-	AddUserToGroupConversation(userID int, groupConversationID int) error
-	RemoveUserFromGroupConversation(userID int, groupConversationID int) error
+	AddGroupConversationMember(userID int, groupConversationID int) error
+	DeleteGroupConversationMember(userID int, groupConversationID int) error
 	GetGroupConversartionMembers(groupConversationsID int) ([]structs.User, error)
 	CheckGroupConversationMember(userID int, groupConversationID int) error
 

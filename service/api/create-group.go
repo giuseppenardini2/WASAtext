@@ -48,7 +48,7 @@ func (rt *_router) createGroup(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	for i := range groupPart.Partecipants {
-		if err := rt.db.AddUserToGroupConversation(groupPart.Partecipants[i].ID, groupConversation.ID); err != nil {
+		if err := rt.db.AddGroupConversationMember(groupPart.Partecipants[i].ID, groupConversation.ID); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}

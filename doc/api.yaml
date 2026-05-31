@@ -498,8 +498,12 @@ paths:
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
-        "404":
-          $ref: "#/components/responses/NotFound"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}/groups/{groupID}/photos:
     parameters:
@@ -525,15 +529,16 @@ paths:
         required: true
       responses:
         "200":
-          description: Photo successfully uploaded
+          description: Picture updated successful
           content:
-            text/plain:
-              schema:
-                description: Confirmation message
-                type: string
-                example: "Photo successfully uploaded"
-        "404":
-          $ref: "#/components/responses/NotFound"
+            application/json:
+              schema: { $ref: "#/components/schemas/Picture" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
 
 #------------

@@ -22,6 +22,9 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/users/:userid/groups", rt.createGroup)
 	rt.router.PUT("/users/:userid/groups/:groupid/names", rt.setGroupName)
 
+	rt.router.DELETE("/users/:userid/groups/:groupid/partecipants", rt.leaveGroup)
+	rt.router.PUT("/users/:userid/groups/:groupid/photos", rt.setGroupPhoto)
+
 	rt.router.GET("/context", rt.wrap(rt.getContextReply))
 
 	// Special routes
