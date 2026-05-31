@@ -58,11 +58,14 @@ type AppDatabase interface {
 	AddGroupConversation(name string, picture string, userCreatorID int) (structs.GroupConversation, error)
 	DeleteGroupConversation(groupConversationID int) error
 	GetGroupConversation(groupConversationID int) (structs.GroupConversation, error)
+	UpdateGroupConversationName(groupConversationID int, name string) error
 	UpdateGroupConversationPicture(groupConversationID int, picture string) error
+	CheckGroupConversation(groupConversationID int) error
 
 	AddUserToGroupConversation(userID int, groupConversationID int) error
 	RemoveUserFromGroupConversation(userID int, groupConversationID int) error
 	GetGroupConversartionMembers(groupConversationsID int) ([]structs.User, error)
+	CheckGroupConversationMember(userID int, groupConversationID int) error
 
 	AddMessage(body string, picture string, senderID int, conversationID int) (structs.Message, error)
 	AddReplyMessage(body string, picture string, senderID int, conversationID int, replyMessageID int) (structs.Message, error)

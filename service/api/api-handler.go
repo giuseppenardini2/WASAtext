@@ -20,6 +20,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/users/:userid/conversations/:conversationid/messages/:messageid/reactions", rt.commentMessage)
 	rt.router.DELETE("/users/:userid/conversations/:conversationid/messages/:messageid/reactions/:reactionid", rt.uncommentMessage)
 	rt.router.POST("/users/:userid/groups", rt.createGroup)
+	rt.router.PUT("/users/:userid/groups/:groupid/names", rt.setGroupName)
 
 	rt.router.GET("/context", rt.wrap(rt.getContextReply))
 

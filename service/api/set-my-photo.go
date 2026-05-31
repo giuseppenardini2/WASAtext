@@ -9,6 +9,7 @@ import (
 )
 
 func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	// Get parameters
 	userID, err := strconv.Atoi(ps.ByName("userID"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -20,20 +21,27 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
-	picture := r.URL.Query().Get("picture")
-	if picture == "" {
+	// Get request body
+	type UserPart struct {
+		Picture string `json:"picture"`
+	}
+	var userPart UserPart
+	if err := json.NewDecoder(r.Body).Decode(&userPart); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if err := rt.db.UpdateUserPicture(userID, picture); err != nil {
+	// TODO: Aggiungere controlli foto
+
+	// Prepare the response
+	if err := rt.db.UpdateUserPicture(userID, userPart.Picture); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("content-type", "application/json")
-	if err := json.NewEncoder(w).Encode(picture); err != nil {
+	if err := json.NewEncoder(w).Encode(userPart); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

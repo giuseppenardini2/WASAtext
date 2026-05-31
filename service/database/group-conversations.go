@@ -37,6 +37,12 @@ func (db *appdbimpl) AddGroupConversation(name string, picture string, userCreat
  * UPDATE OPERATIONS
  */
 
+func (db *appdbimpl) UpdateGroupConversationName(groupConversationID int, name string) error {
+	query := "UPDATE group_conversations SET name=? WHERE id=?"
+	_, err := db.c.Exec(query, name, groupConversationID)
+	return err
+}
+
 func (db *appdbimpl) UpdateGroupConversationPicture(groupConversationID int, picture string) error {
 	query := "UPDATE group_conversations SET picture=? WHERE id=?"
 	_, err := db.c.Exec(query, picture, groupConversationID)
@@ -63,4 +69,22 @@ func (db *appdbimpl) GetGroupConversation(groupConversationID int) (structs.Grou
 	query := "SELECT id, name, picture, user_creator_id FROM group_conversations WHERE id=?"
 	err := db.c.QueryRow(query, groupConversationID).Scan(&group.ID, &group.Name, &group.Picture, &group.UserCreatorID)
 	return group, err
+}
+
+/*
+ * CHECK OPERATIONS
+ */
+
+func (db *appdbimpl) CheckGroupConversation(groupConversationID int) error {
+	var count int
+
+	query := "SELECT COUNT(id) FROM group_conversations WHERE id=?"
+	err := db.c.QueryRow(query, groupConversationID).Scan(&count)
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return NonexistentResource
+	}
+	return nil
 }
