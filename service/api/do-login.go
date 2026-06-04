@@ -27,7 +27,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 	}
 
 	// Prepare the response
-	user, err := rt.db.AddUser(username, "")
+	user, err := rt.db.AddUser(username, structs.Picture{})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

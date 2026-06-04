@@ -41,7 +41,7 @@ func (rt *_router) createGroup(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Prepare the response
-	groupConversation, err := rt.db.AddGroupConversation(groupPart.Name, "", userID)
+	groupConversation, err := rt.db.AddGroupConversation(groupPart.Name, structs.Picture{}, userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

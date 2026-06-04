@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"wasatext/service/structs"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -34,7 +35,7 @@ func (rt *_router) setGroupPhoto(w http.ResponseWriter, r *http.Request, ps http
 
 	// Get request body
 	type GroupPart struct {
-		Picture string `json:"picture"`
+		Picture structs.Picture `json:"picture"`
 	}
 	var userPart GroupPart
 	if err := json.NewDecoder(r.Body).Decode(&userPart); err != nil {

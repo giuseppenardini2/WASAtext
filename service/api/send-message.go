@@ -45,8 +45,8 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// Get body request
 	type MessagePart struct {
-		Body    string `json:"body"`
-		Picture string `json:"picture"`
+		Body    string          `json:"body"`
+		Picture structs.Picture `json:"picture"`
 	}
 	var messagePart MessagePart
 	if err := json.NewDecoder(r.Body).Decode(&messagePart); err != nil {
@@ -54,7 +54,7 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	if messagePart.Body == "" && messagePart.Picture == "" {
+	if messagePart.Body == "" && structs.IsPictureNil(messagePart.Picture) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
