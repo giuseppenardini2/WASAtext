@@ -104,7 +104,7 @@ func (db *appdbimpl) CheckUser(userID int) error {
 		return err
 	}
 	if count == 0 {
-		return NonexistentResource
+		return ErrNonexistentResource
 	}
 	return nil
 }
@@ -118,7 +118,7 @@ func (db *appdbimpl) CheckUserUsername(username string) error {
 		return err
 	}
 	if count == 0 {
-		return NonexistentResource
+		return ErrNonexistentResource
 	}
 	return nil
 }

@@ -44,7 +44,7 @@ func (rt *_router) addToGroup(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
-	if err := rt.db.CheckGroupConversationMember(userToAddID, groupID); err != database.NonexistentResource {
+	if err := rt.db.CheckGroupConversationMember(userToAddID, groupID); err != database.ErrNonexistentResource {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

@@ -201,7 +201,7 @@ func (db *appdbimpl) CheckMessageConversation(messageID int, conversationID int)
 		return err
 	}
 	if count == 0 {
-		return NonexistentResource
+		return ErrNonexistentResource
 	}
 	return nil
 }

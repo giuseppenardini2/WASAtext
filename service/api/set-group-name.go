@@ -30,7 +30,7 @@ func (rt *_router) setGroupName(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	err = rt.db.CheckGroupConversation(groupID)
-	if err == database.NonexistentResource {
+	if err == database.ErrNonexistentResource {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {

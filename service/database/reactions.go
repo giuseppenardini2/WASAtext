@@ -92,7 +92,7 @@ func (db *appdbimpl) CheckUserReaction(userID int, reactionID int, messageID int
 		return err
 	}
 	if count == 0 {
-		return NonexistentResource
+		return ErrNonexistentResource
 	}
 	return nil
 }

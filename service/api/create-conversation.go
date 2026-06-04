@@ -33,7 +33,7 @@ func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps
 		return
 	}
 
-	if err := rt.db.CheckUserPrivateConversation(userID, conversationPart.SecondUserID); err != database.NonexistentResource {
+	if err := rt.db.CheckUserPrivateConversation(userID, conversationPart.SecondUserID); err != database.ErrNonexistentResource {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

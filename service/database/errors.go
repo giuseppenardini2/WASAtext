@@ -2,4 +2,4 @@ package database
 
 import "errors"
 
-var NonexistentResource = errors.New("Resource not found")
+var ErrNonexistentResource = errors.New("Resource not found")

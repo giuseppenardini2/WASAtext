@@ -31,7 +31,7 @@ func (db *appdbimpl) CheckUserPrivateConversation(firstUserID int, secondUserID 
 		return err
 	}
 	if count == 0 {
-		return NonexistentResource
+		return ErrNonexistentResource
 	}
 	return nil
 }
