@@ -6,21 +6,21 @@ import "wasatext/service/structs"
  * ADD OPERATIONS
  */
 
-func (db *appdbimpl) AddGroupConversation(name string, picture string, userCreatorID int) (structs.GroupConversation, error) {
-	groupConversationID, err := db.AddConversation() //2DO: Come gestire gli id
+func (db *appdbimpl) AddGroupConversation(name string, picture structs.Picture, userCreatorID int) (structs.GroupConversation, error) {
+	groupConversationID, err := db.AddConversation()
 	if err != nil {
 		return structs.GroupConversation{}, err
 	}
 
 	query := "INSERT INTO group_conversations (id, name, picture, user_creator_id) VALUES (?, ?, ?)"
-	_, err = db.c.Exec(query, groupConversationID, name, picture, userCreatorID)
+	_, err = db.c.Exec(query, groupConversationID, name, picture.Data, userCreatorID)
 	if err != nil {
 		return structs.GroupConversation{}, err
 	}
 
-	if picture != "" {
+	if !structs.IsPictureNil(picture) {
 		query := "UPDATE group_conversations SET picture=? WHERE id=?"
-		if _, err := db.c.Exec(query, picture, groupConversationID); err != nil {
+		if _, err := db.c.Exec(query, picture.Data, groupConversationID); err != nil {
 			return structs.GroupConversation{}, err
 		}
 	}
@@ -43,9 +43,9 @@ func (db *appdbimpl) UpdateGroupConversationName(groupConversationID int, name s
 	return err
 }
 
-func (db *appdbimpl) UpdateGroupConversationPicture(groupConversationID int, picture string) error {
+func (db *appdbimpl) UpdateGroupConversationPicture(groupConversationID int, picture structs.Picture) error {
 	query := "UPDATE group_conversations SET picture=? WHERE id=?"
-	_, err := db.c.Exec(query, picture, groupConversationID)
+	_, err := db.c.Exec(query, picture.Data, groupConversationID)
 	return err
 }
 
@@ -67,7 +67,7 @@ func (db *appdbimpl) GetGroupConversation(groupConversationID int) (structs.Grou
 	var group structs.GroupConversation
 
 	query := "SELECT id, name, picture, user_creator_id FROM group_conversations WHERE id=?"
-	err := db.c.QueryRow(query, groupConversationID).Scan(&group.ID, &group.Name, &group.Picture, &group.UserCreatorID)
+	err := db.c.QueryRow(query, groupConversationID).Scan(&group.ID, &group.Name, &group.Picture.Data, &group.UserCreatorID)
 	return group, err
 }
 

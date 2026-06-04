@@ -40,7 +40,7 @@ func (db *appdbimpl) GetGroupConversartionMembers(groupConversationsID int) ([]s
 	var users []structs.User
 	for rows.Next() {
 		var user structs.User
-		if err := rows.Scan(&user.ID, &user.Username, &user.Picture); err != nil {
+		if err := rows.Scan(&user.ID, &user.Username, &user.Picture.Data); err != nil {
 			return nil, err
 		}
 		users = append(users, user)
@@ -58,7 +58,7 @@ func (db *appdbimpl) GetGroupConversartionMembers(groupConversationsID int) ([]s
 func (db *appdbimpl) CheckGroupConversationMember(userID int, groupConversationID int) error {
 	var count int
 
-	query := "SELECT COUNT(id) FROM group_conversations_members WHERE user_id=? AND group_id=?"
+	query := "SELECT COUNT(id) FROM group_conversations_members WHERE user_id=? AND group_conversation_id=?"
 	err := db.c.QueryRow(query, userID, groupConversationID).Scan(&count)
 	if err != nil {
 		return err

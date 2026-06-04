@@ -25,13 +25,13 @@ func (db *appdbimpl) AddConversation() (int64, error) {
 func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview, error) {
 	var conversations []structs.ConversationPreview
 
-	query1 := `SELECT DISTINCT pc.id, u.username, COALESCE(u.picture, ""), (
+	query1 := `SELECT DISTINCT pc.id, u.username, COALESCE(u.picture, X''), (
 			SELECT body
 			FROM messages
 			WHERE conversation_id=pc.id
 			ORDER BY sent_date DESC LIMIT 1
 		) message_body, (
-		 	SELECT COALESCE(picture, "")
+		 	SELECT COALESCE(picture, X'')
 			FROM messages
 			WHERE conversation_id=pc.id
 			ORDER BY sent_date DESC LIMIT 1
@@ -50,7 +50,7 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 	for rows.Next() {
 		var conversationPreview structs.ConversationPreview
 		conversationPreview.Type = structs.PrivateConversationType
-		if err := rows.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPicture, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePicture, &conversationPreview.LastMessageSentDate); err != nil {
+		if err := rows.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPicture.Data, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePicture, &conversationPreview.LastMessageSentDate); err != nil {
 			return nil, err
 		}
 		conversations = append(conversations, conversationPreview)
@@ -59,13 +59,13 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 		return nil, err
 	}
 
-	query2 := `SELECT DISTINCT gc.id, gc.name, COALESCE(gc.picture, ""), (
+	query2 := `SELECT DISTINCT gc.id, gc.name, COALESCE(gc.picture, X''), (
 			SELECT body
 			FROM messages
 			WHERE conversation_id=gc.id
 			ORDER BY sent_date DESC LIMIT 1
 		) message_body, (
-		 	SELECT COALESCE(picture, "")
+		 	SELECT COALESCE(picture, X'')
 			FROM messages
 			WHERE conversation_id=gc.id
 			ORDER BY sent_date DESC LIMIT 1
@@ -84,7 +84,7 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 	for rows.Next() {
 		var conversationPreview structs.ConversationPreview
 		conversationPreview.Type = structs.GroupConversationType
-		if err := rows.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPicture, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePicture, &conversationPreview.LastMessageSentDate); err != nil {
+		if err := rows.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPicture.Data, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePicture, &conversationPreview.LastMessageSentDate); err != nil {
 			return nil, err
 		}
 		conversations = append(conversations, conversationPreview)

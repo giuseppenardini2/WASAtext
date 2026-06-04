@@ -8,7 +8,7 @@ import (
  * ADD OPERATIONS
  */
 
-func (db *appdbimpl) AddMessage(body string, picture string, senderID int, conversationID int) (structs.Message, error) {
+func (db *appdbimpl) AddMessage(body string, picture structs.Picture, senderID int, conversationID int) (structs.Message, error) {
 	messageID, err := db.GetNewMessageID(conversationID)
 	if err != nil {
 		return structs.Message{}, err
@@ -21,9 +21,9 @@ func (db *appdbimpl) AddMessage(body string, picture string, senderID int, conve
 	}
 
 	// Add the picture of the message if it is present
-	if picture != "" {
+	if !structs.IsPictureNil(picture) {
 		query := "UPDATE messages SET picture=? WHERE id=?"
-		_, err = db.c.Exec(query, picture, messageID)
+		_, err = db.c.Exec(query, picture.Data, messageID)
 		if err != nil {
 			return structs.Message{}, err
 		}
@@ -41,7 +41,7 @@ func (db *appdbimpl) AddMessage(body string, picture string, senderID int, conve
 	}, nil
 }
 
-func (db *appdbimpl) AddReplyMessage(body string, picture string, senderID int, conversationID int, replyMessageID int) (structs.Message, error) {
+func (db *appdbimpl) AddReplyMessage(body string, picture structs.Picture, senderID int, conversationID int, replyMessageID int) (structs.Message, error) {
 	messageID, err := db.GetNewMessageID(conversationID)
 	if err != nil {
 		return structs.Message{}, err
@@ -53,9 +53,9 @@ func (db *appdbimpl) AddReplyMessage(body string, picture string, senderID int, 
 		return structs.Message{}, err
 	}
 
-	if picture != "" {
+	if !structs.IsPictureNil(picture) {
 		query := "UPDATE messages SET picture=? WHERE id=?"
-		_, err = db.c.Exec(query, picture, messageID)
+		_, err = db.c.Exec(query, picture.Data, messageID)
 		if err != nil {
 			return structs.Message{}, err
 		}
@@ -75,10 +75,11 @@ func (db *appdbimpl) AddReplyMessage(body string, picture string, senderID int, 
 
 func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversationID int, senderID int, conversationID int) (structs.Message, error) {
 	// Get the body and picture of the message to forward to
-	var body, picture string
+	var body string
+	var picture structs.Picture
 
-	query1 := `SELECT body, COALESCE(picture, "") FROM messages WHERE id=? AND conversation_id=?`
-	err := db.c.QueryRow(query1, originalMessageID, originalConversationID).Scan(&body, &picture)
+	query1 := `SELECT body, COALESCE(picture, X'') FROM messages WHERE id=? AND conversation_id=?`
+	err := db.c.QueryRow(query1, originalMessageID, originalConversationID).Scan(&body, &picture.Data)
 	if err != nil {
 		return structs.Message{}, err
 	}
@@ -96,9 +97,9 @@ func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversa
 	}
 
 	// Add the picture of the message if it is present
-	if picture != "" {
+	if !structs.IsPictureNil(picture) {
 		query := "UPDATE messages SET picture=? WHERE id=?"
-		_, err = db.c.Exec(query, picture, messageID)
+		_, err = db.c.Exec(query, picture.Data, messageID)
 		if err != nil {
 			return structs.Message{}, err
 		}
@@ -142,15 +143,15 @@ func (db *appdbimpl) GetNewMessageID(conversationID int) (int64, error) {
 func (db *appdbimpl) GetMessage(conversationID int, messageID int) (structs.Message, error) {
 	var message structs.Message
 
-	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture, ""), sender_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
+	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture, X''), sender_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
 		FROM messages
 		WHERE id=? AND conversation_id=?`
-	err := db.c.QueryRow(query, messageID, conversationID).Scan(&message.ID, &message.SentDate, &message.Picture, &message.SenderID, &message.ConversationID, &message.ReplyMessageID, &message.ForwardedMessageID)
+	err := db.c.QueryRow(query, messageID, conversationID).Scan(&message.ID, &message.SentDate, &message.Picture.Data, &message.SenderID, &message.ConversationID, &message.ReplyMessageID, &message.ForwardedMessageID)
 	return message, err
 }
 
 func (db *appdbimpl) GetMessages(conversationID int) (structs.Conversation, error) {
-	query := `SELECT id, body, sent_date, COALESCE(picture, ""), sender_id, conversation_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
+	query := `SELECT id, body, sent_date, COALESCE(picture, X''), sender_id, conversation_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
 		FROM messages
 		WHERE conversation_id=?
 		ORDER BY sent_date DESC`
@@ -162,7 +163,7 @@ func (db *appdbimpl) GetMessages(conversationID int) (structs.Conversation, erro
 	var messages []structs.Message
 	for rows.Next() {
 		var message structs.Message
-		if err := rows.Scan(&message.ID, &message.ConversationID, &message.Body, &message.SentDate, &message.Picture, &message.SenderID, &message.ReplyMessageID, &message.ForwardedMessageID); err != nil {
+		if err := rows.Scan(&message.ID, &message.ConversationID, &message.Body, &message.SentDate, &message.Picture.Data, &message.SenderID, &message.ReplyMessageID, &message.ForwardedMessageID); err != nil {
 			return structs.Conversation{}, err
 		}
 		messages = append(messages, message)
@@ -180,11 +181,11 @@ func (db *appdbimpl) GetMessages(conversationID int) (structs.Conversation, erro
 func (db *appdbimpl) GetLastMessage(conversationID int) (structs.Message, error) {
 	var message structs.Message
 
-	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture, ""), sender_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
+	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture, X''), sender_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
 		FROM messages
 		WHERE conversation_id=?
 		ORDER BY sent_date DESC LIMIT 1`
-	err := db.c.QueryRow(query, conversationID).Scan(&message.ID, &message.ConversationID, &message.SentDate, &message.Picture, &message.SenderID, &message.ReplyMessageID, &message.ForwardedMessageID)
+	err := db.c.QueryRow(query, conversationID).Scan(&message.ID, &message.ConversationID, &message.SentDate, &message.Picture.Data, &message.SenderID, &message.ReplyMessageID, &message.ForwardedMessageID)
 	return message, err
 }
 

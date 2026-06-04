@@ -20,7 +20,7 @@ type ConversationPreview struct {
 	ID                  int              `json:"id"`                  // Recipient ID
 	Type                ConversationType `json:"type"`                // Recipient type
 	RecipientName       string           `json:"recipientName"`       // Recipient name (Group name or user username)
-	RecipientPicture    string           `json:"recipientPicture"`    // Recipient picture
+	RecipientPicture    Picture          `json:"recipientPicture"`    // Recipient picture
 	LastMessageBody     string           `json:"lastMessageBody"`     // Last message body with the recipient
 	LastMessagePicture  string           `json:"lastMessagePicture"`  // Last message picture with the recipient
 	LastMessageSentDate time.Time        `json:"lastMessageSentDate"` // Last message sent date with the recipient
@@ -32,10 +32,10 @@ type Conversation struct {
 }
 
 type GroupConversation struct {
-	ID            int    `json:"id"`            // Group ID (corresponding to conversation ID)
-	Name          string `json:"name"`          // Group name
-	Picture       string `json:"picture"`       // Group picture
-	UserCreatorID int    `json:"userCreatorID"` // ID of the user who created the group
+	ID            int     `json:"id"`            // Group ID (corresponding to conversation ID)
+	Name          string  `json:"name"`          // Group name
+	Picture       Picture `json:"picture"`       // Group picture
+	UserCreatorID int     `json:"userCreatorID"` // ID of the user who created the group
 }
 
 func IsGroupNameValid(groupName string) bool {
