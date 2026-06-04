@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 	"strconv"
 	"wasatext/service/structs"
@@ -34,26 +35,37 @@ func (rt *_router) setGroupPhoto(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	// Get request body
-	type GroupPart struct {
-		Picture structs.Picture `json:"picture"`
-	}
-	var userPart GroupPart
-	if err := json.NewDecoder(r.Body).Decode(&userPart); err != nil {
+	file, _, err := r.FormFile("image")
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	// TODO: Aggiungere controlli foto
+	data, err := io.ReadAll(file)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	fileType := http.DetectContentType(data)
+	if fileType != "image/jpeg" && fileType != "image/png" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	// Prepare the response
-	if err := rt.db.UpdateGroupConversationPicture(groupID, userPart.Picture); err != nil {
+	picture := structs.Picture{
+		Data: data,
+	}
+
+	if err := rt.db.UpdateGroupConversationPicture(groupID, picture); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("content-type", "application/json")
-	if err := json.NewEncoder(w).Encode(userPart); err != nil {
+	if err := json.NewEncoder(w).Encode(picture); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
