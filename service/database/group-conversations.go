@@ -12,7 +12,7 @@ func (db *appdbimpl) AddGroupConversation(name string, picture structs.Picture, 
 		return structs.GroupConversation{}, err
 	}
 
-	query := "INSERT INTO group_conversations (id, name, picture, user_creator_id) VALUES (?, ?, ?)"
+	query := "INSERT INTO group_conversations (id, name, picture, user_creator_id) VALUES (?, ?, ?, ?)"
 	_, err = db.c.Exec(query, groupConversationID, name, picture.Data, userCreatorID)
 	if err != nil {
 		return structs.GroupConversation{}, err

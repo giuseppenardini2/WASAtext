@@ -75,8 +75,8 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 			WHERE conversation_id=gc.id
 			ORDER BY sent_date DESC LIMIT 1
 		) message_sent_date
-	FROM groups_conversations AS gc, group_conversations_members AS gcm
-	WHERE gcm.user_id=? AND gcm.group_id=gc.id`
+	FROM group_conversations AS gc, group_conversations_members AS gcm
+	WHERE gcm.user_id=? AND gcm.group_conversation_id=gc.id`
 	rows, err = db.c.Query(query2, userID)
 	if err != nil {
 		return nil, err

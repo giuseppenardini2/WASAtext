@@ -45,7 +45,7 @@ func (db *appdbimpl) CheckReadMessage(messageID int, conversationID int) error {
 		var groupMembersNumber int
 		query3 := `SELECT COUNT(gcm.user_id)
 			FROM group_conversations_members AS gcm, messages AS m
-			WHERE m.id=? AND m.conversation_id=? AND ugcm.group_conversation_id=m.conversation_id`
+			WHERE m.id=? AND m.conversation_id=? AND gcm.group_conversation_id=m.conversation_id`
 		err = db.c.QueryRow(query3, messageID, conversationID).Scan(&groupMembersNumber)
 		if err != nil {
 			return err

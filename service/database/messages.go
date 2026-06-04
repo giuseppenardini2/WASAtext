@@ -78,7 +78,7 @@ func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversa
 	var body string
 	var picture structs.Picture
 
-	query1 := `SELECT body, COALESCE(picture, X'') FROM messages WHERE id=? AND conversation_id=?`
+	query1 := "SELECT body, COALESCE(picture, X'') FROM messages WHERE id=? AND conversation_id=?"
 	err := db.c.QueryRow(query1, originalMessageID, originalConversationID).Scan(&body, &picture.Data)
 	if err != nil {
 		return structs.Message{}, err
