@@ -57,8 +57,8 @@ func createTables(db *sql.DB) error {
 		group_conversation_id INTEGER,
 		PRIMARY KEY(user_id, group_conversation_id),
 		CONSTRAINT fk_group_conversations_members
-			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCEDE
-			FOREIGN KEY(group_conversation_id) REFERENCES group_conversations(id)
+			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+			FOREIGN KEY(group_conversation_id) REFERENCES group_conversations(id) ON DELETE CASCADE
 	);`
 	if _, err := db.Exec(groupConversationsMembersQuery); err != nil {
 		return err
@@ -92,7 +92,7 @@ func createTables(db *sql.DB) error {
 		PRIMARY KEY(user_id, message_id, conversation_id),
 		CONSTRAINT fk_read_checkmarks
 			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
-			FOREING KEY(message_id, conversation_id) REFERENCES messages(id, conversation_id) ON DELETE CASCADE
+			FOREIGN KEY(message_id, conversation_id) REFERENCES messages(id, conversation_id) ON DELETE CASCADE
 	);`
 	if _, err := db.Exec(readCheckmarksQuery); err != nil {
 		return err
