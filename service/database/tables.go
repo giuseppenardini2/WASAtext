@@ -55,7 +55,7 @@ func createTables(db *sql.DB) error {
 	groupConversationsMembersQuery := `CREATE TABLE IF NOT EXISTS group_conversations_members (
 		user_id INTEGER,
 		group_conversation_id INTEGER,
-		PRIMARY KEY(user_id, group_id),
+		PRIMARY KEY(user_id, group_conversation_id),
 		CONSTRAINT fk_group_conversations_members
 			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCEDE
 			FOREIGN KEY(group_conversation_id) REFERENCES group_conversations(id)
