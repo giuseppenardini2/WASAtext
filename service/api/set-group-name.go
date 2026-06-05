@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 	"wasatext/service/database"
@@ -30,7 +31,7 @@ func (rt *_router) setGroupName(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	err = rt.db.CheckGroupConversation(groupID)
-	if err == database.ErrNonexistentResource {
+	if errors.Is(err, database.ErrNonexistentResource) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {

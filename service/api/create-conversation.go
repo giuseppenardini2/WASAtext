@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 	"wasatext/service/database"
@@ -33,7 +34,7 @@ func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps
 		return
 	}
 
-	if err := rt.db.CheckUserPrivateConversation(userID, conversationPart.SecondUserID); err != database.ErrNonexistentResource {
+	if err := rt.db.CheckUserPrivateConversation(userID, conversationPart.SecondUserID); !errors.Is(err, database.ErrNonexistentResource) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

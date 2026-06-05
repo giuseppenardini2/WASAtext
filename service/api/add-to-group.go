@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 	"wasatext/service/database"
@@ -44,7 +45,7 @@ func (rt *_router) addToGroup(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
-	if err := rt.db.CheckGroupConversationMember(userToAddID, groupID); err != database.ErrNonexistentResource {
+	if err := rt.db.CheckGroupConversationMember(userToAddID, groupID); !errors.Is(err, database.ErrNonexistentResource) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
