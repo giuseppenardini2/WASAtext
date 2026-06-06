@@ -25,8 +25,6 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.DELETE("/users/:userid/groups/:groupid/partecipants", rt.leaveGroup)
 	rt.router.PUT("/users/:userid/groups/:groupid/photos", rt.setGroupPhoto)
 
-	rt.router.GET("/context", rt.wrap(rt.getContextReply))
-
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
 
