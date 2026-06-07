@@ -84,7 +84,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userID}:
+  /users/{userid}:
     parameters:
       - $ref: "#/components/parameters/userID"
 
@@ -111,7 +111,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userID}/username:
+  /users/{userid}/username:
     parameters:
       - $ref: "#/components/parameters/userID"
 
@@ -146,7 +146,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userID}/photos:
+  /users/{userid}/photos:
     parameters:
         - $ref: "#/components/parameters/userID"
 
@@ -180,7 +180,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userID}/conversations:
+  /users/{userid}/conversations:
     parameters:
         - $ref: "#/components/parameters/userID"
 
@@ -240,7 +240,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userID}/conversations/{conversationID}/messages:
+  /users/{userid}/conversations/{conversationid}/messages:
     parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/conversationID"
@@ -282,7 +282,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userID}/conversations/{conversationID}/messages/{messageID}:
+  /users/{userid}/conversations/{conversationid}/messages/{messageid}:
     parameters:
       - $ref: "#/components/parameters/userID"
       - $ref: "#/components/parameters/messageID"
@@ -329,7 +329,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userID}/conversations/{conversationID}/messages/{messageID}/reactions:
+  /users/{userid}/conversations/{conversationid}/messages/{messageid}/reactions:
     parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/conversationID"
@@ -365,7 +365,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userID}/conversations/{conversationID}/messages/{messageID}/reactions/{reactionID}:
+  /users/{userid}/conversations/{conversationid}/messages/{messageid}/reactions/{reactionid}:
     parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/conversationID"
@@ -390,7 +390,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userID}/groups:
+  /users/{userid}/groups:
     parameters:
         - $ref: "#/components/parameters/userID"
 
@@ -425,7 +425,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userID}/groups/{groupID}/names:
+  /users/{userid}/groups/{groupid}/names:
     parameters:
       - $ref: "#/components/parameters/userID"
       - $ref: "#/components/parameters/groupID"
@@ -460,7 +460,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userID}/groups/{groupID}/participants:
+  /users/{userid}/groups/{groupid}/participants:
     parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/groupID"
@@ -510,7 +510,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userID}/groups/{groupID}/photos:
+  /users/{userid}/groups/{groupid}/photos:
     parameters:
         - $ref: "#/components/parameters/userID"
         - $ref: "#/components/parameters/groupID"
@@ -764,35 +764,35 @@ components:
       schema: { $ref: "#/components/schemas/Username" }
 
     userID:
-      name: userID
+      name: userid
       description: Unique user identifier
       in: path
       required: true
       schema: { $ref: "#/components/schemas/Identifier" }
 
     conversationID:
-      name: conversationID
+      name: conversationid
       description: Unique conversation identifier
       in: path
       required: true
       schema: { $ref: "#/components/schemas/Identifier" }
 
     recipientID:
-      name: recipientID
+      name: recipientid
       description: Unique recipient identifier
       in: query
       required: true
       schema: { $ref: "#/components/schemas/Identifier" }
 
     messageID:
-      name: messageID
+      name: messageid
       description: Unique message identifier
       in: path
       required: true
       schema: { $ref: "#/components/schemas/Identifier" }
 
     reactionID:
-      name: reactionID
+      name: reactionid
       description: Unique reaction identifier
       in: path
       required: true
@@ -800,7 +800,7 @@ components:
 
     groupID:
       description: Unique group identifier
-      name: groupID
+      name: groupid
       in: path
       required: true
       schema: { $ref: "#/components/schemas/Identifier" }
