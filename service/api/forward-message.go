@@ -10,7 +10,7 @@ import (
 
 func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get parameters
-	userID, err := strconv.Atoi(ps.ByName("userID"))
+	userID, err := strconv.Atoi(ps.ByName("userid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -21,7 +21,7 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	conversationID, err := strconv.Atoi(ps.ByName("conversationID"))
+	conversationID, err := strconv.Atoi(ps.ByName("conversationid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -32,13 +32,13 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	messageID, err := strconv.Atoi(ps.ByName("messageID"))
+	messageID, err := strconv.Atoi(ps.ByName("messageid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	recipientID, err := strconv.Atoi(r.URL.Query().Get("recipientID")) // TODO: Gestire la creazione di una conversazione
+	recipientID, err := strconv.Atoi(r.URL.Query().Get("recipientid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

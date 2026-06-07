@@ -13,7 +13,7 @@ import (
 
 func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get parameters
-	userID, err := strconv.Atoi(ps.ByName("userID"))
+	userID, err := strconv.Atoi(ps.ByName("userid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

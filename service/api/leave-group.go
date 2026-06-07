@@ -9,7 +9,7 @@ import (
 
 func (rt *_router) leaveGroup(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get parameters
-	userID, err := strconv.Atoi(ps.ByName("userID"))
+	userID, err := strconv.Atoi(ps.ByName("userid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -20,7 +20,7 @@ func (rt *_router) leaveGroup(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
-	groupID, err := strconv.Atoi(ps.ByName("groupID"))
+	groupID, err := strconv.Atoi(ps.ByName("groupid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

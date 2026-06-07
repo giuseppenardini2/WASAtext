@@ -9,7 +9,7 @@ import (
 
 func (rt *_router) uncommentMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get parameters
-	userID, err := strconv.Atoi(ps.ByName("userID"))
+	userID, err := strconv.Atoi(ps.ByName("userid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -20,7 +20,7 @@ func (rt *_router) uncommentMessage(w http.ResponseWriter, r *http.Request, ps h
 		return
 	}
 
-	conversationID, err := strconv.Atoi(ps.ByName("conversationID"))
+	conversationID, err := strconv.Atoi(ps.ByName("conversationid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -31,13 +31,13 @@ func (rt *_router) uncommentMessage(w http.ResponseWriter, r *http.Request, ps h
 		return
 	}
 
-	messageID, err := strconv.Atoi(ps.ByName("messageID"))
+	messageID, err := strconv.Atoi(ps.ByName("messageid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	reactionID, err := strconv.Atoi(ps.ByName("reactionID"))
+	reactionID, err := strconv.Atoi(ps.ByName("reactionid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
