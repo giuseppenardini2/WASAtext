@@ -23,13 +23,15 @@ export default {
 			sessionStorage.setItem('picture', response.data.picture);
 
 			this.loading = false;
-			// this.$router.push("");
+			this.$router.push("/home");
 		}
 	},
 	mounted() {
 		if (sessionStorage.userID) {
-			// this.$router.push("");
+			this.$router.push("/home");
+			return
 		}
+		
 	}
 }
 </script>
