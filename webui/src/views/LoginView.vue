@@ -8,7 +8,7 @@ export default {
 		}
 	},
 	methods: {
-		login() {
+		async login() {
 			this.loading = true;
 
 			if (this.username.length < 3 || this.username.length > 16) throw "Invalid username"
