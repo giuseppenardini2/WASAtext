@@ -3,7 +3,6 @@ export default {
 	data() {
 		return {
 			username: "",
-			picture: "",
 			loading: false,
 			errorMessage: null,
 		}
@@ -45,7 +44,7 @@ export default {
 			<button type="submit" @click="login">Submit</button>
 		</div>
 
-		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+		<ErrorMsg v-if="errorMessage" :msg="errorMessage"></ErrorMsg>
 	</div>
 </template>
 
