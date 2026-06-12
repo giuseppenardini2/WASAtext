@@ -25,13 +25,13 @@ export default {
 			this.$router.push("/home");
 		}
 	},
-	mounted() {
+	/*mounted() {
 		if (sessionStorage.userID) {
 			this.$router.push("/home");
 			return
 		}
 		
-	}
+	}*/
 }
 </script>
 

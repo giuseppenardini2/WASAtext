@@ -29,7 +29,7 @@ export default {
 <template>
 	<div>
 		<div>
-
+			Hello world!
 		</div>
 		<ErrorMsg v-if="errorMessage" :msg="errorMessage"></ErrorMsg>
 	</div>

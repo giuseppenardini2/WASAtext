@@ -20,19 +20,19 @@ export default {}
 				<div class="position-sticky pt-3 sidebar-sticky">
 					<ul class="nav flex-column">
 						<li class="nav-item">
-							<RouterLink to="/" class="nav-link">
+							<RouterLink to="/home" class="nav-link">
 								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#message-square"/></svg>
 								Chats
 							</RouterLink>
 						</li>
 						<li class="nav-item">
-							<RouterLink to="/link1" class="nav-link">
+							<RouterLink to="/users" class="nav-link"> <!-- Cambiato il to -->
 								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#users"/></svg>
 								Users
 							</RouterLink>
 						</li>
 						<li class="nav-item">
-							<RouterLink to="/link2" class="nav-link">
+							<RouterLink to="/settings" class="nav-link">
 								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#settings"/></svg>
 								Settings
 							</RouterLink>
