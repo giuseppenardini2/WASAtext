@@ -74,6 +74,7 @@ export default {}
 
 .sidebar ul li {
 	margin-bottom: 15px;
+	display: flex;
 	padding: 0 10px;
 }
 
@@ -84,19 +85,14 @@ export default {}
 	display: flex;
 	justify-content: center;
     align-items: center;
-    padding: 8px;
-	border-radius: 6px;
+    padding: 0;
+	border-radius: 50%;
 	transition: all 0.3s ease;
 }
 
-.sidebar ul li a:hover {
-	background-color: #334155;
-	color: #fff;
-}
-
+.sidebar ul li a:hover, 
 .sidebar ul li a.router-link-exact-active {
-	background-color: #334155;
-	color: #fff;
+	background-color: var(--color5);
 }
 
 .icon {
