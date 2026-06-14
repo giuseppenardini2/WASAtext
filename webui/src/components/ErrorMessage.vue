@@ -6,18 +6,26 @@ export default {
 
 <template>
 	<div class="alert-box">
-		{{ message }}
+		<span class="alert-content">{{ message }}</span>
 	</div>
 </template>
 
 <style scoped>
 .alert-box {
 	display: flex;
-	font-size: 12px;
-	border-style: solid;
-	border-width: 2px;
-	border-color: #c10d0d;
-	background-color:  #fc6767;
+    align-items: center;
 
+	border: 1px solid #c10d0d;
+    border-radius: 2px;
+	
+	background-color:  #fc6767;
+	color: black;
+
+	font-size: 12px;
+}
+
+.alert-content {
+    flex: 1;
+    word-break: break-word;
 }
 </style>
