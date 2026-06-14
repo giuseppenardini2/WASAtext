@@ -45,7 +45,7 @@ export default {
 			<button type="submit" @click="login">Submit</button>
 		</div>
 
-		<ErrorMessage v-if="errorMessage" :msg="errorMessage"></ErrorMessage>
+		<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
 	</div>
 </template>
 

@@ -47,7 +47,7 @@ export default {
 			</form>
 		</div>
 
-		<ErrorMessage v-if="errorMessage" :msg="errorMessage"></ErrorMessage>
+		<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
 	</div>
 </template>
 

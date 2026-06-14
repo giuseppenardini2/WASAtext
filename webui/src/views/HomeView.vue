@@ -31,7 +31,7 @@ export default {
 		<div>
 			Hello world!
 		</div>
-		<ErrorMessage v-if="errorMessage" :msg="errorMessage"></ErrorMessage>
+		<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
 	</div>
 </template>
 
