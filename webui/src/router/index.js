@@ -5,14 +5,10 @@ import LoginView from '../views/LoginView.vue'
 const router = createRouter({
 	history: createWebHashHistory(import.meta.env.BASE_URL),
 	routes: [
-		/*{path: '/', component: HomeView},
-		{path: '/link1', component: HomeView},
-		{path: '/link2', component: HomeView},
-		{path: '/some/:id/link', component: HomeView},*/
-
 		{path: '/', redirect: '/login'},
 		{path: '/login', component: LoginView},
 		{path: '/home', component: HomeView},
+		{path: '/users', component: HomeView},
 		{path: '/settings', component: HomeView},
 		{path: '/some/:id/link', component: HomeView},
 	]
