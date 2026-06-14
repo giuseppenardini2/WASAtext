@@ -7,46 +7,113 @@ export default {}
 
 <template>
 
-	<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-		<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#/">WASAtext</a>
-		<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-	</header>
-
-	<div class="container-fluid">
-		<div class="row">
-			<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-				<div class="position-sticky pt-3 sidebar-sticky">
-					<ul class="nav flex-column">
-						<li class="nav-item">
-							<RouterLink to="/home" class="nav-link">
-								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#message-square"/></svg>
-								Chats
+	<div class="page">
+        <aside class="sidebar">
+            <nav>
+				<div>
+					<a href="/" class="logo">WASAtext</a>
+					<ul>
+						<li>
+							<RouterLink to="/home">
+								<svg class="icon"><use href="/feather-sprite-v4.29.0.svg#message-circle"/></svg>
 							</RouterLink>
 						</li>
-						<li class="nav-item">
-							<RouterLink to="/users" class="nav-link"> <!-- Cambiato il to -->
-								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#users"/></svg>
-								Users
+						<li>
+							<RouterLink to="/users">
+								<svg class="icon"><use href="/feather-sprite-v4.29.0.svg#users"/></svg>
 							</RouterLink>
 						</li>
-						<li class="nav-item">
-							<RouterLink to="/settings" class="nav-link">
-								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#settings"/></svg>
-								Settings
+						<li>
+							<RouterLink to="/settings">
+								<svg class="icon"><use href="/feather-sprite-v4.29.0.svg#settings"/></svg>
 							</RouterLink>
 						</li>
 					</ul>
 				</div>
-			</nav>
+            </nav>
+        </aside>
 
-			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-				<RouterView />
-			</main>
-		</div>
-	</div>
+        <main class="main">
+            <RouterView />
+        </main>
+
+    </div>
 </template>
 
-<style>
+<style scoped>
+/* PAGE */
+.page {
+	display: flex;
+  	width: 100vw;
+  	height: 100vh;
+	margin: 0;
+	background-color: var(--color2);
+}
+
+/* SIDEBAR */
+.logo {
+    display: block;
+    padding: 20px 0;
+    color: var(--color1);
+	text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.sidebar {
+	width: 100px;
+  	background-color: var(--color3);
+  	color: #fff;
+}
+
+.sidebar ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.sidebar ul li {
+	margin-bottom: 15px;
+	padding: 0 10px;
+}
+
+.sidebar ul li a {
+	color: var(--color2);
+	text-decoration: none;
+	font-size: 16px;
+	display: flex;
+	justify-content: center;
+    align-items: center;
+    padding: 8px;
+	border-radius: 6px;
+	transition: all 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+	background-color: #334155;
+	color: #fff;
+}
+
+.sidebar ul li a.router-link-exact-active {
+	background-color: #334155;
+	color: #fff;
+}
+
+.icon {
+	width: 28px;
+	height: 28px;
+	max-width: 100%;
+	stroke: var(--color1);
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	fill: none;
+}
+
+/* MAIN */
+.main {
+	flex: 1;
+	background-color: var(--color2);
+	color: #333;
+}
 </style>

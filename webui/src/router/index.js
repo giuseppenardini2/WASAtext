@@ -11,9 +11,9 @@ const router = createRouter({
 		{path: '/some/:id/link', component: HomeView},*/
 
 		{path: '/', redirect: '/login'},
-		{path: '/login', component: LoginView},
+		{path: '/login', component: HomeView},
 		{path: '/home', component: HomeView},
-		{path: '/settings', component: HomeView},
+		{path: '/settings', component: LoginView},
 		{path: '/some/:id/link', component: HomeView},
 	]
 })
