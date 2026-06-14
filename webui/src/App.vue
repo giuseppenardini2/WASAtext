@@ -11,7 +11,7 @@ export default {}
         <aside class="sidebar">
             <nav>
 				<div>
-					<a href="/" class="logo">WASAtext</a>
+					<a href="/" class="logo">Wt</a>
 					<ul>
 						<li>
 							<RouterLink to="/home">
@@ -54,16 +54,16 @@ export default {}
 .logo {
     display: block;
     padding: 20px 0;
+	font-size: 23px;
+    font-weight: bold;
     color: var(--color1);
 	text-align: center;
     text-decoration: none;
-    font-weight: bold;
 }
 
 .sidebar {
-	width: 100px;
+	width: 65px;
   	background-color: var(--color3);
-  	color: #fff;
 }
 
 .sidebar ul {
@@ -112,6 +112,5 @@ export default {}
 .main {
 	flex: 1;
 	background-color: var(--color2);
-	color: #333;
 }
 </style>
