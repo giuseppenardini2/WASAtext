@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-	<div class="alert-box">
+	<div class="alert-box" role="alert">
 		<span class="alert-content">{{ message }}</span>
 	</div>
 </template>
@@ -14,14 +14,13 @@ export default {
 .alert-box {
 	display: flex;
     align-items: center;
-
+	padding: 5px;
+	margin: 10px;
 	border: 1px solid #c10d0d;
-    border-radius: 2px;
-	
+    border-radius: 5px;
 	background-color:  #fc6767;
 	color: black;
-
-	font-size: 12px;
+	font-size: 16px;
 }
 
 .alert-content {
