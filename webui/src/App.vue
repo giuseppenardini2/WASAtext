@@ -75,7 +75,7 @@ export default {}
 .sidebar ul li {
 	margin-bottom: 15px;
 	display: flex;
-	padding: 0 10px;
+    justify-content: center;
 }
 
 .sidebar ul li a {
@@ -86,6 +86,8 @@ export default {}
 	justify-content: center;
     align-items: center;
     padding: 0;
+	height: 48px;
+	width: 48px;
 	border-radius: 50%;
 	transition: all 0.3s ease;
 }
