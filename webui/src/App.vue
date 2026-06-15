@@ -2,13 +2,34 @@
 import { RouterLink, RouterView } from 'vue-router'
 </script>
 <script>
-export default {}
+export default {
+	name: 'App',
+	data() {
+		return {
+			isLoggedIn: false
+		};
+	},
+	methods: {
+		isUserLoggedIn() {
+			const token = sessionStorage.getItem('token');
+			if ((token === null) || (token.trim === '')) {
+				this.isLoggedIn = false;
+				this.$router.push("/login");
+				return;
+			}
+			this.isLoggedIn = true;
+		}
+	},
+	mounted() {
+		this.isUserLoggedIn();
+	}
+}
 </script>
 
 <template>
 
 	<div class="page">
-        <aside class="sidebar">
+        <aside class="sidebar" v-if="isLoggedIn">
             <nav>
 				<div>
 					<a href="/" class="logo">Wt</a>
