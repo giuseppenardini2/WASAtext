@@ -9,25 +9,28 @@ import (
 )
 
 func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get parameters
-	username := ps.ByName("username")
-	if username == "" {
+	// Get body request
+	type UserPart struct {
+		Username string `json:"username"`
+	}
+	var userPart UserPart
+	if err := json.NewDecoder(r.Body).Decode(&userPart); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if !structs.IsUsernameValid(username) {
+	if !structs.IsUsernameValid(userPart.Username) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if err := rt.db.CheckUserUsername(username); err != nil {
+	if err := rt.db.CheckUserUsername(userPart.Username); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Prepare the response
-	user, err := rt.db.AddUser(username, structs.Picture{})
+	user, err := rt.db.AddUser(userPart.Username, structs.Picture{})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

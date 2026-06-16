@@ -8,7 +8,7 @@ export default {
 		}
 	},
 	methods: {
-		async login() {
+		async doLogin() {
 			this.loading = true;
 			try {
 				if (this.username.length < 3 || this.username.length > 16) throw "Invalid username"
@@ -22,7 +22,7 @@ export default {
 				sessionStorage.setItem('picture', response.data.picture);
 				sessionStorage.setItem('token', response.data.userID);
 
-				this.$axios.push('/home');
+				this.$router.push('/home');
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -46,10 +46,10 @@ export default {
 	<div class="main-box">
 		<div class="login-box">
 			<h1>Login</h1>
-			<form>
+			<form @submit.prevent="doLogin">
 				<label for="username-in">Username</label>
 				<input type="text" id="username-in" v-model="username" placeholder="Enter your username">
-				<button type="submit" @click="login" :disabled="loading">Submit</button>
+				<button type="submit" :disabled="loading">Submit</button>
 			</form>
 		</div>
 		<div>
