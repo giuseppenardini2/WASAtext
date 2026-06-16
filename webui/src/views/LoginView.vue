@@ -69,7 +69,7 @@ export default {
 }
 
 .login-box {
-    background: var(--color5);
+    background: var(--color-5);
     padding: 30px;
 	border-radius: 15px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);

@@ -69,7 +69,7 @@ export default {
   	width: 100vw;
   	height: 100vh;
 	margin: 0;
-	background-color: var(--color2);
+	background-color: var(--color-2);
 }
 
 /* SIDEBAR */
@@ -78,14 +78,14 @@ export default {
     padding: 20px 0;
 	font-size: 23px;
     font-weight: bold;
-    color: var(--color1);
+    color: var(--color-1);
 	text-align: center;
     text-decoration: none;
 }
 
 .sidebar {
 	width: 65px;
-  	background-color: var(--color3);
+  	background-color: var(--color-3);
 }
 
 .sidebar ul {
@@ -101,7 +101,7 @@ export default {
 }
 
 .sidebar ul li a {
-	color: var(--color2);
+	color: var(--color-2);
 	text-decoration: none;
 	font-size: 16px;
 	display: flex;
@@ -116,14 +116,14 @@ export default {
 
 .sidebar ul li a:hover, 
 .sidebar ul li a.router-link-exact-active {
-	background-color: var(--color5);
+	background-color: var(--color-5);
 }
 
 .icon {
 	width: 28px;
 	height: 28px;
 	max-width: 100%;
-	stroke: var(--color1);
+	stroke: var(--color-1);
 	stroke-width: 2;
 	stroke-linecap: round;
 	stroke-linejoin: round;
@@ -133,6 +133,6 @@ export default {
 /* MAIN */
 .main {
 	flex: 1;
-	background-color: var(--color2);
+	background-color: var(--color-2);
 }
 </style>

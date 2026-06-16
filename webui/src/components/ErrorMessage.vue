@@ -19,7 +19,7 @@ export default {
 	border: 1px solid #c10d0d;
     border-radius: 5px;
 	background-color:  #fc6767;
-	color: black;
+	color: var(--text-color-1);
 	font-size: 16px;
 }
 

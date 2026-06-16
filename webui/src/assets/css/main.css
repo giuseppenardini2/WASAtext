@@ -1,8 +1,11 @@
 /* GENERAL */
 :root {
-    --color1:#3b0d11;
-	--color2:#eddfef;
-	--color3:#659157;
-	--color4:#a1c084;
-	--color5:#fcfdaf;
+    --color-1:#3b0d11;
+	--color-2:#eddfef;
+	--color-3:#659157;
+	--color-4:#a1c084;
+	--color-5:#fcfdaf;
+
+	--text-color-1: #0f0f0f;
+
 }
