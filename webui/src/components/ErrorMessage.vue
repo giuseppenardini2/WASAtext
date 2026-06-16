@@ -4,15 +4,9 @@ export default {
 }
 </script>
 
-<!--<template>
+<template>
 	<div class="alert-box" role="alert">
 		<span class="alert-content">{{ message }}</span>
-	</div>
-</template> -->
-
-<template>
-	<div class="alert alert-danger" role="alert">
-		{{ message }}
 	</div>
 </template>
 
