@@ -10,20 +10,26 @@ export default {
 	methods: {
 		async login() {
 			this.loading = true;
+			try {
+				if (this.username.length < 3 || this.username.length > 16) throw "Invalid username"
 
-			if (this.username.length < 3 || this.username.length > 16) throw "Invalid username"
+				const response = await this.$axios.post('/session', {
+					username: this.username,
+				});
 
-			const response = await this.$axios.post('/session', {
-          		username: this.username,
-        	});
+				sessionStorage.setItem('userID', response.data.userID);
+				sessionStorage.setItem('username', response.data.username);
+				sessionStorage.setItem('picture', response.data.picture);
+				sessionStorage.setItem('token', response.data.userID);
 
-			sessionStorage.setItem('userID', response.data.userID);
-			sessionStorage.setItem('username', response.data.username);
-			sessionStorage.setItem('picture', response.data.picture);
-			sessionStorage.setItem('token', response.data.userID);
-
-			this.loading = false;
-			this.$router.push("/home");
+				this.$axios.push('/home');
+			}
+			catch(error) {
+				this.errorMessage = error.toString();
+			}
+			finally {
+				this.loading = false;
+			}
 		}
 	},
 	mounted() {
@@ -43,19 +49,21 @@ export default {
 			<form>
 				<label for="username-in">Username</label>
 				<input type="text" id="username-in" v-model="username" placeholder="Enter your username">
-				<button type="submit" @click="login">Submit</button>
+				<button type="submit" @click="login" :disabled="loading">Submit</button>
 			</form>
 		</div>
-
-		<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
+		<div>
+			<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
+		</div>
 	</div>
 </template>
 
 <style scoped>
 .main-box {
 	width: 100%;
-  	/*min-height: 100vh;*/ height: 100%;
+  	height: 100%;
   	display: flex;
+	flex-direction: column;
   	justify-content: center;
   	align-items: center;
 }
@@ -105,5 +113,11 @@ export default {
 
 .login-box button:hover {
     background-color: #0062d1;
+}
+
+.login-box button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.8;
 }
 </style>
