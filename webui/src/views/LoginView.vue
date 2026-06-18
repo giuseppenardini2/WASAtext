@@ -23,6 +23,7 @@ export default {
 				sessionStorage.setItem('token', response.data.id);
 
 				this.$router.push('/home');
+				this.$emit('login-success')
 			}
 			catch(error) {
 				this.errorMessage = error.toString();

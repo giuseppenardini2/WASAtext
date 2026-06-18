@@ -10,7 +10,7 @@ export default {
 		};
 	},
 	methods: {
-		isUserLoggedIn() {
+		handleLogin() {
 			const token = sessionStorage.getItem('token');
 			if ((token === null) || (token.trim() === '')) {
 				this.isLoggedIn = false;
@@ -53,7 +53,7 @@ export default {
         </aside>
 
         <main class="main">
-            <RouterView />
+            <RouterView @login-success="handleLogin"/>
         </main>
 
     </div>
