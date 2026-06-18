@@ -81,7 +81,7 @@ export default {
 
 .login-box h1 {
     margin-bottom: 20px;
-    color: #333;
+    color: var(--text-color-2);
 }
 
 .login-box form {
@@ -99,7 +99,9 @@ export default {
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 8px;
+	background-color: var(--color-2-a);
     font-size: 16px;
+	color: var(--text-color-3)
 }
 
 .login-box button {
@@ -107,14 +109,14 @@ export default {
     padding: 10px;
     border: none;
     border-radius: 8px;
-	background-color: #0078ff;
+	background-color: var(--color-3);
     color: white;
     font-size: 16px;
 	cursor: pointer;
 }
 
 .login-box button:hover {
-    background-color: #0062d1;
+    background-color: var(--color-3-a);
 }
 
 .login-box button:disabled {
