@@ -2,7 +2,9 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
+	"wasatext/service/database"
 	"wasatext/service/structs"
 
 	"github.com/julienschmidt/httprouter"
@@ -24,18 +26,27 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
-	if err := rt.db.CheckUserUsername(userPart.Username); err != nil {
+	var user structs.User
+	err := rt.db.CheckUserUsername(userPart.Username)
+	switch {
+	case errors.Is(err, database.ErrNonexistentResource):
+		user, err = rt.db.AddUser(userPart.Username, structs.Picture{})
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	case err == nil:
+		user, err = rt.db.GetUserByUsername(userPart.Username)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	default:
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Prepare the response
-	user, err := rt.db.AddUser(userPart.Username, structs.Picture{})
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("content-type", "application/json")
 	if err := json.NewEncoder(w).Encode(user); err != nil {

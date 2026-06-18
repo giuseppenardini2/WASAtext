@@ -18,7 +18,7 @@ export default {
 				});
 
 				sessionStorage.setItem('userID', response.data.userID);
-				sessionStorage.setItem('username', response.data.username);
+				sessionStorage.setItem('username', response.data.username);autorizzazione
 				sessionStorage.setItem('picture', response.data.picture);
 				sessionStorage.setItem('token', response.data.userID);
 
