@@ -12,7 +12,7 @@ export default {
 			this.loading = true;
 			this.errorMessage = null;
 			try {
-				let response = await this.$axios.get("/home");
+				let response = await this.$router.push("/home");
 				this.some_data = response.data;
 			} catch (e) {
 				this.errorMessage = e.toString();

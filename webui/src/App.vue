@@ -12,7 +12,7 @@ export default {
 	methods: {
 		isUserLoggedIn() {
 			const token = sessionStorage.getItem('token');
-			if ((token === null) || (token.trim === '')) {
+			if ((token === null) || (token.trim() === '')) {
 				this.isLoggedIn = false;
 				this.$router.push("/login");
 				return;
