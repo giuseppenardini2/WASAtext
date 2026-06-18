@@ -20,9 +20,6 @@ export default {
 			this.isLoggedIn = true;
 			// this.$router.push("/home");
 		}
-	},
-	mounted() {
-		this.isUserLoggedIn();
 	}
 }
 </script>

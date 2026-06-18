@@ -17,10 +17,10 @@ export default {
 					username: this.username,
 				});
 
-				sessionStorage.setItem('userID', response.data.userID);
+				sessionStorage.setItem('userID', response.data.id);
 				sessionStorage.setItem('username', response.data.username);
 				sessionStorage.setItem('picture', response.data.picture);
-				sessionStorage.setItem('token', response.data.userID);
+				sessionStorage.setItem('token', response.data.id);
 
 				this.$router.push('/home');
 			}
