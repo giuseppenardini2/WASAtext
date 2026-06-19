@@ -71,7 +71,7 @@ func (db *appdbimpl) GetUserByUsername(username string) (structs.User, error) {
 }
 
 func (db *appdbimpl) GetUsers(username string) ([]structs.User, error) {
-	query := "SELECT id, username, picture FROM users WHERE username LIKE concat(?, '%')"
+	query := "SELECT id, username, picture FROM users WHERE username LIKE CONCAT(?, '%')"
 	rows, err := db.c.Query(query, username)
 	if err != nil {
 		return nil, err

@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-	"wasatext/service/structs"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -11,10 +10,6 @@ import (
 func (rt *_router) getUsers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get parameters
 	username := r.URL.Query().Get("username")
-	if !structs.IsUsernameValid(username) {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
 
 	// Prepare the response
 	users, err := rt.db.GetUsers(username)
