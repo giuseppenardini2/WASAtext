@@ -39,7 +39,7 @@ export default {
 		<div class="users-box">
 			<form @submit.prevent="handleSearch">
 				<div class="user-search-bar">
-					<input type="text" id="username-in" v-model="username" placeholder="Enter username">
+					<input type="text" v-model="username" placeholder="Enter username">
 					<button type="submit" :disabled="loading">Submit</button>
 				</div>
 				<ul v-if="users.length > 0">
@@ -48,7 +48,6 @@ export default {
         					:key="user.id" 
         				class="user-item"
      				>
-        				<span>Nickname:</span> 
         				<strong>{{ user.username }}</strong>
      	 			</li>
     			</ul>
