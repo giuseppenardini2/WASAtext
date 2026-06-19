@@ -8,19 +8,8 @@ export default {
 			errorMessage: null,
 		}
 	},
-	/*methods: {
+	methods: {
 		async handleSearch() {
-			if (this.username.trim() == '' || this.username.length == 0){
-				this.getAllUsers();
-			}
-			else {
-				this.searchUsers();
-			}
-		}
-		async getAllUsers() {
-			this.loading = true;
-		},
-		async searchUsers() {
 			this.loading = true;
 			try {
 				const response = await this.$axios.get('/users', {
@@ -28,7 +17,7 @@ export default {
 						username: this.username
 					}
 				});
-				this.users = response.data;
+				this.users = response.data || [];
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -37,7 +26,10 @@ export default {
 				this.loading = false;
 			}
 		}
-	}*/
+	},
+	mounted() {
+		this.handleSearch();
+	}
 }
 </script>
 
@@ -50,7 +42,7 @@ export default {
 					<input type="text" id="username-in" v-model="username" placeholder="Enter username">
 					<button type="submit" :disabled="loading">Submit</button>
 				</div>
-				<ul v-if="users.length > 0" class="users-list">
+				<ul v-if="users.length > 0">
       				<li 
         				v-for="user in users"
         					:key="user.id" 
@@ -60,6 +52,9 @@ export default {
         				<strong>{{ user.username }}</strong>
      	 			</li>
     			</ul>
+				<div v-else>
+					No user found
+				</div>
 			</form>
 		</div>
 		<div>
@@ -83,6 +78,7 @@ export default {
 
 .users-box {
 	margin: 2px;
+	padding: 10px;
 	background-color: var(--color-5);
 	border-radius: 5px;
 	display: flex;
@@ -92,12 +88,12 @@ export default {
 .user-search-bar {
 	display: flex;
 	flex-direction: row;
-	margin: 10px;
+	margin-bottom: 10px;
 }
 
 .user-search-bar input {
     width: 300px;
-    padding: 10px;
+	padding: 10px;
     margin-right: 2px;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -108,14 +104,14 @@ export default {
 
 .user-search-bar button {
     width: 100px;
-    padding: 10px;
+	padding: 10px;
+	margin-left: 2px;
     border: none;
     border-radius: 8px;
 	background-color: var(--color-3);
     color: white;
     font-size: 16px;
 	cursor: pointer;
-	margin-left: 2px;
 }
 
 .user-search-bar button:hover {

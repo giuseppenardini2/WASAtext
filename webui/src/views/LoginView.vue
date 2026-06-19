@@ -81,7 +81,7 @@ export default {
 
 .login-box h1 {
     margin-bottom: 20px;
-    color: var(--text-color-2);
+    color: var(--text-color-1);
 }
 
 .login-box form {
@@ -101,7 +101,7 @@ export default {
     border-radius: 8px;
 	background-color: var(--color-2-a);
     font-size: 16px;
-	color: var(--text-color-3)
+	color: var(--text-color-1)
 }
 
 .login-box button {
