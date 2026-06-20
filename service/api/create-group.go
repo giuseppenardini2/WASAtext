@@ -18,7 +18,6 @@ func (rt *_router) createGroup(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	if !IsUserAuthorized(userID, r, w) {
-		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 

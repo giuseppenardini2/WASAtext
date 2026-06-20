@@ -16,7 +16,6 @@ func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	if !IsUserAuthorized(userID, r, w) {
-		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 

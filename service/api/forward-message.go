@@ -17,7 +17,6 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	if !IsUserAuthorized(userID, r, w) {
-		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 

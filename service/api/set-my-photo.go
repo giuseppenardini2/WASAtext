@@ -19,7 +19,6 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	if !IsUserAuthorized(userID, r, w) {
-		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 

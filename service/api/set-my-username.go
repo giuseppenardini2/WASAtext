@@ -2,8 +2,10 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
+	"wasatext/service/database"
 	"wasatext/service/structs"
 
 	"github.com/julienschmidt/httprouter"
@@ -18,7 +20,6 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	if !IsUserAuthorized(userID, r, w) {
-		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 
@@ -37,7 +38,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	if err := rt.db.CheckUserUsername(userPart.Username); err != nil {
+	if err := rt.db.CheckUserUsername(userPart.Username); !errors.Is(err, database.ErrNonexistentResource) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

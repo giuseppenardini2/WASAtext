@@ -36,5 +36,9 @@ func IsUserAuthorized(userID int, r *http.Request, w http.ResponseWriter) bool {
 		w.WriteHeader(http.StatusInternalServerError)
 		return false
 	}
-	return userID == token
+	if userID != token {
+		w.WriteHeader(http.StatusForbidden)
+		return false
+	}
+	return true
 }

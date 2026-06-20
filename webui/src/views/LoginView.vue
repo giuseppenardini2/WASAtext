@@ -13,17 +13,17 @@ export default {
 			try {
 				if (this.username.length < 3 || this.username.length > 16) throw "Invalid username"
 
-				const response = await this.$axios.post('/session', {
+				const response = await this.$axios.post("/session", {
 					username: this.username,
 				});
 
-				sessionStorage.setItem('userID', response.data.id);
-				sessionStorage.setItem('username', response.data.username);
-				sessionStorage.setItem('picture', response.data.picture);
-				sessionStorage.setItem('token', response.data.id);
+				sessionStorage.setItem("userID", response.data.id);
+				sessionStorage.setItem("username", response.data.username);
+				sessionStorage.setItem("picture", response.data.picture);
+				sessionStorage.setItem("token", response.data.id);
 
-				this.$router.push('/home');
-				this.$emit('login-success');
+				this.$router.push("/home");
+				this.$emit("login-success");
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -34,9 +34,9 @@ export default {
 		}
 	},
 	mounted() {
-		if (sessionStorage.userID) {
+		if (sessionStorage.getItem("userID")) {
 			this.$router.push("/home");
-			this.$emit('login-success');
+			this.$emit("login-success");
 			return
 		}
 		sessionStorage.clear()

@@ -12,12 +12,13 @@ export default {
 		async changeUsername() {
 			this.loading = true;
 			try {
-				const response = await this.$axios.get('/users', {
-					params: {
-						username: this.username
-					}
+				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/username`, {
+					username: this.username
+				},
+				{
+					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
-				this.users = response.data || [];
+				sessionStorage.setItem("username", this.username)
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
