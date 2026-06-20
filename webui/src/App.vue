@@ -18,7 +18,6 @@ export default {
 				return;
 			}
 			this.isLoggedIn = true;
-			// this.$router.push("/home");
 		}
 	},
 	mounted() {

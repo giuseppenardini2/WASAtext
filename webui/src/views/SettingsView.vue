@@ -12,6 +12,8 @@ export default {
 		async changeUsername() {
 			this.loading = true;
 			try {
+				if (this.username.length < 3 || this.username.length > 16) throw "Invalid username"
+
 				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/username`, {
 					username: this.username
 				},
@@ -35,6 +37,12 @@ export default {
 	<div class="main-box">
 		<h1>Settings</h1>
 		<div class="profile-box">
+			<form @submit.prevent="">
+				<div class="user-picture-bar">
+					<img src="@/assets/images/default-user-picture.jpg" alt="User picture">
+					<button type="submit" :disabled="loading">Change</button>
+				</div>
+			</form>
 			<form @submit.prevent="changeUsername">
 				<div class="user-username-bar">
 					<input type="text" v-model="username" placeholder="Enter username">
@@ -54,6 +62,7 @@ export default {
   	height: 100%;
   	display: flex;
 	flex-direction: column;
+	gap: 20px;
 	padding: 10px;
 }
 
@@ -69,17 +78,9 @@ export default {
 	align-items: center;
 }
 
-.user-username-bar {
-	display: flex;
-	flex-direction: row;
-	margin-bottom: 10px;
-	align-items: center;
-}
-
-.user-username-bar input {
+.profile-box input {
     width: 300px;
 	padding: 10px;
-    margin-right: 2px;
     border: 1px solid #ccc;
     border-radius: 8px;
 	background-color: var(--color-2-a);
@@ -87,10 +88,9 @@ export default {
 	color: var(--text-color-1)
 }
 
-.user-username-bar button {
+.profile-box button {
     width: 100px;
 	padding: 10px;
-	margin-left: 2px;
     border: none;
     border-radius: 8px;
 	background-color: var(--color-3);
@@ -99,13 +99,37 @@ export default {
 	cursor: pointer;
 }
 
-.user-username-bar button:hover {
+.profile-box button:hover {
     background-color: var(--color-3-a);
 }
 
-.user-username-bar button:disabled {
+.profile-box button:disabled {
   background-color: #6c757d;
   cursor: not-allowed;
   opacity: 0.8;
+}
+
+.user-username-bar {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	margin-bottom: 10px;
+	align-items: center;
+}
+
+.user-picture-bar {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	margin-bottom: 10px;
+	align-items: center;
+}
+
+.user-picture-bar img {
+	width: 150px;
+	height: 150px;
+	object-fit: cover;
+	border-radius: 50%;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 </style>
