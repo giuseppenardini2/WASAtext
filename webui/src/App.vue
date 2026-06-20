@@ -11,7 +11,7 @@ export default {
 	},
 	methods: {
 		handleLogin() {
-			const token = sessionStorage.getItem('token');
+			const token = sessionStorage.getItem("token");
 			if ((token === null) || (token.trim() === '')) {
 				this.isLoggedIn = false;
 				this.$router.push("/login");
