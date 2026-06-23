@@ -36,20 +36,19 @@ func (rt *_router) uploadImage(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	file, _, err := r.FormFile("image") // Get the image
+	file, fileHandler, err := r.FormFile("image") // Get the image
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	defer func() {
-		err = file.Close()
-		if err != nil {
+		if err := file.Close(); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 	}()
 
-	fileName := time.Now().String() // Set up the file name
+	fileName := time.Now().String() + fileHandler.Filename
 
 	filePath := uploadDirectory + fileName // Set up the file path
 	fileDestination, err := os.Create(filePath)
@@ -58,8 +57,7 @@ func (rt *_router) uploadImage(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 	defer func() {
-		err = fileDestination.Close()
-		if err != nil {
+		if err := fileDestination.Close(); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -76,7 +74,7 @@ func (rt *_router) uploadImage(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	picturePart := PicturePart{ // Set the image URI
-		PictureURI: filePath,
+		PictureURI: "http://" + r.Host + uploadDirectory + fileName,
 	}
 
 	w.Header().Set("content-type", "application/json")
