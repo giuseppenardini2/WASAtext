@@ -7,7 +7,7 @@ func createTables(db *sql.DB) error {
 	usersQuery := `CREATE TABLE IF NOT EXISTS users (
 		id INTEGER,
 		username TEXT NOT NULL UNIQUE,
-		picture BLOB,
+		picture_uri TEXT,
 		PRIMARY KEY(id)
 	);`
 	if _, err := db.Exec(usersQuery); err != nil {
@@ -41,7 +41,7 @@ func createTables(db *sql.DB) error {
 	groupConversationsQuery := `CREATE TABLE IF NOT EXISTS group_conversations (
 		id INTEGER,
 		name TEXT NOT NULL,
-		picture BLOB,
+		picture_uri TEXT,
 		user_creator_id INTEGER NOT NULL,
 		PRIMARY KEY(id),
 		CONSTRAINT fk_group_conversations
@@ -70,7 +70,7 @@ func createTables(db *sql.DB) error {
 		conversation_id INTEGER,
 		body TEXT NOT NULL,
 		sent_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
-		picture BLOB,
+		picture_uri TEXT,
 		sender_id INTEGER NOT NULL,
 		reply_message_id INTEGER,
 		forwarded_message_id INTEGER,

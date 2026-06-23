@@ -38,9 +38,9 @@ import (
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	AddUser(username string, picture structs.Picture) (structs.User, error)
+	AddUser(username string, pictureURI string) (structs.User, error)
 	UpdateUserUsername(userID int, username string) error
-	UpdateUserPicture(userID int, picture structs.Picture) error
+	UpdateUserPicture(userID int, pictureURI string) error
 	GetUser(userID int) (structs.User, error)
 	GetUserByUsername(username string) (structs.User, error)
 	GetUsers(username string) ([]structs.User, error)
@@ -55,11 +55,11 @@ type AppDatabase interface {
 	AddPrivateConversation(firstUserID int, secondUserID int) (int64, error)
 	CheckUserPrivateConversation(firstUserID int, secondUserID int) error
 
-	AddGroupConversation(name string, picture structs.Picture, userCreatorID int) (structs.GroupConversation, error)
+	AddGroupConversation(name string, pictureURI string, userCreatorID int) (structs.GroupConversation, error)
 	DeleteGroupConversation(groupConversationID int) error
 	GetGroupConversation(groupConversationID int) (structs.GroupConversation, error)
 	UpdateGroupConversationName(groupConversationID int, name string) error
-	UpdateGroupConversationPicture(groupConversationID int, picture structs.Picture) error
+	UpdateGroupConversationPicture(groupConversationID int, pictureURI string) error
 	CheckGroupConversation(groupConversationID int) error
 
 	AddGroupConversationMember(userID int, groupConversationID int) error
@@ -67,8 +67,8 @@ type AppDatabase interface {
 	GetGroupConversartionMembers(groupConversationsID int) ([]structs.User, error)
 	CheckGroupConversationMember(userID int, groupConversationID int) error
 
-	AddMessage(body string, picture structs.Picture, senderID int, conversationID int) (structs.Message, error)
-	AddReplyMessage(body string, picture structs.Picture, senderID int, conversationID int, replyMessageID int) (structs.Message, error)
+	AddMessage(body string, pictureURI string, senderID int, conversationID int) (structs.Message, error)
+	AddReplyMessage(body string, pictureURI string, senderID int, conversationID int, replyMessageID int) (structs.Message, error)
 	AddForwardedMessage(originalMessageID int, originalConversationID int, senderID int, conversationID int) (structs.Message, error)
 	DeleteMessage(messageID int, conversationID int) error
 	GetNewMessageID(conversationID int) (int64, error)

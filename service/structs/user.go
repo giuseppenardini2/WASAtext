@@ -3,9 +3,9 @@ package structs
 import "regexp"
 
 type User struct {
-	ID       int     `json:"id"`       // User id
-	Username string  `json:"username"` // User username
-	Picture  Picture `json:"picture"`  // User profile picture
+	ID         int    `json:"id"`         // User id
+	Username   string `json:"username"`   // User username
+	PictureURI string `json:"pictureURI"` // User profile picture
 }
 
 func IsUsernameValid(username string) bool {

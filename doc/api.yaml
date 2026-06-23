@@ -12,6 +12,8 @@ info:
 tags:
   - name: "login"
     description: Login operations
+  - name: "images"
+    description: Image operations
   - name: "users"
     description: User management operations
   - name: "messages"
@@ -111,6 +113,37 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /users/{userid}/uploads/images:
+    parameters:
+      - $ref: "#/components/parameters/userID"
+
+    post:
+      operationId: uploadImage
+      tags: ["images"]
+      summary: Upload an image
+      description: |-
+        Upload an image
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Image
+        content:
+          multipart/form-data:
+            schema: { $ref: "#/components/schemas/Picture" }
+        required: true
+      responses:
+        "201":
+          description: Image URL
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PictureURI" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /users/{userid}/username:
     parameters:
       - $ref: "#/components/parameters/userID"
@@ -146,7 +179,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userid}/photos:
+  /users/{userid}/picture:
     parameters:
         - $ref: "#/components/parameters/userID"
 
@@ -165,14 +198,11 @@ paths:
               description: User picture
               type: object
               properties:
-                picture: { $ref: "#/components/schemas/Picture" }
+                uri: { $ref: "#/components/schemas/PictureURI" }
         required: true
       responses:
         "200":
-          description: Picture updated successful
-          content:
-            application/json:
-              schema: { $ref: "#/components/schemas/Picture" }
+          $ref: "#/components/responses/OKMessage"
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -425,7 +455,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userid}/groups/{groupid}/names:
+  /users/{userid}/groups/{groupid}/name:
     parameters:
       - $ref: "#/components/parameters/userID"
       - $ref: "#/components/parameters/groupID"
@@ -453,6 +483,38 @@ paths:
           content: 
             application/json:
               schema: { $ref: "#/components/schemas/GroupName" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/{userid}/groups/{groupid}/picture:
+    parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/groupID"
+
+    put:
+      operationId: setGroupPhoto
+      tags: ["groups"]
+      summary: Set the photo of a group
+      description: |-
+        Set the group profile picture
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: User picture
+              type: object
+              properties:
+                uri: { $ref: "#/components/schemas/PictureURI" }
+        required: true
+      responses:
+        "200":
+          $ref: "#/components/responses/OKMessage"
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -510,41 +572,6 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userid}/groups/{groupid}/photos:
-    parameters:
-        - $ref: "#/components/parameters/userID"
-        - $ref: "#/components/parameters/groupID"
-
-    put:
-      operationId: setGroupPhoto
-      tags: ["groups"]
-      summary: Set the photo of a group
-      description: |-
-        Set the group profile picture
-      security:
-        - bearerAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              description: User picture
-              type: object
-              properties:
-                picture: { $ref: "#/components/schemas/Picture" }
-        required: true
-      responses:
-        "200":
-          description: Picture updated successful
-          content:
-            application/json:
-              schema: { $ref: "#/components/schemas/Picture" }
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
 
 #------------
 # COMPONENTS
@@ -579,15 +606,29 @@ components:
 
     Picture:
       title: Picture
-      description: User or group picture
+      description: This object represents a single user
+      type: object
+      properties:
+        data:
+          title: Picture data
+          description: Picture data
+          type: string
+          format: binary
+          minLength: 0
+          maxLength: 9999
+
+    PictureURI:
+      title: Picture URI
+      description: Picture URI
       type: string
-      format: byte
-      minLength: 0
-      maxLength: 9999
+      minLength: 7
+      maxLength: 100
+      pattern: ^https?:\/\/([a-zA-Z0-9-]+\/)*[a-zA-Z0-9-]+\.(png|jpg|jpeg)$
+      example: "http://images/polli-d-allevamento.jpg"
 
     Date:
       title: Date
-      description: The date of the last sent message
+      description: Date in accordance with the ISO 8601 standard
       type: string
       format: date-time
       pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}$"
@@ -602,7 +643,7 @@ components:
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
         username: { $ref: "#/components/schemas/Username" }
-        profilePicture: { $ref: "#/components/schemas/Picture" }
+        profilePicture: { $ref: "#/components/schemas/PictureURI" }
       required:
         - id
         - username
@@ -646,7 +687,7 @@ components:
       type: object
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
-        picture: { $ref: "#/components/schemas/Picture" }
+        pictureURI: { $ref: "#/components/schemas/PictureURI" }
         messagePreview:
           description: Last message preview
           type: string
@@ -657,7 +698,7 @@ components:
         date: { $ref: "#/components/schemas/Date" }
       required:
         - id
-        - picture
+        - pictureURI
         - messagePreview
         - date
 
@@ -683,7 +724,7 @@ components:
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
         body: { $ref: "#/components/schemas/Text" }
-        picture: { $ref: "#/components/schemas/Picture" }
+        pictureURI: { $ref: "#/components/schemas/PictureURI" }
         date: { $ref: "#/components/schemas/Date" }
       required:
         - id
@@ -807,6 +848,15 @@ components:
 
   #-- RESPONSES
   responses:
+    OKMessage:
+      description: The request succeeded
+      content:
+        text/plain:
+          schema:
+            description: Request succeeded message
+            type: string
+            example: "The request succeeded"
+
     NoContent:
       description: The server successfully processed the request, and is not returning any content
 

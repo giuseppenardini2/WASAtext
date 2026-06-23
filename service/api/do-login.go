@@ -30,7 +30,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 	err := rt.db.CheckUserUsername(userPart.Username)
 	switch {
 	case errors.Is(err, database.ErrNonexistentResource):
-		user, err = rt.db.AddUser(userPart.Username, structs.Picture{})
+		user, err = rt.db.AddUser(userPart.Username, "")
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return

@@ -11,7 +11,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.GET("/users", rt.getUsers)
 	rt.router.GET("/users/:userid", rt.getMyConversations)
 	rt.router.PUT("/users/:userid/username", rt.setMyUserName)
-	rt.router.PUT("/users/:userid/photos", rt.setMyPhoto)
+	rt.router.PUT("/users/:userid/picture", rt.setMyPhoto)
 	rt.router.POST("/users/:userid/conversations", rt.createConversation)
 	rt.router.GET("/users/:userid/conversations", rt.getConversation)
 	rt.router.POST("/users/:userid/conversations/:conversationid/messages", rt.sendMessage)
@@ -20,10 +20,10 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/users/:userid/conversations/:conversationid/messages/:messageid/reactions", rt.commentMessage)
 	rt.router.DELETE("/users/:userid/conversations/:conversationid/messages/:messageid/reactions/:reactionid", rt.uncommentMessage)
 	rt.router.POST("/users/:userid/groups", rt.createGroup)
-	rt.router.PUT("/users/:userid/groups/:groupid/names", rt.setGroupName)
+	rt.router.PUT("/users/:userid/groups/:groupid/name", rt.setGroupName)
 	rt.router.PUT("/users/:userid/groups/:groupid/participants", rt.addToGroup)
 	rt.router.DELETE("/users/:userid/groups/:groupid/participants", rt.leaveGroup)
-	rt.router.PUT("/users/:userid/groups/:groupid/photos", rt.setGroupPhoto)
+	rt.router.PUT("/users/:userid/groups/:groupid/photo", rt.setGroupPhoto)
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)

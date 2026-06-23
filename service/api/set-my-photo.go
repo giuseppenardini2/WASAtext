@@ -2,10 +2,8 @@ package api
 
 import (
 	"encoding/json"
-	"io"
 	"net/http"
 	"strconv"
-	"wasatext/service/structs"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -23,37 +21,22 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Get request body
-	file, _, err := r.FormFile("image")
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
+	type PicturePart struct {
+		PictureURI string `json:"pictureURI"`
 	}
-
-	data, err := io.ReadAll(file)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	fileType := http.DetectContentType(data)
-	if fileType != "image/jpeg" && fileType != "image/png" {
+	var picturePart PicturePart
+	if err := json.NewDecoder(r.Body).Decode(&picturePart); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Prepare the response
-	picture := structs.Picture{
-		Data: data,
-	}
-	if err := rt.db.UpdateUserPicture(userID, picture); err != nil {
+	if err := rt.db.UpdateUserPicture(userID, picturePart.PictureURI); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("content-type", "application/json")
+	w.Header().Set("content-type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(picture); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+	w.Write([]byte("The request succeeded"))
 }

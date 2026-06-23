@@ -3,12 +3,46 @@ export default {
 	data() {
 		return {
 			username: sessionStorage.getItem("username"),
-			picture: sessionStorage.getItem("picture"),
+			base64Picture: sessionStorage.getItem("picture"),
+
+			selectedFile: null,
+
 			loading: false,
 			errorMessage: null,
 		}
 	},
 	methods: {
+		handleFileSelection(event) {
+			const file = event.target.files[0];
+     		if (!file) return;
+			if (file.type !== "image/jpeg" && file.type !== "image/png") {
+                this.errorMessage = "File type is wrong";
+                return
+            }
+            if (file.size > 3145728) {
+                this.errorMessage = "Max file size is 3 MB";
+                return
+            }
+			this.selectedFile = file;
+			
+			const reader = new FileReader();
+  			reader.onload = (e) => {
+    			this.base64Picture = e.target.result; 
+			};
+			reader.readAsDataURL(file);
+		},
+		async changePicture() {
+			this.loading = true;
+			try {
+				
+			}
+			catch(error) {
+				this.errorMessage = error.toString();
+			}
+			finally {
+				this.loading = false;
+			}
+		},
 		async changeUsername() {
 			this.loading = true;
 			try {
@@ -37,10 +71,13 @@ export default {
 	<div class="main-box">
 		<h1>Settings</h1>
 		<div class="profile-box">
-			<form @submit.prevent="">
-				<div class="user-picture-bar">
-					<img src="@/assets/images/default-user-picture.jpg" alt="User picture">
-					<button type="submit" :disabled="loading">Change</button>
+			<form @submit.prevent="changePicture">
+				<div class="user-picture">
+					<img v-if="picture === 'null'" src="@/assets/images/default-user-picture.jpg" alt="User picture">
+				</div>
+				<div>
+					<input type="file" accept="image/*" @change="handleFileSelection">
+					<button type="submit" :disabled="!selectedFile || loading">Change</button>
 				</div>
 			</form>
 			<form @submit.prevent="changeUsername">
@@ -78,16 +115,6 @@ export default {
 	align-items: center;
 }
 
-.profile-box input {
-    width: 300px;
-	padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-	background-color: var(--color-2-a);
-    font-size: 16px;
-	color: var(--text-color-1)
-}
-
 .profile-box button {
     width: 100px;
 	padding: 10px;
@@ -117,7 +144,17 @@ export default {
 	align-items: center;
 }
 
-.user-picture-bar {
+.user-username-bar input {
+    width: 300px;
+	padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+	background-color: var(--color-2-a);
+    font-size: 16px;
+	color: var(--text-color-1)
+}
+
+.user-picture {
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
@@ -125,11 +162,23 @@ export default {
 	align-items: center;
 }
 
-.user-picture-bar img {
+.user-picture img {
 	width: 150px;
 	height: 150px;
 	object-fit: cover;
 	border-radius: 50%;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.image-selector {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	margin-bottom: 10px;
+	align-items: center;
+}
+
+.image-selector input {
+	color: red;
 }
 </style>

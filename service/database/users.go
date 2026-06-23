@@ -8,7 +8,7 @@ import (
  * ADD OPERATIONS
  */
 
-func (db *appdbimpl) AddUser(username string, picture structs.Picture) (structs.User, error) {
+func (db *appdbimpl) AddUser(username string, pictureURI string) (structs.User, error) {
 	query := "INSERT INTO users (username) VALUES (?)"
 	result, err := db.c.Exec(query, username)
 	if err != nil {
@@ -20,17 +20,17 @@ func (db *appdbimpl) AddUser(username string, picture structs.Picture) (structs.
 		return structs.User{}, err
 	}
 
-	if !structs.IsPictureNil(picture) {
+	if pictureURI != "" {
 		query := "UPDATE users SET picture=? WHERE id=?"
-		if _, err := db.c.Exec(query, picture, userID); err != nil {
+		if _, err := db.c.Exec(query, pictureURI, userID); err != nil {
 			return structs.User{}, err
 		}
 	}
 
 	return structs.User{
-		ID:       int(userID),
-		Username: username,
-		Picture:  picture,
+		ID:         int(userID),
+		Username:   username,
+		PictureURI: pictureURI,
 	}, nil
 }
 
@@ -44,9 +44,9 @@ func (db *appdbimpl) UpdateUserUsername(userID int, username string) error {
 	return err
 }
 
-func (db *appdbimpl) UpdateUserPicture(userID int, picture structs.Picture) error {
-	query := "UPDATE users SET picture=? WHERE id=?"
-	_, err := db.c.Exec(query, picture.Data, userID)
+func (db *appdbimpl) UpdateUserPicture(userID int, pictureURI string) error {
+	query := "UPDATE users SET picture_uri=? WHERE id=?"
+	_, err := db.c.Exec(query, pictureURI, userID)
 	return err
 }
 
@@ -58,7 +58,7 @@ func (db *appdbimpl) GetUser(userID int) (structs.User, error) {
 	var user structs.User
 
 	query := "SELECT id, username, picture FROM users WHERE id=?"
-	err := db.c.QueryRow(query, userID).Scan(&user.ID, &user.Username, &user.Picture.Data)
+	err := db.c.QueryRow(query, userID).Scan(&user.ID, &user.Username, &user.PictureURI)
 	return user, err
 }
 
@@ -66,7 +66,7 @@ func (db *appdbimpl) GetUserByUsername(username string) (structs.User, error) {
 	var user structs.User
 
 	query := "SELECT id, username, picture FROM users WHERE username=?"
-	err := db.c.QueryRow(query, username).Scan(&user.ID, &user.Username, &user.Picture.Data)
+	err := db.c.QueryRow(query, username).Scan(&user.ID, &user.Username, &user.PictureURI)
 	return user, err
 }
 
@@ -80,7 +80,7 @@ func (db *appdbimpl) GetUsers(username string) ([]structs.User, error) {
 	var users []structs.User
 	for rows.Next() {
 		var user structs.User
-		if err := rows.Scan(&user.ID, &user.Username, &user.Picture.Data); err != nil {
+		if err := rows.Scan(&user.ID, &user.Username, &user.PictureURI); err != nil {
 			return nil, err
 		}
 		users = append(users, user)

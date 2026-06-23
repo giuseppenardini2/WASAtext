@@ -50,8 +50,8 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 
 	// Get body request
 	type MessagePart struct {
-		Body    string `json:"body"`
-		Picture string `json:"picture"`
+		Body       string `json:"body"`
+		PictureURI string `json:"pictureURI"`
 	}
 	var messagePart MessagePart
 	if err := json.NewDecoder(r.Body).Decode(&messagePart); err != nil {
@@ -59,7 +59,7 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	if messagePart.Body == "" && messagePart.Picture == "" {
+	if messagePart.Body == "" && messagePart.PictureURI == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

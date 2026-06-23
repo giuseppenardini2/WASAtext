@@ -29,7 +29,7 @@ func (db *appdbimpl) DeleteGroupConversationMember(userID int, groupConversation
  */
 
 func (db *appdbimpl) GetGroupConversartionMembers(groupConversationsID int) ([]structs.User, error) {
-	query := `SELECT u.id, u.username, u.picture 
+	query := `SELECT u.id, u.username, u.picture_uri 
 		FROM users AS u, group_conversations_members AS gcm 
 		WHERE u.id=gcm.user_id AND gcm.group_conversation_id=?`
 	rows, err := db.c.Query(query, groupConversationsID)
@@ -40,7 +40,7 @@ func (db *appdbimpl) GetGroupConversartionMembers(groupConversationsID int) ([]s
 	var users []structs.User
 	for rows.Next() {
 		var user structs.User
-		if err := rows.Scan(&user.ID, &user.Username, &user.Picture.Data); err != nil {
+		if err := rows.Scan(&user.ID, &user.Username, &user.PictureURI); err != nil {
 			return nil, err
 		}
 		users = append(users, user)

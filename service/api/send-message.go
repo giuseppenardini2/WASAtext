@@ -44,8 +44,8 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// Get body request
 	type MessagePart struct {
-		Body    string          `json:"body"`
-		Picture structs.Picture `json:"picture"`
+		Body       string `json:"body"`
+		PictureURI string `json:"pictureURI"`
 	}
 	var messagePart MessagePart
 	if err := json.NewDecoder(r.Body).Decode(&messagePart); err != nil {
@@ -53,7 +53,7 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	if messagePart.Body == "" && structs.IsPictureNil(messagePart.Picture) {
+	if messagePart.Body == "" && messagePart.PictureURI == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -62,14 +62,14 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 	var message structs.Message // Add the message to DB
 	if replyMessageID != -1 {
 		var err error
-		message, err = rt.db.AddReplyMessage(messagePart.Body, messagePart.Picture, userID, conversationID, replyMessageID)
+		message, err = rt.db.AddReplyMessage(messagePart.Body, messagePart.PictureURI, userID, conversationID, replyMessageID)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	} else {
 		var err error
-		message, err = rt.db.AddMessage(messagePart.Body, messagePart.Picture, userID, conversationID)
+		message, err = rt.db.AddMessage(messagePart.Body, messagePart.PictureURI, userID, conversationID)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
