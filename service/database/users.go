@@ -57,7 +57,7 @@ func (db *appdbimpl) UpdateUserPicture(userID int, pictureURI string) error {
 func (db *appdbimpl) GetUser(userID int) (structs.User, error) {
 	var user structs.User
 
-	query := "SELECT id, username, picture_uri FROM users WHERE id=?"
+	query := "SELECT id, username, COALESCE(picture_uri, '') FROM users WHERE id=?"
 	err := db.c.QueryRow(query, userID).Scan(&user.ID, &user.Username, &user.PictureURI)
 	return user, err
 }
@@ -65,13 +65,13 @@ func (db *appdbimpl) GetUser(userID int) (structs.User, error) {
 func (db *appdbimpl) GetUserByUsername(username string) (structs.User, error) {
 	var user structs.User
 
-	query := "SELECT id, username, picture_uri FROM users WHERE username=?"
+	query := "SELECT id, username, COALESCE(picture_uri, '') FROM users WHERE username=?"
 	err := db.c.QueryRow(query, username).Scan(&user.ID, &user.Username, &user.PictureURI)
 	return user, err
 }
 
 func (db *appdbimpl) GetUsers(username string) ([]structs.User, error) {
-	query := "SELECT id, username, picture_uri FROM users WHERE username LIKE CONCAT(?, '%')"
+	query := "SELECT id, username, COALESCE(picture_uri, '') FROM users WHERE username LIKE CONCAT(?, '%')"
 	rows, err := db.c.Query(query, username)
 	if err != nil {
 		return nil, err
