@@ -22,9 +22,9 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.DELETE("/users/:userid/conversations/:conversationid/messages/:messageid/reactions/:reactionid", rt.uncommentMessage)
 	rt.router.POST("/users/:userid/groups", rt.createGroup)
 	rt.router.PUT("/users/:userid/groups/:groupid/name", rt.setGroupName)
+	rt.router.PUT("/users/:userid/groups/:groupid/picture", rt.setGroupPhoto)
 	rt.router.PUT("/users/:userid/groups/:groupid/participants", rt.addToGroup)
 	rt.router.DELETE("/users/:userid/groups/:groupid/participants", rt.leaveGroup)
-	rt.router.PUT("/users/:userid/groups/:groupid/photo", rt.setGroupPhoto)
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
