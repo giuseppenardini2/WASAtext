@@ -801,7 +801,7 @@ components:
       name: username
       description: User username
       in: query
-      required: true
+      required: false
       schema: { $ref: "#/components/schemas/Username" }
 
     userID:
