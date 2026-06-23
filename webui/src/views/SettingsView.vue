@@ -3,7 +3,7 @@ export default {
 	data() {
 		return {
 			username: sessionStorage.getItem("username"),
-			base64Picture: sessionStorage.getItem("picture"),
+			pictureURI: sessionStorage.getItem("pictureURI"),
 
 			selectedFile: null,
 
@@ -73,7 +73,7 @@ export default {
 		<div class="profile-box">
 			<form @submit.prevent="changePicture">
 				<div class="user-picture">
-					<img v-if="picture === 'null'" src="@/assets/images/default-user-picture.jpg" alt="User picture">
+					<img v-if="pictureURI === ''" src="@/assets/images/default-user-picture.jpg" alt="User picture">
 				</div>
 				<div>
 					<input type="file" accept="image/*" @change="handleFileSelection">

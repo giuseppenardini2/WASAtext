@@ -19,7 +19,7 @@ export default {
 
 				sessionStorage.setItem("userID", response.data.id);
 				sessionStorage.setItem("username", response.data.username);
-				sessionStorage.setItem("picture", response.data.picture.data);
+				sessionStorage.setItem("pictureURI", response.data.pictureURI);
 				sessionStorage.setItem("token", response.data.id);
 
 				this.$router.push("/home");

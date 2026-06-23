@@ -3,7 +3,7 @@ export default {
 	data() {
 		return {
 			username: "",
-			picture: "",
+			pictureURI: "",
 			loading: false,
 			errorMessage: null,
 		}
@@ -20,7 +20,7 @@ export default {
 
 			sessionStorage.setItem('userID', response.data.userID);
 			sessionStorage.setItem('username', response.data.username);
-			sessionStorage.setItem('picture', response.data.picture);
+			sessionStorage.setItem('pictureURI', response.data.pictureURI);
 
 			this.loading = false;
 			this.$router.push("/home");
