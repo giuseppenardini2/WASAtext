@@ -129,14 +129,14 @@ paths:
         description: Image
         content:
           multipart/form-data:
-            schema: { $ref: "#/components/schemas/Picture" }
+            schema: { $ref: "#/components/schemas/Image" }
         required: true
       responses:
         "201":
           description: Image URL
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/PictureURI" }
+              schema: { $ref: "#/components/schemas/ImageURI" }
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -198,7 +198,7 @@ paths:
               description: User picture
               type: object
               properties:
-                uri: { $ref: "#/components/schemas/PictureURI" }
+                imageURI: { $ref: "#/components/schemas/ImageURI" }
         required: true
       responses:
         "200":
@@ -297,7 +297,7 @@ paths:
               type: object
               properties:
                 body: { $ref: "#/components/schemas/Text" }
-                picture: { $ref: "#/components/schemas/Picture" }
+                imageURI: { $ref: "#/components/schemas/ImageURI" }
         required: true
       responses:
         "201":
@@ -510,7 +510,7 @@ paths:
               description: User picture
               type: object
               properties:
-                uri: { $ref: "#/components/schemas/PictureURI" }
+                imageURI: { $ref: "#/components/schemas/ImageURI" }
         required: true
       responses:
         "200":
@@ -604,22 +604,22 @@ components:
       maxLength: 200
       example: "Hello Enzo"
 
-    Picture:
-      title: Picture
+    Image:
+      title: Image
       description: This object represents a single user
       type: object
       properties:
         data:
-          title: Picture data
-          description: Picture data
+          title: Image data
+          description: Image data
           type: string
           format: binary
           minLength: 0
           maxLength: 9999
 
-    PictureURI:
-      title: Picture URI
-      description: Picture URI
+    ImageURI:
+      title: Image URI
+      description: Image URI
       type: string
       minLength: 7
       maxLength: 100
@@ -643,11 +643,11 @@ components:
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
         username: { $ref: "#/components/schemas/Username" }
-        profilePicture: { $ref: "#/components/schemas/PictureURI" }
+        profilePictureURI: { $ref: "#/components/schemas/ImageURI" }
       required:
         - id
         - username
-        - profilePicture
+        - profilePictureURI
     
     UserCollection:
       title: Users
@@ -687,7 +687,7 @@ components:
       type: object
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
-        pictureURI: { $ref: "#/components/schemas/PictureURI" }
+        imageURI: { $ref: "#/components/schemas/ImageURI" }
         messagePreview:
           description: Last message preview
           type: string
@@ -698,7 +698,7 @@ components:
         date: { $ref: "#/components/schemas/Date" }
       required:
         - id
-        - pictureURI
+        - imageURI
         - messagePreview
         - date
 
@@ -724,7 +724,7 @@ components:
       properties:
         id: { $ref: "#/components/schemas/Identifier" }
         body: { $ref: "#/components/schemas/Text" }
-        pictureURI: { $ref: "#/components/schemas/PictureURI" }
+        imageURI: { $ref: "#/components/schemas/ImageURI" }
         date: { $ref: "#/components/schemas/Date" }
       required:
         - id
