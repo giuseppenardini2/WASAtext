@@ -2,54 +2,86 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
+	"io"
 	"net/http"
-	"wasatext/service/database"
-	"wasatext/service/structs"
+	"os"
+	"strconv"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 )
 
-func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (rt *_router) uploadImage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	// Get parameters
+	userID, err := strconv.Atoi(ps.ByName("userid"))
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if !IsUserAuthorized(userID, r, w) {
+		return
+	}
+
 	// Get body request
-	type UserPart struct {
-		Username string `json:"username"`
+	uploadDirectory := "./uploads/" + strconv.Itoa(123) + "/images/" // Set up the folder
+	if err := os.MkdirAll(uploadDirectory, os.ModePerm); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
-	var userPart UserPart
-	if err := json.NewDecoder(r.Body).Decode(&userPart); err != nil {
+
+	err = r.ParseMultipartForm(32 << 20) // Allocate to 32 MB of memory for the file
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if !structs.IsUsernameValid(userPart.Username) {
+	file, _, err := r.FormFile("image") // Get the image
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	defer func() {
+		err = file.Close()
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	}()
 
-	var user structs.User
-	err := rt.db.CheckUserUsername(userPart.Username)
-	switch {
-	case errors.Is(err, database.ErrNonexistentResource):
-		user, err = rt.db.AddUser(userPart.Username, "")
+	fileName := time.Now().String() // Set up the file name
+
+	filePath := uploadDirectory + fileName // Set up the file path
+	fileDestination, err := os.Create(filePath)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer func() {
+		err = fileDestination.Close()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-	case err == nil:
-		user, err = rt.db.GetUserByUsername(userPart.Username)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	default:
-		w.WriteHeader(http.StatusBadRequest)
+	}()
+
+	if _, err = io.Copy(fileDestination, file); err != nil { // Copy the file
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	// Prepare the response
+	type PicturePart struct {
+		PictureURI string `json:"pictureURI"`
+	}
+
+	picturePart := PicturePart{ // Set the image URI
+		PictureURI: filePath,
+	}
+
 	w.Header().Set("content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(user); err != nil {
+	if err := json.NewEncoder(w).Encode(picturePart); err != nil {
 		http.Error(w, "Encoding error", http.StatusInternalServerError)
 		return
 	}

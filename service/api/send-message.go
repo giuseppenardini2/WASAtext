@@ -59,7 +59,7 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Prepare the response
-	var message structs.Message // Add the message to DB
+	var message structs.Message
 	if replyMessageID != -1 {
 		var err error
 		message, err = rt.db.AddReplyMessage(messagePart.Body, messagePart.PictureURI, userID, conversationID, replyMessageID)

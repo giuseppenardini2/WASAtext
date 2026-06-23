@@ -9,6 +9,7 @@ func (rt *_router) Handler() http.Handler {
 	// Register routes
 	rt.router.POST("/session", rt.doLogin)
 	rt.router.GET("/users", rt.getUsers)
+	rt.router.POST("/users/:userid/uploads/images", rt.uploadImage)
 	rt.router.GET("/users/:userid", rt.getMyConversations)
 	rt.router.PUT("/users/:userid/username", rt.setMyUserName)
 	rt.router.PUT("/users/:userid/picture", rt.setMyPhoto)
