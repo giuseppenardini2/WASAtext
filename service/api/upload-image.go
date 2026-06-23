@@ -69,12 +69,12 @@ func (rt *_router) uploadImage(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Prepare the response
-	type PicturePart struct {
-		PictureURI string `json:"pictureURI"`
+	type ImagePart struct {
+		ImageURI string `json:"pictureURI"`
 	}
 
-	picturePart := PicturePart{ // Set the image URI
-		PictureURI: "http://" + r.Host + uploadDirectory + fileName,
+	picturePart := ImagePart{ // Set the image URI
+		ImageURI: "http://" + r.Host + uploadDirectory + fileName,
 	}
 
 	w.Header().Set("content-type", "application/json")
