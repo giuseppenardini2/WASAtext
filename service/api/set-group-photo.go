@@ -49,5 +49,8 @@ func (rt *_router) setGroupPhoto(w http.ResponseWriter, r *http.Request, ps http
 
 	w.Header().Set("content-type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("The request succeeded"))
+	if _, err := w.Write([]byte("The request succeeded")); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
