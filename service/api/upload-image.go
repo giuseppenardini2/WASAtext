@@ -24,13 +24,13 @@ func (rt *_router) uploadImage(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Get body request
-	uploadDirectory := "./uploads/" + strconv.Itoa(123) + "/images/" // Set up the folder
+	uploadDirectory := "./uploads/user" + strconv.Itoa(123) + "/images/" // Set up the upload directory
 	if err := os.MkdirAll(uploadDirectory, os.ModePerm); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	err = r.ParseMultipartForm(32 << 20) // Allocate to 32 MB of memory for the file
+	err = r.ParseMultipartForm(32 << 20) // Allocate to 32 MB of memory for the image
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -65,7 +65,7 @@ func (rt *_router) uploadImage(w http.ResponseWriter, r *http.Request, ps httpro
 		}
 	}()
 
-	if _, err = io.Copy(fileDestination, file); err != nil { // Copy the file
+	if _, err = io.Copy(fileDestination, file); err != nil { // Copy the image file into the disk
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
