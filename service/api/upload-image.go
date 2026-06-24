@@ -24,7 +24,7 @@ func (rt *_router) uploadImage(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Get body request
-	uploadDirectory := "./uploads/user" + strconv.Itoa(123) + "/images/" // Set up the upload directory
+	uploadDirectory := "./uploads/user" + strconv.Itoa(userID) + "/images/" // Set up the upload directory
 	if err := os.MkdirAll(uploadDirectory, os.ModePerm); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
