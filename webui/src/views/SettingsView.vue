@@ -40,6 +40,13 @@ export default {
 
 				this.pictureURI = response.data.pictureURI;
 				sessionStorage.setItem("pictureURI", response.data.pictureURI);
+
+				await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/picture`, {
+					pictureURI: this.pictureURI
+				},
+				{
+					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
+				});
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
