@@ -31,6 +31,8 @@ type Conversation struct {
 	Messages []Message `json:"messages"` // Conversation messages
 }
 
+var groupConversationNameRegex = regexp.MustCompile(`^[a-zA-Z0-9\s!?-]{3,20}$`)
+
 type GroupConversation struct {
 	ID            int    `json:"id"`            // Group ID (corresponding to conversation ID)
 	Name          string `json:"name"`          // Group name
@@ -42,7 +44,7 @@ func IsGroupNameValid(groupName string) bool {
 	if groupName == "" || (len(groupName) < 3 || len(groupName) > 20) {
 		return false
 	}
-	if !regexp.MustCompile(`^[a-zA-Z0-9\s!?-]{3,20}$`).MatchString(groupName) {
+	if !groupConversationNameRegex.MatchString(groupName) {
 		return false
 	}
 	return true
