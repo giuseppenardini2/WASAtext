@@ -15,7 +15,7 @@ export default {
 		handleFileSelection(event) {
 			const file = event.target.files[0];
      		if (!file) return;
-			if (file.type !== "image/jpeg" && file.type !== "image/jpeg" && file.type !== "image/png") {
+			if (file.type !== "image/jpeg" && file.type !== "image/png") {
                 this.errorMessage = "File type is wrong";
                 return
             }
@@ -38,8 +38,8 @@ export default {
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
 
-				this.pictureURI = response.pictureURI;
-				sessionStorage.setItem("pictureURI", response.pictureURI);
+				this.pictureURI = response.data.pictureURI;
+				sessionStorage.setItem("pictureURI", response.data.pictureURI);
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
