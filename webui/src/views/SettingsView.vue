@@ -15,7 +15,7 @@ export default {
 		handleFileSelection(event) {
 			const file = event.target.files[0];
      		if (!file) return;
-			if (file.type !== "image/jpeg" && file.type !== "image/png") {
+			if (file.type !== "image/jpeg" && file.type !== "image/jpeg" && file.type !== "image/png") {
                 this.errorMessage = "File type is wrong";
                 return
             }
@@ -24,17 +24,22 @@ export default {
                 return
             }
 			this.selectedFile = file;
-			
-			const reader = new FileReader();
-  			reader.onload = (e) => {
-    			this.base64Picture = e.target.result; 
-			};
-			reader.readAsDataURL(file);
 		},
 		async changePicture() {
+			if (!this.selectedFile) return;
+			
 			this.loading = true;
 			try {
-				
+				const payload = new FormData();
+				payload.append("image", this.selectedFile);
+
+				const response = await this.$axios.post(`/users/${sessionStorage.getItem("userID")}/uploads/images`, payload,
+				{
+					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
+				});
+
+				this.pictureURI = response.pictureURI;
+				sessionStorage.setItem("pictureURI", response.pictureURI);
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -74,6 +79,7 @@ export default {
 			<form @submit.prevent="changePicture">
 				<div class="user-picture">
 					<img v-if="pictureURI === ''" src="@/assets/images/default-user-picture.jpg" alt="User picture">
+					<img v-else :src="pictureURI" alt="User picture">
 				</div>
 				<div>
 					<input type="file" accept="image/*" @change="handleFileSelection">
