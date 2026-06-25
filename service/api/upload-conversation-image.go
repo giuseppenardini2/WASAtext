@@ -13,7 +13,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func (rt *_router) uploadImage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (rt *_router) uploadConversationImage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get parameters
 	userID, err := strconv.Atoi(ps.ByName("userid"))
 	if err != nil {
@@ -25,9 +25,20 @@ func (rt *_router) uploadImage(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	// Get body request
-	currentWorkDirectory := "."
-	uploadDirectory := "/uploads/images/" // Set up the upload directory
+	recipientID, err := strconv.Atoi(r.URL.Query().Get("recipientid"))
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if err := rt.db.CheckUserConversation(userID, recipientID); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Get request body
+	currentWorkDirectory := "./"
+	uploadDirectory := "uploads/conversations/conversation" + strconv.Itoa(userID) + "/" // Set up the upload directory
 	if err := os.MkdirAll(currentWorkDirectory+uploadDirectory, os.ModePerm); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -74,17 +85,17 @@ func (rt *_router) uploadImage(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// Prepare the response
 	type ImagePart struct {
-		ImageURI string `json:"pictureURI"`
+		ImageURI string `json:"imageURI"`
 	}
 
-	picturePart := ImagePart{ // Set the image URI
-		ImageURI: "http://" + r.Host + uploadDirectory + fileName,
+	imagePart := ImagePart{
+		ImageURI: uploadDirectory + fileName,
 	}
 
 	w.Header().Set("content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(picturePart); err != nil {
-		http.Error(w, "Encoding error", http.StatusInternalServerError)
+	if err := json.NewEncoder(w).Encode(imagePart); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 }
