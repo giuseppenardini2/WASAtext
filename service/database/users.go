@@ -62,6 +62,14 @@ func (db *appdbimpl) GetUser(userID int) (structs.User, error) {
 	return user, err
 }
 
+func (db *appdbimpl) GetUserPictureURI(userID int) (string, error) {
+	var pictureURI string
+
+	query := "SELECT COALESCE(picture_uri, '') FROM users WHERE id=?"
+	err := db.c.QueryRow(query, userID).Scan(&pictureURI)
+	return pictureURI, err
+}
+
 func (db *appdbimpl) GetUserByUsername(username string) (structs.User, error) {
 	var user structs.User
 

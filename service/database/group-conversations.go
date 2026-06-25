@@ -66,9 +66,17 @@ func (db *appdbimpl) DeleteGroupConversation(groupConversationID int) error {
 func (db *appdbimpl) GetGroupConversation(groupConversationID int) (structs.GroupConversation, error) {
 	var group structs.GroupConversation
 
-	query := "SELECT id, name, picture_uri, user_creator_id FROM group_conversations WHERE id=?"
+	query := "SELECT id, name, COALESCE(picture_uri, ''), user_creator_id FROM group_conversations WHERE id=?"
 	err := db.c.QueryRow(query, groupConversationID).Scan(&group.ID, &group.Name, &group.PictureURI, &group.UserCreatorID)
 	return group, err
+}
+
+func (db *appdbimpl) GetGroupConversationPictureURI(groupConversationID int) (string, error) {
+	var pictureURI string
+
+	query := "SELECT COALESCE(picture_uri, '') FROM group_conversations WHERE id=?"
+	err := db.c.QueryRow(query, groupConversationID).Scan(&pictureURI)
+	return pictureURI, err
 }
 
 /*

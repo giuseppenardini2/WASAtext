@@ -42,6 +42,7 @@ type AppDatabase interface {
 	UpdateUserUsername(userID int, username string) error
 	UpdateUserPicture(userID int, pictureURI string) error
 	GetUser(userID int) (structs.User, error)
+	GetUserPictureURI(userID int) (string, error)
 	GetUserByUsername(username string) (structs.User, error)
 	GetUsers(username string) ([]structs.User, error)
 	CheckUser(userID int) error
@@ -58,6 +59,7 @@ type AppDatabase interface {
 	AddGroupConversation(name string, pictureURI string, userCreatorID int) (structs.GroupConversation, error)
 	DeleteGroupConversation(groupConversationID int) error
 	GetGroupConversation(groupConversationID int) (structs.GroupConversation, error)
+	GetGroupConversationPictureURI(groupConversationID int) (string, error)
 	UpdateGroupConversationName(groupConversationID int, name string) error
 	UpdateGroupConversationPicture(groupConversationID int, pictureURI string) error
 	CheckGroupConversation(groupConversationID int) error
@@ -73,6 +75,7 @@ type AppDatabase interface {
 	DeleteMessage(messageID int, conversationID int) error
 	GetNewMessageID(conversationID int) (int64, error)
 	GetMessage(conversationID int, messageID int) (structs.Message, error)
+	GetMessagePictureURI(conversationID int, messageID int) (string, error)
 	GetMessages(conversationID int) (structs.Conversation, error)
 	GetLastMessage(conversationID int) (structs.Message, error)
 	CheckMessageConversation(messageID int, conversationID int) error

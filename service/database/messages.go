@@ -142,15 +142,23 @@ func (db *appdbimpl) GetNewMessageID(conversationID int) (int64, error) {
 func (db *appdbimpl) GetMessage(conversationID int, messageID int) (structs.Message, error) {
 	var message structs.Message
 
-	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture_uri, X''), sender_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
+	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture_uri, ''), sender_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
 		FROM messages
 		WHERE id=? AND conversation_id=?`
 	err := db.c.QueryRow(query, messageID, conversationID).Scan(&message.ID, &message.SentDate, &message.PictureURI, &message.SenderID, &message.ConversationID, &message.ReplyMessageID, &message.ForwardedMessageID)
 	return message, err
 }
 
+func (db *appdbimpl) GetMessagePictureURI(conversationID int, messageID int) (string, error) {
+	var pictureURI string
+
+	query := "SELECT COALESCE(picture_uri, '' FROM messages WHERE id=? AND conversation_id=?"
+	err := db.c.QueryRow(query, messageID, conversationID).Scan(&pictureURI)
+	return pictureURI, err
+}
+
 func (db *appdbimpl) GetMessages(conversationID int) (structs.Conversation, error) {
-	query := `SELECT id, body, sent_date, COALESCE(picture_uri, X''), sender_id, conversation_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
+	query := `SELECT id, body, sent_date, COALESCE(picture_uri, ''), sender_id, conversation_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
 		FROM messages
 		WHERE conversation_id=?
 		ORDER BY sent_date DESC`
@@ -180,7 +188,7 @@ func (db *appdbimpl) GetMessages(conversationID int) (structs.Conversation, erro
 func (db *appdbimpl) GetLastMessage(conversationID int) (structs.Message, error) {
 	var message structs.Message
 
-	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture_uri, X''), sender_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
+	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture_uri, ''), sender_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
 		FROM messages
 		WHERE conversation_id=?
 		ORDER BY sent_date DESC LIMIT 1`

@@ -154,8 +154,8 @@ paths:
 
     put:
       operationId: setMyPhoto
-      tags: ["users"]
-      summary: Set the user picture
+      tags: ["users", "images"]
+      summary: Set the user profile picture
       description: |-
         Set the user profile picture
       security:
@@ -178,7 +178,7 @@ paths:
 
     get:
       operationId: getMyPhoto
-      tags: ["images"]
+      tags: ["users", "images"]
       summary: Get the user profile picture
       description: |-
         Return the user profile picture
@@ -264,7 +264,7 @@ paths:
 
     post:
       operationId: uploadConversationImage
-      tags: ["images"]
+      tags: ["conversations", "images"]
       summary: Upload an image
       description: |-
         Upload an image
@@ -385,7 +385,7 @@ paths:
       - $ref: "#/components/parameters/messageID"
 
     get:
-      operationId: getMessageImage
+      operationId: getMessagePhoto
       tags: ["images"]
       summary: Get message image
       description: |-
