@@ -1,9 +1,13 @@
 package api
 
 import (
-	"encoding/json"
+	"io"
+	"math/rand"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -32,17 +36,54 @@ func (rt *_router) setGroupPhoto(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	// Get request body
-	type PicturePart struct {
-		PictureURI string `json:"pictureURI"`
+	currentWorkDirectory := "./"
+	uploadDirectory := "uploads/groups/group" + strconv.Itoa(groupID) + "/" // Set up the upload directory
+	if err := os.MkdirAll(currentWorkDirectory+uploadDirectory, os.ModePerm); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
-	var picturePart PicturePart
-	if err := json.NewDecoder(r.Body).Decode(&picturePart); err != nil {
+
+	err = r.ParseMultipartForm(32 << 20) // Allocate to 32 MB of memory for the image
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
+	file, fileHandler, err := r.FormFile("image") // Get the image
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	defer func() {
+		if err := file.Close(); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	}()
+
+	randomGenerator := rand.New(rand.NewSource(time.Now().UnixNano()))
+	fileName := time.Now().Format("20060102150405") + "-" + strconv.Itoa(userID) + "-" + strconv.Itoa(randomGenerator.Intn(100)) + filepath.Ext(fileHandler.Filename) // Set up the file name (uploadDate-userID-randomNumber.extension)
+
+	filePath := currentWorkDirectory + uploadDirectory + fileName // Set up the file path
+	fileDestination, err := os.Create(filePath)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer func() {
+		if err := fileDestination.Close(); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	}()
+
+	if _, err = io.Copy(fileDestination, file); err != nil { // Copy the image file into the disk
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	// Prepare the response
-	if err := rt.db.UpdateGroupConversationPicture(groupID, picturePart.PictureURI); err != nil {
+	if err := rt.db.UpdateGroupConversationPicture(groupID, currentWorkDirectory+fileName); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

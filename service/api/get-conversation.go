@@ -26,6 +26,11 @@ func (rt *_router) getConversation(w http.ResponseWriter, r *http.Request, ps ht
 		return
 	}
 
+	if err := rt.db.CheckUserConversation(userID, recipientID); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	// Prepare the response
 	conversation, err := rt.db.GetMessages(recipientID)
 	if err != nil {
