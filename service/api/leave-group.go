@@ -25,6 +25,11 @@ func (rt *_router) leaveGroup(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
+	if err := rt.db.CheckGroupConversation(groupID); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	if err := rt.db.CheckGroupConversationMember(userID, groupID); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

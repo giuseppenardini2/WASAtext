@@ -1,10 +1,8 @@
 package api
 
 import (
-	"errors"
 	"net/http"
 	"strconv"
-	"wasatext/service/database"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -27,11 +25,7 @@ func (rt *_router) getGroupPhoto(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	err = rt.db.CheckGroupConversation(groupID)
-	if errors.Is(err, database.ErrNonexistentResource) {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	} else if err != nil {
+	if err := rt.db.CheckGroupConversation(groupID); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

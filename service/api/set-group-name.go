@@ -2,10 +2,8 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"strconv"
-	"wasatext/service/database"
 	"wasatext/service/structs"
 
 	"github.com/julienschmidt/httprouter"
@@ -29,11 +27,7 @@ func (rt *_router) setGroupName(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 
-	err = rt.db.CheckGroupConversation(groupID)
-	if errors.Is(err, database.ErrNonexistentResource) {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	} else if err != nil {
+	if err := rt.db.CheckGroupConversation(groupID); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

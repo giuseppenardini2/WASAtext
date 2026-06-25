@@ -16,11 +16,11 @@ func (rt *_router) Handler() http.Handler {
 
 	rt.router.POST("/users/:userid/conversations", rt.createConversation)
 	rt.router.GET("/users/:userid/conversations", rt.getConversation)
-	rt.router.POST("/users/:userid/conversations/uploads/images", rt.uploadConversationImage)
+	rt.router.POST("/users/:userid/conversations/:conversationid/images", rt.uploadConversationImage)
 	rt.router.POST("/users/:userid/conversations/:conversationid/messages", rt.sendMessage)
 	rt.router.POST("/users/:userid/conversations/:conversationid/messages/:messageid", rt.forwardMessage)
 	rt.router.DELETE("/users/:userid/conversations/:conversationid/messages/:messageid", rt.deleteMessage)
-	rt.router.GET("/users/:userid/conversations/:conversationid/messages/:messageid/picture", rt.getMessagePhoto)
+	rt.router.GET("/users/:userid/conversations/:conversationid/messages/:messageid/image", rt.getMessagePhoto)
 
 	rt.router.POST("/users/:userid/conversations/:conversationid/messages/:messageid/reactions", rt.commentMessage)
 	rt.router.DELETE("/users/:userid/conversations/:conversationid/messages/:messageid/reactions/:reactionid", rt.uncommentMessage)
