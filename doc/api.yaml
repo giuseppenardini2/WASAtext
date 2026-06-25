@@ -113,37 +113,6 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /users/{userid}/uploads/images:
-    parameters:
-      - $ref: "#/components/parameters/userID"
-
-    post:
-      operationId: uploadImage
-      tags: ["images"]
-      summary: Upload an image
-      description: |-
-        Upload an image
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Image
-        content:
-          multipart/form-data:
-            schema: { $ref: "#/components/schemas/Image" }
-        required: true
-      responses:
-        "201":
-          description: Image URL
-          content:
-            application/json:
-              schema: { $ref: "#/components/schemas/ImageURI" }
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
   /users/{userid}/username:
     parameters:
       - $ref: "#/components/parameters/userID"
@@ -192,13 +161,10 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
+        description: Image
         content:
-          application/json:
-            schema:
-              description: User picture
-              type: object
-              properties:
-                imageURI: { $ref: "#/components/schemas/ImageURI" }
+          multipart/form-data:
+            schema: { $ref: "#/components/schemas/Image" }
         required: true
       responses:
         "200":
@@ -207,6 +173,27 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    get:
+      operationId: getMyPhoto
+      tags: ["images"]
+      summary: Get the user profile picture
+      description: |-
+        Return the user profile picture
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Image
+          content:
+            multipart/form-data:
+              schema: { $ref: "#/components/schemas/Image" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -270,6 +257,38 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /users/{userid}/conversations/{conversationid}/uploads/images:
+    parameters:
+        - $ref: "#/components/parameters/userID"
+        - $ref: "#/components/parameters/conversationID"
+
+    post:
+      operationId: uploadConversationImage
+      tags: ["images"]
+      summary: Upload an image
+      description: |-
+        Upload an image
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Image
+        content:
+          multipart/form-data:
+            schema: { $ref: "#/components/schemas/Image" }
+        required: true
+      responses:
+        "201":
+          description: Image URI
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ImageURI" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /users/{userid}/conversations/{conversationid}/messages:
     parameters:
         - $ref: "#/components/parameters/userID"
@@ -315,8 +334,8 @@ paths:
   /users/{userid}/conversations/{conversationid}/messages/{messageid}:
     parameters:
       - $ref: "#/components/parameters/userID"
-      - $ref: "#/components/parameters/messageID"
       - $ref: "#/components/parameters/conversationID"
+      - $ref: "#/components/parameters/messageID"
 
     post:
       operationId: forwardMessage
@@ -356,6 +375,33 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/{userid}/conversations/{conversationid}/messages/{messageid}/image:
+    parameters:
+      - $ref: "#/components/parameters/userID"
+      - $ref: "#/components/parameters/conversationID"
+      - $ref: "#/components/parameters/messageID"
+
+    get:
+      operationId: getMessageImage
+      tags: ["images"]
+      summary: Get message image
+      description: |-
+        Return the message image
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Image
+          content:
+            multipart/form-data:
+              schema: { $ref: "#/components/schemas/Image" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -504,21 +550,42 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
+        description: Image
         content:
-          application/json:
-            schema:
-              description: User picture
-              type: object
-              properties:
-                imageURI: { $ref: "#/components/schemas/ImageURI" }
+          multipart/form-data:
+            schema: { $ref: "#/components/schemas/Image" }
         required: true
       responses:
         "200":
-          $ref: "#/components/responses/OKMessage"
+          description: Group name updated successful
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ImageURI" }
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    get:
+      operationId: getGroupPhoto
+      tags: ["images"]
+      summary: Get the group profile picture
+      description: |-
+        Return the group profile picture
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Image
+          content:
+            multipart/form-data:
+              schema: { $ref: "#/components/schemas/Image" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
 
