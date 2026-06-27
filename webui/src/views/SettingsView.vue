@@ -39,8 +39,8 @@ export default {
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
 
-				this.pictureURI = response.data.pictureURI;
-				sessionStorage.setItem("pictureURI", response.data.pictureURI);
+				this.pictureURI = response.data.imageURI;
+				sessionStorage.setItem("pictureURI", response.data.imageURI);
 
 				this.getUserPicture();
 			}
