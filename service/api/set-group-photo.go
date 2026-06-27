@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"io"
 	"math/rand"
 	"net/http"
@@ -87,9 +88,17 @@ func (rt *_router) setGroupPhoto(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	w.Header().Set("content-type", "text/plain; charset=utf-8")
+	type ImagePart struct {
+		ImageURI string `json:"imageURI"`
+	}
+
+	imagePart := ImagePart{
+		ImageURI: filePath,
+	}
+
+	w.Header().Set("content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	if _, err := w.Write([]byte("The request succeeded")); err != nil {
+	if err := json.NewEncoder(w).Encode(imagePart); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
