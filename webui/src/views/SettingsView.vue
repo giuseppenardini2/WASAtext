@@ -30,6 +30,7 @@ export default {
 			if (!this.selectedFile) return;
 			
 			this.loading = true;
+			this.errorMessage = "";
 			try {
 				const payload = new FormData();
 				payload.append("image", this.selectedFile);
@@ -55,6 +56,7 @@ export default {
 			if (!this.pictureURI) return;
 
 			this.loading = true;
+			this.errorMessage = "";
 			try {
 				const response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/picture`, {
 					headers: { 
@@ -77,6 +79,7 @@ export default {
 		},
 		async changeUsername() {
 			this.loading = true;
+			this.errorMessage = "";
 			try {
 				if (this.username.length < 3 || this.username.length > 16) throw "Invalid username"
 
