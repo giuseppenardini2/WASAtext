@@ -3,7 +3,7 @@ export default {
 	data() {
 		return {
 			username: sessionStorage.getItem("username"),
-			pictureURI: sessionStorage.getItem("pictureURI"), // NOTA: Al posto di pictureURI si potrebbe usare un flag booleano ('Has picture')
+			pictureURI: sessionStorage.getItem("pictureURI"),
 
 			selectedFile: null,
 			localPictureURL: "",
