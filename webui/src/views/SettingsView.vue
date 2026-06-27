@@ -3,7 +3,7 @@ export default {
 	data() {
 		return {
 			username: sessionStorage.getItem("username"),
-			pictureURI: sessionStorage.getItem("pictureURI"),
+			pictureURI: sessionStorage.getItem("pictureURI"), // NOTA: Al posto di pictureURI si potrebbe usare un flag booleano ('Has picture')
 
 			selectedFile: null,
 			localPictureURL: "",
@@ -39,7 +39,7 @@ export default {
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
 
-				this.pictureURI = response.data.pictureURI; // TODO: Cambiare il tipo di risposta
+				this.pictureURI = response.data.pictureURI;
 				sessionStorage.setItem("pictureURI", response.data.pictureURI);
 
 				this.getUserPicture();
@@ -98,6 +98,11 @@ export default {
 	},
 	mounted() {
 		this.getUserPicture();
+	},
+	beforeUnmount() {
+		if (this.localPictureURL) {
+      		URL.revokeObjectURL(this.localPictureURL);
+    	}
 	}
 }
 </script>
@@ -109,7 +114,7 @@ export default {
 			<form @submit.prevent="changePicture">
 				<div class="user-picture">
 					<img v-if="pictureURI === ''" src="@/assets/images/default-user-picture.jpg" alt="User picture">
-					<img v-else :src="pictureURI" alt="User picture">
+					<img v-else :src="localPictureURL" alt="User picture">
 				</div>
 				<div>
 					<input type="file" accept="image/*" @change="handleFileSelection">
