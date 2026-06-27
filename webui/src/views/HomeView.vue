@@ -2,38 +2,43 @@
 export default {
 	data() {
 		return {
+			chatList: [],
 			errorMessage: null,
 			loading: false,
-			some_data: null,
 		}
 	},
 	methods: {
-		async refresh() {
+		listChats() {
 			this.loading = true;
-			this.errorMessage = null;
-			try {
-				let response = await this.$router.push("/home");
-				this.some_data = response.data;
-			} catch (e) {
-				this.errorMessage = e.toString();
-			}
 			this.loading = false;
 		},
-	},
-	mounted() {
-		this.refresh()
 	}
 }
 </script>
 
 <template>
-	<div>
-		<div>
-			Hello world!
+	<div class="main-box">
+		<h1>Chats</h1>
+		<div class="chat-list-box">
+			
 		</div>
-		<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
+		<div>
+			<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
+		</div>
 	</div>
 </template>
 
 <style>
+.main-box {
+	width: 100%;
+  	height: 100%;
+  	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	padding: 10px;
+}
+
+.main-box h1 {
+	color: var(--text-color-1);
+}
 </style>

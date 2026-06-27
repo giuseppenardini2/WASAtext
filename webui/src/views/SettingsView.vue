@@ -159,6 +159,10 @@ export default {
 	align-items: center;
 }
 
+.profile-box form {
+	margin-bottom: 20px;
+}
+
 .profile-box button {
     width: 100px;
 	padding: 10px;
