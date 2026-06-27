@@ -34,7 +34,7 @@ export default {
 				const payload = new FormData();
 				payload.append("image", this.selectedFile);
 
-				const response = await this.$axios.post(`/users/${sessionStorage.getItem("userID")}/picture`, payload,
+				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/picture`, payload,
 				{
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
