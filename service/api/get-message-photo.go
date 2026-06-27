@@ -52,5 +52,5 @@ func (rt *_router) getMessagePhoto(w http.ResponseWriter, r *http.Request, ps ht
 		return
 	}
 
-	http.ServeFile(w, r, "./"+pictureURI)
+	http.ServeFile(w, r, pictureURI)
 }

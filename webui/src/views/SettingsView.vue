@@ -6,6 +6,7 @@ export default {
 			pictureURI: sessionStorage.getItem("pictureURI"),
 
 			selectedFile: null,
+			localPictureURL: "",
 
 			loading: false,
 			errorMessage: null,
@@ -33,19 +34,31 @@ export default {
 				const payload = new FormData();
 				payload.append("image", this.selectedFile);
 
-				const response = await this.$axios.post(`/users/${sessionStorage.getItem("userID")}/uploads/images`, payload,
+				const response = await this.$axios.post(`/users/${sessionStorage.getItem("userID")}/picture`, payload,
 				{
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
 
-				this.pictureURI = response.data.pictureURI;
+				this.pictureURI = response.data.pictureURI; // TODO: Cambiare il tipo di risposta
 				sessionStorage.setItem("pictureURI", response.data.pictureURI);
+			}
+			catch(error) {
+				this.errorMessage = error.toString();
+			}
+			finally {
+				this.loading = false;
+			}
+		},
+		async getUserPicture() {
+			if (!this.pictureURI) return;
 
-				await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/picture`, {
-					pictureURI: this.pictureURI
-				},
-				{
-					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
+			this.loading = true;
+			try {
+				const response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/picture`, {
+					headers: { 
+						"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
+					},
+					responseType: "blob"
 				});
 			}
 			catch(error) {
@@ -75,6 +88,9 @@ export default {
 				this.loading = false;
 			}
 		}
+	},
+	mounted() {
+		this.getUserPicture()
 	}
 }
 </script>

@@ -25,9 +25,8 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Get request body
-	currentWorkDirectory := "./"
-	uploadDirectory := "uploads/users/user" + strconv.Itoa(userID) + "/" // Set up the upload directory
-	if err := os.MkdirAll(currentWorkDirectory+uploadDirectory, os.ModePerm); err != nil {
+	uploadDirectory := "./uploads/users/user" + strconv.Itoa(userID) + "/" // Set up the upload directory
+	if err := os.MkdirAll(uploadDirectory, os.ModePerm); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -53,7 +52,7 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 	randomGenerator := rand.New(rand.NewSource(time.Now().UnixNano()))
 	fileName := time.Now().Format("20060102150405") + "-" + strconv.Itoa(userID) + "-" + strconv.Itoa(randomGenerator.Intn(100)) + filepath.Ext(fileHandler.Filename) // Set up the file name (uploadDate-userID-randomNumber.extension)
 
-	filePath := currentWorkDirectory + uploadDirectory + fileName // Set up the file path
+	filePath := uploadDirectory + fileName // Set up the file path
 	fileDestination, err := os.Create(filePath)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -72,7 +71,7 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Prepare the response
-	if err := rt.db.UpdateUserPicture(userID, uploadDirectory+fileName); err != nil {
+	if err := rt.db.UpdateUserPicture(userID, filePath); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

@@ -46,5 +46,5 @@ func (rt *_router) getGroupPhoto(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	http.ServeFile(w, r, "./"+pictureURI)
+	http.ServeFile(w, r, pictureURI)
 }

@@ -30,5 +30,5 @@ func (rt *_router) getMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
-	http.ServeFile(w, r, "./"+pictureURI)
+	http.ServeFile(w, r, pictureURI)
 }
