@@ -106,12 +106,6 @@ func New(db *sql.DB) (AppDatabase, error) {
 		return nil, errors.New("database is required when building a AppDatabase")
 	}
 
-	// Enable foreign keys
-	sqlForeignKeys := "PRAGMA foreign_keys = ON"
-	if _, err := db.Exec(sqlForeignKeys); err != nil {
-		return nil, err
-	}
-
 	// Create tables (if they not exists)
 	if err := createTables(db); err != nil {
 		return nil, err
