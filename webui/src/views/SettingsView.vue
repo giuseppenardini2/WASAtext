@@ -41,6 +41,8 @@ export default {
 
 				this.pictureURI = response.data.pictureURI; // TODO: Cambiare il tipo di risposta
 				sessionStorage.setItem("pictureURI", response.data.pictureURI);
+
+				this.getUserPicture();
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -60,6 +62,11 @@ export default {
 					},
 					responseType: "blob"
 				});
+
+				if (this.localPictureURL) {
+          			URL.revokeObjectURL(this.localPictureURL);
+        		}
+				this.localPictureURL = URL.createObjectURL(response.data);
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -79,7 +86,7 @@ export default {
 				{
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
-				sessionStorage.setItem("username", this.username)
+				sessionStorage.setItem("username", this.username);
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -90,7 +97,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.getUserPicture()
+		this.getUserPicture();
 	}
 }
 </script>

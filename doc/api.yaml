@@ -168,7 +168,10 @@ paths:
         required: true
       responses:
         "200":
-          $ref: "#/components/responses/OKMessage"
+          description: Updated user picture URI
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ImageURI" }
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -557,7 +560,7 @@ paths:
         required: true
       responses:
         "200":
-          description: Group name updated successful
+          description: Updated group picture URI
           content:
             application/json:
               schema: { $ref: "#/components/schemas/ImageURI" }
@@ -915,15 +918,6 @@ components:
 
   #-- RESPONSES
   responses:
-    OKMessage:
-      description: The request succeeded
-      content:
-        text/plain:
-          schema:
-            description: Request succeeded message
-            type: string
-            example: "The request succeeded"
-
     NoContent:
       description: The server successfully processed the request, and is not returning any content
 
