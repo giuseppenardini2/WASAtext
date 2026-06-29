@@ -19,7 +19,7 @@ func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps
 		return
 	}
 
-	if IsUserAuthorized(userID, r, w) {
+	if !IsUserAuthorized(userID, r, w) {
 		return
 	}
 
