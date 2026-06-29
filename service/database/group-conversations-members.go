@@ -36,6 +36,7 @@ func (db *appdbimpl) GetGroupConversartionMembers(groupConversationsID int) ([]s
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var users []structs.User
 	for rows.Next() {

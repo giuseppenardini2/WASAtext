@@ -48,7 +48,6 @@ type AppDatabase interface {
 	CheckUser(userID int) error
 	CheckUserUsername(username string) error
 
-	AddConversation() (int64, error)
 	GetConversations(userID int) ([]structs.ConversationPreview, error)
 	GetConversationType(conversationID int) (structs.ConversationType, error)
 	CheckUserConversation(userID int, conversationID int) error

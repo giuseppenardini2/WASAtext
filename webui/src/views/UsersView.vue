@@ -11,6 +11,7 @@ export default {
 	methods: {
 		async handleSearch() {
 			this.loading = true;
+			this.errorMessage = "";
 			try {
 				const response = await this.$axios.get('/users', {
 					params: {
@@ -18,6 +19,26 @@ export default {
 					}
 				});
 				this.users = response.data || [];
+			}
+			catch(error) {
+				this.errorMessage = error.toString();
+			}
+			finally {
+				this.loading = false;
+			}
+		},
+		async startNewConversation(recipientID) {
+			this.loading = true;
+			this.errorMessage = "";
+			try {
+				const response = await this.$axios.post(`/users/${sessionStorage.getItem("userID")}/conversations`, {
+					secondUserID: recipientID,
+				},
+				{
+					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
+				});
+				sessionStorage.setItem("conversationID", response.data.id);
+				this.$router.push("/home");
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -49,6 +70,7 @@ export default {
         				class="user-item"
      				>
         				<strong>{{ user.username }}</strong>
+						<button type="button" @click="startNewConversation(user.id)" :disabled="loading">New chat</button>
      	 			</li>
     			</ul>
 				<div v-else>
@@ -84,6 +106,12 @@ export default {
 	flex-direction: column;
 }
 
+.users-box button:disabled {
+	background-color: #6c757d;
+	cursor: not-allowed;
+	opacity: 0.8;
+}
+
 .user-search-bar {
 	display: flex;
 	flex-direction: row;
@@ -117,9 +145,12 @@ export default {
     background-color: var(--color-3-a);
 }
 
-.user-search-bar button:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-  opacity: 0.8;
+.user-item button {
+	background-color: #007bff;
+	color: white;
+	border: none;
+	padding: 6px 12px;
+	border-radius: 4px;
+	cursor: pointer;
 }
 </style>

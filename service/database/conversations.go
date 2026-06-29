@@ -6,19 +6,6 @@ import (
 )
 
 /*
- * ADD OPERATIONS
- */
-
-func (db *appdbimpl) AddConversation() (int64, error) {
-	query := "INSERT INTO conversations DEFAULT VALUES"
-	result, err := db.c.Exec(query)
-	if err != nil {
-		return -1, err
-	}
-	return result.LastInsertId()
-}
-
-/*
  * GET OPERATIONS
  */
 
@@ -43,19 +30,20 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 		) message_sent_date
 		FROM users AS u, private_conversations AS pc
 		WHERE (pc.first_user_id=? OR pc.second_user_id=?) AND u.id!=? AND (pc.first_user_id=u.id OR pc.second_user_id=u.id)`
-	rows, err := db.c.Query(query1, userID, userID, userID)
+	rows1, err := db.c.Query(query1, userID, userID, userID)
 	if err != nil {
 		return nil, err
 	}
-	for rows.Next() {
+	defer rows1.Close()
+	for rows1.Next() {
 		var conversationPreview structs.ConversationPreview
 		conversationPreview.Type = structs.PrivateConversationType
-		if err := rows.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePicture, &conversationPreview.LastMessageSentDate); err != nil {
+		if err := rows1.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePicture, &conversationPreview.LastMessageSentDate); err != nil {
 			return nil, err
 		}
 		conversations = append(conversations, conversationPreview)
 	}
-	if err = rows.Err(); err != nil {
+	if err = rows1.Err(); err != nil {
 		return nil, err
 	}
 
@@ -77,19 +65,20 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 		) message_sent_date
 	FROM group_conversations AS gc, group_conversations_members AS gcm
 	WHERE gcm.user_id=? AND gcm.group_conversation_id=gc.id`
-	rows, err = db.c.Query(query2, userID)
+	rows2, err := db.c.Query(query2, userID)
 	if err != nil {
 		return nil, err
 	}
-	for rows.Next() {
+	defer rows2.Close()
+	for rows2.Next() {
 		var conversationPreview structs.ConversationPreview
 		conversationPreview.Type = structs.GroupConversationType
-		if err := rows.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePicture, &conversationPreview.LastMessageSentDate); err != nil {
+		if err := rows2.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePicture, &conversationPreview.LastMessageSentDate); err != nil {
 			return nil, err
 		}
 		conversations = append(conversations, conversationPreview)
 	}
-	if err = rows.Err(); err != nil {
+	if err = rows2.Err(); err != nil {
 		return nil, err
 	}
 
@@ -132,8 +121,8 @@ func (db *appdbimpl) CheckUserConversation(userID int, conversationID int) error
 	switch conversationType {
 	case structs.PrivateConversationType:
 		query := `SELECT COUNT(user_id) 
-		FROM private_conversations 
-		WHERE (conversation_id=? AND (first_user_id=? OR second_user_id=?)`
+        FROM private_conversations 
+        WHERE conversation_id=? AND (first_user_id=? OR second_user_id=?)`
 		if err := db.c.QueryRow(query, conversationID, userID, userID).Scan(&count); err != nil {
 			return err
 		}

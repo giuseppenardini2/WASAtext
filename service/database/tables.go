@@ -29,10 +29,9 @@ func createTables(db *sql.DB) error {
 		second_user_id INTEGER NOT NULL,
 		PRIMARY KEY(id),
 		UNIQUE(first_user_id, second_user_id),
-		CONSTRAINT fk_private_conversations
-			FOREIGN KEY (id) REFERENCES conversations(id) ON DELETE CASCADE
-			FOREIGN KEY (first_user_id) REFERENCES users(id) ON DELETE CASCADE
-			FOREIGN KEY (second_user_id) REFERENCES users(id) ON DELETE CASCADE
+		FOREIGN KEY (id) REFERENCES conversations(id) ON DELETE CASCADE,
+		FOREIGN KEY (first_user_id) REFERENCES users(id) ON DELETE CASCADE,
+		FOREIGN KEY (second_user_id) REFERENCES users(id) ON DELETE CASCADE
 	);`
 	if _, err := db.Exec(privateConversationsQuery); err != nil {
 		return err
@@ -44,9 +43,8 @@ func createTables(db *sql.DB) error {
 		picture_uri TEXT,
 		user_creator_id INTEGER NOT NULL,
 		PRIMARY KEY(id),
-		CONSTRAINT fk_group_conversations
-			FOREIGN KEY(id) REFERENCES conversations(id) ON DELETE CASCADE
-			FOREIGN KEY(user_creator_id) REFERENCES users(id) ON DELETE CASCADE
+		FOREIGN KEY(id) REFERENCES conversations(id) ON DELETE CASCADE,
+		FOREIGN KEY(user_creator_id) REFERENCES users(id) ON DELETE CASCADE
 	);`
 	if _, err := db.Exec(groupConversationsQuery); err != nil {
 		return err
@@ -56,9 +54,8 @@ func createTables(db *sql.DB) error {
 		user_id INTEGER,
 		group_conversation_id INTEGER,
 		PRIMARY KEY(user_id, group_conversation_id),
-		CONSTRAINT fk_group_conversations_members
-			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
-			FOREIGN KEY(group_conversation_id) REFERENCES group_conversations(id) ON DELETE CASCADE
+		FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+		FOREIGN KEY(group_conversation_id) REFERENCES group_conversations(id) ON DELETE CASCADE
 	);`
 	if _, err := db.Exec(groupConversationsMembersQuery); err != nil {
 		return err
@@ -75,11 +72,10 @@ func createTables(db *sql.DB) error {
 		reply_message_id INTEGER,
 		forwarded_message_id INTEGER,
 		PRIMARY KEY(id, conversation_id),
-		CONSTRAINT fk_messages
-			FOREIGN KEY(conversation_id) REFERENCES conversations(id) ON DELETE CASCADE
-			FOREIGN KEY(sender_id) REFERENCES users(id) ON DELETE CASCADE
-			FOREIGN KEY(reply_message_id) REFERENCES messages(id) ON DELETE CASCADE
-			FOREIGN KEY(forwarded_message_id) REFERENCES messages(id) ON DELETE CASCADE
+		FOREIGN KEY(conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
+		FOREIGN KEY(sender_id) REFERENCES users(id) ON DELETE CASCADE,
+		FOREIGN KEY(reply_message_id) REFERENCES messages(id) ON DELETE CASCADE,
+		FOREIGN KEY(forwarded_message_id) REFERENCES messages(id) ON DELETE CASCADE
 	);`
 	if _, err := db.Exec(messagesQuery); err != nil {
 		return err
@@ -90,9 +86,8 @@ func createTables(db *sql.DB) error {
 		message_id INTEGER,
 		conversation_id INTEGER,
 		PRIMARY KEY(user_id, message_id, conversation_id),
-		CONSTRAINT fk_read_checkmarks
-			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
-			FOREIGN KEY(message_id, conversation_id) REFERENCES messages(id, conversation_id) ON DELETE CASCADE
+		FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+		FOREIGN KEY(message_id, conversation_id) REFERENCES messages(id, conversation_id) ON DELETE CASCADE
 	);`
 	if _, err := db.Exec(readCheckmarksQuery); err != nil {
 		return err
@@ -106,9 +101,8 @@ func createTables(db *sql.DB) error {
 		emoji TEXT NOT NULL,
 		PRIMARY KEY(id, message_id, conversation_id),
 		UNIQUE(user_id, message_id, conversation_id),
-		CONSTRAINT fk_reactions
-			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
-			FOREIGN KEY(message_id, conversation_id) REFERENCES messages(id, conversation_id) ON DELETE CASCADE
+		FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+		FOREIGN KEY(message_id, conversation_id) REFERENCES messages(id, conversation_id) ON DELETE CASCADE
 	);`
 	if _, err := db.Exec(reactionsQuery); err != nil {
 		return err

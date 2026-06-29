@@ -7,13 +7,28 @@ import "wasatext/service/structs"
  */
 
 func (db *appdbimpl) AddReaction(userID int, conversationID int, messageID int, emoji string) (structs.Reaction, error) {
-	reactionID, err := db.GetNewReactionID(conversationID, messageID)
+	tx, err := db.c.Begin()
 	if err != nil {
 		return structs.Reaction{}, err
 	}
+	defer tx.Rollback()
 
-	query := "INSERT INTO reactions (id, conversation_id, message_id, user_id, emoji) VALUES (?, ?, ?, ?)"
-	_, err = db.c.Exec(query, reactionID, conversationID, messageID, userID, emoji)
+	var reactionID int64
+	query1 := "SELECT MAX(id) FROM reactions WHERE conversation_id=? AND message_id=?"
+	if err := tx.QueryRow(query1, conversationID).Scan(&reactionID); err != nil {
+		return structs.Reaction{}, err
+	}
+	reactionID += 1
+
+	query2 := "INSERT INTO reactions (id, conversation_id, message_id, user_id, emoji) VALUES (?, ?, ?, ?)"
+	if _, err = db.c.Exec(query2, reactionID, conversationID, messageID, userID, emoji); err != nil {
+		return structs.Reaction{}, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return structs.Reaction{}, err
+	}
+
 	return structs.Reaction{
 		ID:             int(reactionID),
 		UserID:         userID,
@@ -64,6 +79,7 @@ func (db *appdbimpl) GetReactions(conversationID int, messageID int) ([]structs.
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var reactions []structs.Reaction
 	for rows.Next() {

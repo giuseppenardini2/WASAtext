@@ -7,22 +7,37 @@ import "wasatext/service/structs"
  */
 
 func (db *appdbimpl) AddGroupConversation(name string, pictureURI string, userCreatorID int) (structs.GroupConversation, error) {
-	groupConversationID, err := db.AddConversation()
+	tx, err := db.c.Begin()
+	if err != nil {
+		return structs.GroupConversation{}, err
+	}
+	defer tx.Rollback()
+
+	query1 := "INSERT INTO conversations DEFAULT VALUES"
+	result, err := tx.Exec(query1)
 	if err != nil {
 		return structs.GroupConversation{}, err
 	}
 
-	query := "INSERT INTO group_conversations (id, name, picture_uri, user_creator_id) VALUES (?, ?, ?, ?)"
-	_, err = db.c.Exec(query, groupConversationID, name, pictureURI, userCreatorID)
+	groupConversationID, err := result.LastInsertId()
 	if err != nil {
+		return structs.GroupConversation{}, err
+	}
+
+	query2 := "INSERT INTO group_conversations (id, name, user_creator_id) VALUES (?, ?, ?)"
+	if _, err := tx.Exec(query2, groupConversationID, name, pictureURI, userCreatorID); err != nil {
 		return structs.GroupConversation{}, err
 	}
 
 	if pictureURI != "" {
 		query := "UPDATE group_conversations SET picture_uri=? WHERE id=?"
-		if _, err := db.c.Exec(query, pictureURI, groupConversationID); err != nil {
+		if _, err := tx.Exec(query, pictureURI, groupConversationID); err != nil {
 			return structs.GroupConversation{}, err
 		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return structs.GroupConversation{}, err
 	}
 
 	return structs.GroupConversation{

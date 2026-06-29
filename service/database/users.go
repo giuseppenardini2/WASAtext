@@ -84,6 +84,7 @@ func (db *appdbimpl) GetUsers(username string) ([]structs.User, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var users []structs.User
 	for rows.Next() {

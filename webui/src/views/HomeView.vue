@@ -2,16 +2,32 @@
 export default {
 	data() {
 		return {
-			chatList: [],
+			conversationPreviews: [],
 			errorMessage: null,
 			loading: false,
 		}
 	},
 	methods: {
-		listChats() {
+		async listChats() {
 			this.loading = true;
-			this.loading = false;
-		},
+			this.errorMessage = "";
+			try {
+				const response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}`, 
+				{
+					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
+				});
+				this.conversationPreviews = response.data || [];
+			}
+			catch(error) {
+				this.errorMessage = error.toString();
+			}
+			finally {
+				this.loading = false;
+			}
+		}
+	},
+	mounted() {
+		this.listChats();
 	}
 }
 </script>
@@ -20,7 +36,17 @@ export default {
 	<div class="main-box">
 		<h1>Chats</h1>
 		<div class="chat-list-box">
-			
+			<ul v-if="conversationPreviews.length > 0">
+				<li 
+					v-for="conversationPreview in conversationPreviews"
+						:key="conversationPreview.id"
+				>
+					<strong>{{ conversationPreview.id }}</strong>
+				</li>
+			</ul>
+			<div v-else>
+				No user found
+			</div>
 		</div>
 		<div>
 			<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>

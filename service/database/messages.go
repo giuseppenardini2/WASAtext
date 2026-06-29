@@ -9,24 +9,35 @@ import (
  */
 
 func (db *appdbimpl) AddMessage(body string, pictureURI string, senderID int, conversationID int) (structs.Message, error) {
-	messageID, err := db.GetNewMessageID(conversationID)
+	tx, err := db.c.Begin()
 	if err != nil {
 		return structs.Message{}, err
 	}
+	defer tx.Rollback()
+
+	var messageID int64
+	query1 := "SELECT MAX(id) FROM messages WHERE conversation_id=?"
+	if err := tx.QueryRow(query1, conversationID).Scan(&messageID); err != nil {
+		return structs.Message{}, err
+	}
+	messageID += 1
 
 	sentDate := structs.SentDateNow()
-	query := "INSERT INTO messages (id, conversation_id, body, sent_date sender_id) VALUES (?, ?, ?, ?, ?)"
-	if _, err := db.c.Exec(query, messageID, conversationID, body, sentDate, senderID); err != nil {
+	query2 := "INSERT INTO messages (id, conversation_id, body, sent_date sender_id) VALUES (?, ?, ?, ?, ?)"
+	if _, err := tx.Exec(query2, messageID, conversationID, body, sentDate, senderID); err != nil {
 		return structs.Message{}, err
 	}
 
 	// Add the picture of the message if it is present
 	if pictureURI != "" {
-		query := "UPDATE messages SET picture_uri=? WHERE id=?"
-		_, err = db.c.Exec(query, pictureURI, messageID)
-		if err != nil {
+		query3 := "UPDATE messages SET picture_uri=? WHERE id=?"
+		if _, err = tx.Exec(query3, pictureURI, messageID); err != nil {
 			return structs.Message{}, err
 		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return structs.Message{}, err
 	}
 
 	return structs.Message{
@@ -42,23 +53,34 @@ func (db *appdbimpl) AddMessage(body string, pictureURI string, senderID int, co
 }
 
 func (db *appdbimpl) AddReplyMessage(body string, pictureURI string, senderID int, conversationID int, replyMessageID int) (structs.Message, error) {
-	messageID, err := db.GetNewMessageID(conversationID)
+	tx, err := db.c.Begin()
 	if err != nil {
 		return structs.Message{}, err
 	}
+	defer tx.Rollback()
+
+	var messageID int64
+	query1 := "SELECT MAX(id) FROM messages WHERE conversation_id=?"
+	if err := tx.QueryRow(query1, conversationID).Scan(&messageID); err != nil {
+		return structs.Message{}, err
+	}
+	messageID += 1
 
 	sentDate := structs.SentDateNow()
-	query := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id, reply_message_id) VALUES (?, ?, ?, ?, ?, ?)"
-	if _, err := db.c.Exec(query, messageID, conversationID, body, sentDate, senderID, replyMessageID); err != nil {
+	query2 := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id, reply_message_id) VALUES (?, ?, ?, ?, ?, ?)"
+	if _, err := tx.Exec(query2, messageID, conversationID, body, sentDate, senderID, replyMessageID); err != nil {
 		return structs.Message{}, err
 	}
 
 	if pictureURI != "" {
-		query := "UPDATE messages SET picture_uri=? WHERE id=?"
-		_, err = db.c.Exec(query, pictureURI, messageID)
-		if err != nil {
+		query3 := "UPDATE messages SET picture_uri=? WHERE id=?"
+		if _, err = tx.Exec(query3, pictureURI, messageID); err != nil {
 			return structs.Message{}, err
 		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return structs.Message{}, err
 	}
 
 	return structs.Message{
@@ -74,34 +96,43 @@ func (db *appdbimpl) AddReplyMessage(body string, pictureURI string, senderID in
 }
 
 func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversationID int, senderID int, conversationID int) (structs.Message, error) {
+	tx, err := db.c.Begin()
+	if err != nil {
+		return structs.Message{}, err
+	}
+	defer tx.Rollback()
+
 	// Get the body and pictureURI of the message to forward to
 	var body, pictureURI string
-
 	query1 := "SELECT body, COALESCE(picture_uri, '') FROM messages WHERE id=? AND conversation_id=?"
-	err := db.c.QueryRow(query1, originalMessageID, originalConversationID).Scan(&body, &pictureURI)
-	if err != nil {
+	if err := tx.QueryRow(query1, originalMessageID, originalConversationID).Scan(&body, &pictureURI); err != nil {
 		return structs.Message{}, err
 	}
 
 	// Create a new message with the same body and picture of the message to forward to
-	messageID, err := db.GetNewMessageID(conversationID)
-	if err != nil {
+	var messageID int64
+	query2 := "SELECT MAX(id) FROM messages WHERE conversation_id=?"
+	if err := tx.QueryRow(query2, conversationID).Scan(&messageID); err != nil {
 		return structs.Message{}, err
 	}
+	messageID += 1
 
 	sentDate := structs.SentDateNow()
-	query2 := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id, forwarded_message_id) VALUES (?, ?, ?, ?, ?, ?)"
-	if _, err := db.c.Exec(query2, messageID, conversationID, body, sentDate, senderID, originalMessageID); err != nil {
+	query3 := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id, forwarded_message_id) VALUES (?, ?, ?, ?, ?, ?)"
+	if _, err := tx.Exec(query3, messageID, conversationID, body, sentDate, senderID, originalMessageID); err != nil {
 		return structs.Message{}, err
 	}
 
 	// Add the picture of the message if it is present
 	if pictureURI != "" {
-		query := "UPDATE messages SET picture_uri=? WHERE id=?"
-		_, err = db.c.Exec(query, pictureURI, messageID)
-		if err != nil {
+		query4 := "UPDATE messages SET picture_uri=? WHERE id=?"
+		if _, err = tx.Exec(query4, pictureURI, messageID); err != nil {
 			return structs.Message{}, err
 		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return structs.Message{}, err
 	}
 
 	return structs.Message{
@@ -166,6 +197,7 @@ func (db *appdbimpl) GetMessages(conversationID int) (structs.Conversation, erro
 	if err != nil {
 		return structs.Conversation{}, err
 	}
+	defer rows.Close()
 
 	var messages []structs.Message
 	for rows.Next() {
