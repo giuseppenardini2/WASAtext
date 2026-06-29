@@ -41,7 +41,7 @@ func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps
 	// Prepare the response
 	conversationID, err := rt.db.AddPrivateConversation(userID, conversationPart.SecondUserID)
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -53,7 +53,7 @@ func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps
 	w.Header().Set("content-type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(conversation); err != nil {
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 }
