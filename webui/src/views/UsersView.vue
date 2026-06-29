@@ -37,7 +37,6 @@ export default {
 				{
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
-				sessionStorage.setItem("conversationID", response.data.id);
 				this.$router.push("/home");
 			}
 			catch(error) {
