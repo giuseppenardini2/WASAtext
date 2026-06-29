@@ -45,7 +45,7 @@ export default {
 				</li>
 			</ul>
 			<div v-else>
-				No user found
+				No chats
 			</div>
 		</div>
 		<div>

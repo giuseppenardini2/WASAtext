@@ -2,7 +2,6 @@ package structs
 
 import (
 	"regexp"
-	"time"
 )
 
 type ConversationType int
@@ -17,13 +16,13 @@ func (recipient_type ConversationType) String() string {
 }
 
 type ConversationPreview struct {
-	ID                  int              `json:"id"`                  // Recipient ID
-	Type                ConversationType `json:"type"`                // Recipient type
-	RecipientName       string           `json:"recipientName"`       // Recipient name (Group name or user username)
-	RecipientPictureURI string           `json:"recipientPictureURI"` // Recipient picture URI
-	LastMessageBody     string           `json:"lastMessageBody"`     // Last message body with the recipient
-	LastMessagePicture  string           `json:"lastMessagePicture"`  // Last message picture with the recipient
-	LastMessageSentDate time.Time        `json:"lastMessageSentDate"` // Last message sent date with the recipient
+	ID                    int              `json:"id"`                    // Recipient ID
+	Type                  ConversationType `json:"type"`                  // Recipient type
+	RecipientName         string           `json:"recipientName"`         // Recipient name (Group name or user username)
+	RecipientPictureURI   string           `json:"recipientPictureURI"`   // Recipient picture URI
+	LastMessageBody       string           `json:"lastMessageBody"`       // Last message body with the recipient
+	LastMessagePictureURI string           `json:"lastMessagePictureURI"` // Last message picture with the recipient
+	LastMessageSentDate   string           `json:"lastMessageSentDate"`   // Last message sent date with the recipient
 }
 
 type Conversation struct {

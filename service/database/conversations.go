@@ -13,7 +13,7 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 	var conversations []structs.ConversationPreview
 
 	query1 := `SELECT DISTINCT pc.id, u.username, COALESCE(u.picture_uri, ''), (
-			SELECT body
+			SELECT COALESCE(body, '')
 			FROM messages
 			WHERE conversation_id=pc.id
 			ORDER BY sent_date DESC LIMIT 1
@@ -23,7 +23,7 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 			WHERE conversation_id=pc.id
 			ORDER BY sent_date DESC LIMIT 1
 		) message_picture_uri, (
-		 	SELECT sent_date
+		 	SELECT COALESCE(sent_date, '')
 			FROM messages
 			WHERE conversation_id=pc.id
 			ORDER BY sent_date DESC LIMIT 1
@@ -38,7 +38,7 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 	for rows1.Next() {
 		var conversationPreview structs.ConversationPreview
 		conversationPreview.Type = structs.PrivateConversationType
-		if err := rows1.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePicture, &conversationPreview.LastMessageSentDate); err != nil {
+		if err := rows1.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePictureURI, &conversationPreview.LastMessageSentDate); err != nil {
 			return nil, err
 		}
 		conversations = append(conversations, conversationPreview)
@@ -47,8 +47,8 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 		return nil, err
 	}
 
-	query2 := `SELECT DISTINCT gc.id, gc.name, COALESCE(gc.picture_uri, X''), (
-			SELECT body
+	query2 := `SELECT DISTINCT gc.id, gc.name, COALESCE(gc.picture_uri, ''), (
+			SELECT COALESCE(body, '')
 			FROM messages
 			WHERE conversation_id=gc.id
 			ORDER BY sent_date DESC LIMIT 1
@@ -58,7 +58,7 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 			WHERE conversation_id=gc.id
 			ORDER BY sent_date DESC LIMIT 1
 		) message_picture_uri, (
-		 	SELECT sent_date
+		 	SELECT COALESCE(sent_date, '')
 			FROM messages
 			WHERE conversation_id=gc.id
 			ORDER BY sent_date DESC LIMIT 1
@@ -73,7 +73,7 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 	for rows2.Next() {
 		var conversationPreview structs.ConversationPreview
 		conversationPreview.Type = structs.GroupConversationType
-		if err := rows2.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePicture, &conversationPreview.LastMessageSentDate); err != nil {
+		if err := rows2.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePictureURI, &conversationPreview.LastMessageSentDate); err != nil {
 			return nil, err
 		}
 		conversations = append(conversations, conversationPreview)
