@@ -30,8 +30,9 @@ func (db *appdbimpl) DeleteGroupConversationMember(userID int, groupConversation
 
 func (db *appdbimpl) GetGroupConversartionMembers(groupConversationsID int) ([]structs.User, error) {
 	query := `SELECT u.id, u.username, u.picture_uri 
-		FROM users AS u, group_conversations_members AS gcm 
-		WHERE u.id=gcm.user_id AND gcm.group_conversation_id=?`
+		FROM users AS u
+		INNER JOIN group_conversations_members AS gcm ON u.id=gcm.user_id
+		WHERE gcm.group_conversation_id=?`
 	rows, err := db.c.Query(query, groupConversationsID)
 	if err != nil {
 		return nil, err

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"database/sql"
 	"errors"
 	"wasatext/service/structs"
 )
@@ -12,33 +13,26 @@ import (
 func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview, error) {
 	var conversations []structs.ConversationPreview
 
-	query1 := `SELECT DISTINCT pc.id, u.username, COALESCE(u.picture_uri, ''), (
-			SELECT COALESCE(body, '')
-			FROM messages
-			WHERE conversation_id=pc.id
-			ORDER BY sent_date DESC LIMIT 1
-		) message_body, (
-		 	SELECT COALESCE(picture_uri, '')
-			FROM messages
-			WHERE conversation_id=pc.id
-			ORDER BY sent_date DESC LIMIT 1
-		) message_picture_uri, (
-		 	SELECT COALESCE(sent_date, '')
-			FROM messages
-			WHERE conversation_id=pc.id
-			ORDER BY sent_date DESC LIMIT 1
-		) message_sent_date
-		FROM users AS u, private_conversations AS pc
-		WHERE (pc.first_user_id=? OR pc.second_user_id=?) AND u.id!=? AND (pc.first_user_id=u.id OR pc.second_user_id=u.id)`
+	query1 := `SELECT DISTINCT pc.id, u.username, COALESCE(u.picture_uri, '')
+		FROM users AS u
+		INNER JOIN private_conversations AS pc ON (pc.first_user_id=u.id OR pc.second_user_id=u.id)
+		WHERE u.id!=? AND (pc.first_user_id=? OR pc.second_user_id=?)`
 	rows1, err := db.c.Query(query1, userID, userID, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows1.Close()
+	query2 := `SELECT body, COALESCE(picture_uri, ''), sent_date
+		FROM messages
+		WHERE conversation_id=?
+		ORDER BY sent_date DESC LIMIT 1`
 	for rows1.Next() {
 		var conversationPreview structs.ConversationPreview
 		conversationPreview.Type = structs.PrivateConversationType
-		if err := rows1.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePictureURI, &conversationPreview.LastMessageSentDate); err != nil {
+		if err := rows1.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI); err != nil {
+			return nil, err
+		}
+		if err := db.c.QueryRow(query2, conversationPreview.ID).Scan(&conversationPreview.LastMessageBody, &conversationPreview.LastMessagePictureURI, &conversationPreview.LastMessageSentDate); !errors.Is(err, sql.ErrNoRows) {
 			return nil, err
 		}
 		conversations = append(conversations, conversationPreview)
@@ -47,25 +41,11 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 		return nil, err
 	}
 
-	query2 := `SELECT DISTINCT gc.id, gc.name, COALESCE(gc.picture_uri, ''), (
-			SELECT COALESCE(body, '')
-			FROM messages
-			WHERE conversation_id=gc.id
-			ORDER BY sent_date DESC LIMIT 1
-		) message_body, (
-		 	SELECT COALESCE(picture_uri, '')
-			FROM messages
-			WHERE conversation_id=gc.id
-			ORDER BY sent_date DESC LIMIT 1
-		) message_picture_uri, (
-		 	SELECT COALESCE(sent_date, '')
-			FROM messages
-			WHERE conversation_id=gc.id
-			ORDER BY sent_date DESC LIMIT 1
-		) message_sent_date
-	FROM group_conversations AS gc, group_conversations_members AS gcm
-	WHERE gcm.user_id=? AND gcm.group_conversation_id=gc.id`
-	rows2, err := db.c.Query(query2, userID)
+	query3 := `SELECT DISTINCT gc.id, gc.name, COALESCE(gc.picture_uri, '')
+	FROM group_conversations AS gc
+	INNER JOIN group_conversations_members AS gcm ON gcm.group_conversation_id=gc.id
+	WHERE gcm.user_id=?`
+	rows2, err := db.c.Query(query3, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -74,6 +54,9 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 		var conversationPreview structs.ConversationPreview
 		conversationPreview.Type = structs.GroupConversationType
 		if err := rows2.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePictureURI, &conversationPreview.LastMessageSentDate); err != nil {
+			return nil, err
+		}
+		if err := db.c.QueryRow(query2, conversationPreview.ID).Scan(&conversationPreview.LastMessageBody, &conversationPreview.LastMessagePictureURI, &conversationPreview.LastMessageSentDate); !errors.Is(err, sql.ErrNoRows) {
 			return nil, err
 		}
 		conversations = append(conversations, conversationPreview)

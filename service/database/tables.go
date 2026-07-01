@@ -29,6 +29,7 @@ func createTables(db *sql.DB) error {
 		second_user_id INTEGER NOT NULL,
 		PRIMARY KEY(id),
 		UNIQUE(first_user_id, second_user_id),
+		CHECK(first_user_id < second_user_id),
 		FOREIGN KEY (id) REFERENCES conversations(id) ON DELETE CASCADE,
 		FOREIGN KEY (first_user_id) REFERENCES users(id) ON DELETE CASCADE,
 		FOREIGN KEY (second_user_id) REFERENCES users(id) ON DELETE CASCADE

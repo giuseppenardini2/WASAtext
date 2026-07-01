@@ -22,6 +22,12 @@ func (db *appdbimpl) AddPrivateConversation(firstUserID int, secondUserID int) (
 		return -1, err
 	}
 
+	if firstUserID > secondUserID {
+		firstUserIDTemp := firstUserID
+		firstUserID = secondUserID
+		secondUserID = firstUserIDTemp
+	}
+
 	query2 := "INSERT INTO private_conversations (id, first_user_id, second_user_id) VALUES (?, ?, ?)"
 	if _, err := tx.Exec(query2, privateConversationID, firstUserID, secondUserID); err != nil {
 		return -1, err

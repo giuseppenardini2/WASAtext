@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"strconv"
 	"wasatext/service/database"
@@ -44,6 +45,8 @@ func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	log.Printf("Conversazione creata: %d\n", conversationID)
 
 	conversation := structs.Conversation{
 		ID:       int(conversationID),
