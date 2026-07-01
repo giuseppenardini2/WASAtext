@@ -20,6 +20,7 @@ type ConversationPreview struct {
 	Type                  ConversationType `json:"type"`                  // Recipient type
 	RecipientName         string           `json:"recipientName"`         // Recipient name (Group name or user username)
 	RecipientPictureURI   string           `json:"recipientPictureURI"`   // Recipient picture URI
+	LastMessageID         int              `json:"lastMessageID"`         // Last message ID
 	LastMessageBody       string           `json:"lastMessageBody"`       // Last message body with the recipient
 	LastMessagePictureURI string           `json:"lastMessagePictureURI"` // Last message picture with the recipient
 	LastMessageSentDate   string           `json:"lastMessageSentDate"`   // Last message sent date with the recipient

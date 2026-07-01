@@ -41,7 +41,11 @@ export default {
 					v-for="conversationPreview in conversationPreviews"
 						:key="conversationPreview.id"
 				>
-					<strong>{{ conversationPreview.id }}</strong>
+					<strong>{{ conversationPreview.id }} </strong>
+					<strong>{{ conversationPreview.recipientName }} </strong>
+					<strong>{{ conversationPreview.recipientPictureURI }} </strong>
+					<strong>{{ conversationPreview.lastMessageID }} </strong>
+
 				</li>
 			</ul>
 			<div v-else>
