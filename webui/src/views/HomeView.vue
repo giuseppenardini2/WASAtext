@@ -16,7 +16,17 @@ export default {
 				{
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
-				this.conversationPreviews = response.data || [];
+				
+				this.conversationPreviews = response.data.map(conversationPreview => ({
+					...conversationPreview,
+					localImageURL: null
+				})) || [];
+
+				this.conversationPreviews.forEach(conversationPreview => {
+					if (conversationPreview.recipientPictureURI) {
+						this.fetchConversationImage(conversationPreviews);
+					}
+				});
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -24,32 +34,79 @@ export default {
 			finally {
 				this.loading = false;
 			}
+		},
+		async fetchConversationImage(conversationPreview) {
+			if !conversationPreview.recipientPictureURI return;
+
+			let response;
+			if (conversationPreview.type === "PrivateConversationType") {
+				response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/picture`, {
+					headers: {
+						"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
+					},
+					params: {
+							peerid: conversationPreview.recipientID
+					},
+					responseType: "blob"
+				});
+			}
+			else if (conversationPreview.type === "GroupConversationType") {
+				response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/groups/${conversationPreview.recipientID}/picture`, {
+					headers: {
+						"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
+					},
+					responseType: "blob"
+				});
+			}
+			else {
+				return;
+			}
+
+			if (conversationPreview.localPictureURL) {
+				URL.revokeObjectURL(conversationPreview.localPictureURL);
+			}
+			conversationPreview.localPictureURL = URL.createObjectURL(response.data);
 		}
 	},
 	mounted() {
 		this.listChats();
 	}
+	beforeUnmount() {
+		this.conversationPreviews.forEach(conversationPreview => {
+		if (conversationPreview.localImageUrl) {
+			URL.revokeObjectURL(conversationPreview.localImageUrl);
+		}
+		});
+  },
 }
 </script>
 
 <template>
 	<div class="main-box">
-		<h1>Chats</h1>
-		<div class="chat-list-box">
-			<ul v-if="conversationPreviews.length > 0">
-				<li 
+		<h1>Conversations</h1>
+		<div class="conversations-list-box">
+			<div v-if="conversationPreviews.length > 0">
+				<div
 					v-for="conversationPreview in conversationPreviews"
 						:key="conversationPreview.id"
+					class="conversation-raw"
 				>
-					<strong>{{ conversationPreview.id }} </strong>
-					<strong>{{ conversationPreview.recipientName }} </strong>
-					<strong>{{ conversationPreview.recipientPictureURI }} </strong>
-					<strong>{{ conversationPreview.lastMessageID }} </strong>
-
-				</li>
-			</ul>
+					<div class="conversation-picture">
+						<img v-if="conversationPreview.recipientPictureURI === ''" src="@/assets/images/default-user-picture.jpg" alt="User picture">
+						<img v-else :src="conversationPreview.recipientPictureURI" alt="User picture">
+					</div>
+					<div class="conversation-text">
+						<strong>{{ conversationPreview.recipientName }} </strong>
+						<strong v-if="conversationPreview.lastMessageID != -1 && !conversationPreview.lastMessagePictureURI">{{ conversationPreview.lastMessageBody }} </strong>
+						<strong v-else-if="conversationPreview.lastMessageID != -1 && conversationPreview.lastMessagePictureURI">📷 Photo</strong>
+					</div>
+					<div v-if="conversationPreview.lastMessageID != -1" class="conversation-date">
+						<strong>{{ conversationPreview.lastMessageDate }} </strong>
+					</div>
+				</div>
+			</div>
 			<div v-else>
-				No chats
+				No convarsation
 			</div>
 		</div>
 		<div>
@@ -71,4 +128,37 @@ export default {
 .main-box h1 {
 	color: var(--text-color-1);
 }
+
+.conversation-row {
+	display: flex;
+	justify-content: space-between; 
+	align-items: center; 
+	width: 100%;
+
+	border-bottom: 1px solid #eee;
+	padding-bottom: 0.5rem;
+}
+
+.conversation-picture {
+	display: flex;
+	align-items: center;
+}
+
+.conversation-picture img {
+	width: 50px;
+	height: 50px;
+	display: block;
+	object-fit: cover;
+}
+
+.conversation-text {
+	display: flex;
+	flex-direction: column;
+	margin-left: 1rem; 
+}
+
+.conversation-date {
+	margin-left: auto;
+}
+
 </style>

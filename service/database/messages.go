@@ -13,7 +13,11 @@ func (db *appdbimpl) AddMessage(body string, pictureURI string, senderID int, co
 	if err != nil {
 		return structs.Message{}, err
 	}
-	defer tx.Rollback()
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			return
+		}
+	}()
 
 	var messageID int64
 	query1 := "SELECT MAX(id) FROM messages WHERE conversation_id=?"
@@ -57,7 +61,11 @@ func (db *appdbimpl) AddReplyMessage(body string, pictureURI string, senderID in
 	if err != nil {
 		return structs.Message{}, err
 	}
-	defer tx.Rollback()
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			return
+		}
+	}()
 
 	var messageID int64
 	query1 := "SELECT MAX(id) FROM messages WHERE conversation_id=?"
@@ -100,7 +108,11 @@ func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversa
 	if err != nil {
 		return structs.Message{}, err
 	}
-	defer tx.Rollback()
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			return
+		}
+	}()
 
 	// Get the body and pictureURI of the message to forward to
 	var body, pictureURI string

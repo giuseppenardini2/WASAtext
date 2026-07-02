@@ -11,7 +11,11 @@ func (db *appdbimpl) AddReaction(userID int, conversationID int, messageID int, 
 	if err != nil {
 		return structs.Reaction{}, err
 	}
-	defer tx.Rollback()
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			return
+		}
+	}()
 
 	var reactionID int64
 	query1 := "SELECT MAX(id) FROM reactions WHERE conversation_id=? AND message_id=?"

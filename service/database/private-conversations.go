@@ -9,7 +9,11 @@ func (db *appdbimpl) AddPrivateConversation(firstUserID int, secondUserID int) (
 	if err != nil {
 		return -1, err
 	}
-	defer tx.Rollback()
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			return
+		}
+	}()
 
 	query1 := "INSERT INTO conversations DEFAULT VALUES"
 	result, err := tx.Exec(query1)
@@ -23,9 +27,7 @@ func (db *appdbimpl) AddPrivateConversation(firstUserID int, secondUserID int) (
 	}
 
 	if firstUserID > secondUserID {
-		firstUserIDTemp := firstUserID
-		firstUserID = secondUserID
-		secondUserID = firstUserIDTemp
+		firstUserID, secondUserID = secondUserID, firstUserID
 	}
 
 	query2 := "INSERT INTO private_conversations (id, first_user_id, second_user_id) VALUES (?, ?, ?)"

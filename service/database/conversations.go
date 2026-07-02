@@ -13,7 +13,7 @@ import (
 func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview, error) {
 	var conversations []structs.ConversationPreview
 
-	query1 := `SELECT DISTINCT pc.id, u.username, COALESCE(u.picture_uri, '')
+	query1 := `SELECT DISTINCT pc.id, u.id, u.username, COALESCE(u.picture_uri, '')
 		FROM users AS u
 		INNER JOIN private_conversations AS pc ON (pc.first_user_id=u.id OR pc.second_user_id=u.id)
 		WHERE u.id!=? AND (pc.first_user_id=? OR pc.second_user_id=?)`
@@ -29,7 +29,7 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 	for rows1.Next() {
 		var conversationPreview structs.ConversationPreview
 		conversationPreview.Type = structs.PrivateConversationType
-		if err := rows1.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI); err != nil {
+		if err := rows1.Scan(&conversationPreview.ID, &conversationPreview.RecipientID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI); err != nil {
 			return nil, err
 		}
 		conversationPreview.LastMessageID = -1
@@ -42,7 +42,7 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 		return nil, err
 	}
 
-	query3 := `SELECT DISTINCT gc.id, gc.name, COALESCE(gc.picture_uri, '')
+	query3 := `SELECT DISTINCT gc.id, gc.id, gc.name, COALESCE(gc.picture_uri, '')
 	FROM group_conversations AS gc
 	INNER JOIN group_conversations_members AS gcm ON gcm.group_conversation_id=gc.id
 	WHERE gcm.user_id=?`
@@ -54,7 +54,7 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 	for rows2.Next() {
 		var conversationPreview structs.ConversationPreview
 		conversationPreview.Type = structs.GroupConversationType
-		if err := rows2.Scan(&conversationPreview.ID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePictureURI, &conversationPreview.LastMessageSentDate); err != nil {
+		if err := rows2.Scan(&conversationPreview.ID, &conversationPreview.RecipientID, &conversationPreview.RecipientName, &conversationPreview.RecipientPictureURI, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePictureURI, &conversationPreview.LastMessageSentDate); err != nil {
 			return nil, err
 		}
 		if err := db.c.QueryRow(query2, conversationPreview.ID).Scan(&conversationPreview.LastMessageBody, &conversationPreview.LastMessagePictureURI, &conversationPreview.LastMessageSentDate); !errors.Is(err, sql.ErrNoRows) {

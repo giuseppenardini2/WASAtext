@@ -11,7 +11,11 @@ func (db *appdbimpl) AddGroupConversation(name string, pictureURI string, userCr
 	if err != nil {
 		return structs.GroupConversation{}, err
 	}
-	defer tx.Rollback()
+	defer func() {
+		if err := tx.Rollback(); err != nil {
+			return
+		}
+	}()
 
 	query1 := "INSERT INTO conversations DEFAULT VALUES"
 	result, err := tx.Exec(query1)

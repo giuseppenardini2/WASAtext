@@ -59,6 +59,9 @@ export default {
 			this.errorMessage = "";
 			try {
 				const response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/picture`, {
+					params: {
+						peerid: sessionStorage.getItem("userID")
+					},
 					headers: { 
 						"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
 					},

@@ -187,6 +187,8 @@ paths:
         Return the user profile picture
       security:
         - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/peerID"
       responses:
         "200":
           description: Image
@@ -890,7 +892,14 @@ components:
 
     recipientID:
       name: recipientid
-      description: Unique recipient identifier
+      description: Unique recipient conversation identifier
+      in: query
+      required: true
+      schema: { $ref: "#/components/schemas/Identifier" }
+
+    peerID:
+      name: peerid
+      description: Unique user or group identifier
       in: query
       required: true
       schema: { $ref: "#/components/schemas/Identifier" }

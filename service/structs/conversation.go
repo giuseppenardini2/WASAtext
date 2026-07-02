@@ -16,8 +16,9 @@ func (recipient_type ConversationType) String() string {
 }
 
 type ConversationPreview struct {
-	ID                    int              `json:"id"`                    // Recipient ID
-	Type                  ConversationType `json:"type"`                  // Recipient type
+	ID                    int              `json:"id"`                    // Conversation ID
+	Type                  ConversationType `json:"type"`                  // Conversation type
+	RecipientID           int              `json:"recipientID"`           // Recipient ID
 	RecipientName         string           `json:"recipientName"`         // Recipient name (Group name or user username)
 	RecipientPictureURI   string           `json:"recipientPictureURI"`   // Recipient picture URI
 	LastMessageID         int              `json:"lastMessageID"`         // Last message ID
