@@ -17,14 +17,14 @@ export default {
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
 				
-				this.conversationPreviews = response.data.map(conversationPreview => ({
+				this.conversationPreviews = response.data?.map(conversationPreview => ({
 					...conversationPreview,
 					localImageURL: null
 				})) || [];
 
 				this.conversationPreviews.forEach(conversationPreview => {
 					if (conversationPreview.recipientPictureURI) {
-						this.fetchConversationImage(conversationPreviews);
+						this.fetchConversationImage(conversationPreview);
 					}
 				});
 			}
@@ -36,7 +36,7 @@ export default {
 			}
 		},
 		async fetchConversationImage(conversationPreview) {
-			if !conversationPreview.recipientPictureURI return;
+			if (!conversationPreview.recipientPictureURI) return;
 
 			let response;
 			if (conversationPreview.type === "PrivateConversationType") {
@@ -70,7 +70,7 @@ export default {
 	},
 	mounted() {
 		this.listChats();
-	}
+	},
 	beforeUnmount() {
 		this.conversationPreviews.forEach(conversationPreview => {
 		if (conversationPreview.localImageUrl) {
