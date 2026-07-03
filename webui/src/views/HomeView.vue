@@ -168,6 +168,7 @@ export default {
 .conversation-picture img {
 	width: 50px;
 	height: 50px;
+	border-radius: 50%;
 	display: block;
 	object-fit: cover;
 }
