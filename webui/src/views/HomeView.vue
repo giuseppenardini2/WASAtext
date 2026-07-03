@@ -137,7 +137,7 @@ export default {
 				</div>
 			</div>
 			<div v-else>
-				No convarsation
+				No conversation
 			</div>
 		</div>
 		<div>
