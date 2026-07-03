@@ -151,13 +151,18 @@ export default {
 }
 
 .conversation-row {
-	display: flex;
-	justify-content: space-between; 
+	display: flex; 
 	align-items: center; 
 	width: 100%;
-
+	border-top: 1px solid #eee;
 	border-bottom: 1px solid #eee;
-	padding-bottom: 0.5rem;
+	padding: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.conversation-row:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
 }
 
 .conversation-picture {
@@ -176,7 +181,8 @@ export default {
 .conversation-text {
 	display: flex;
 	flex-direction: column;
-	margin-left: 1rem; 
+	margin-left: 1rem;
+	align-self: flex-start;
 }
 
 .conversation-date {
