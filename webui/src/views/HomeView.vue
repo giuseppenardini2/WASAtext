@@ -120,7 +120,7 @@ export default {
 				<div
 					v-for="conversationPreview in conversationPreviews"
 						:key="conversationPreview.id"
-					class="conversation-row"
+					class="conversation-row" @click="redirectToNewChatView"
 				>
 					<div class="conversation-picture">
 						<img v-if="conversationPreview.recipientPictureURI === ''" src="@/assets/images/default-user-picture.jpg" alt="User picture">
@@ -128,8 +128,8 @@ export default {
 					</div>
 					<div class="conversation-text">
 						<strong>{{ conversationPreview.recipientName }} </strong>
-						<strong v-if="conversationPreview.lastMessageID != -1 && !conversationPreview.lastMessagePictureURI">{{ conversationPreview.lastMessageBody }} </strong>
-						<strong v-else-if="conversationPreview.lastMessageID != -1 && conversationPreview.lastMessagePictureURI">📷 Photo</strong>
+						<p v-if="conversationPreview.lastMessageID != -1 && !conversationPreview.lastMessagePictureURI">{{ conversationPreview.lastMessageBody }} </p>
+						<p v-else-if="conversationPreview.lastMessageID != -1 && conversationPreview.lastMessagePictureURI">📷 Photo</p>
 					</div>
 					<div v-if="conversationPreview.lastMessageID != -1" class="conversation-date">
 						<strong>{{ conversationPreview.lastMessageDate }} </strong>
