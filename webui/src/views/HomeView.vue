@@ -110,7 +110,7 @@ export default {
 				<div
 					v-for="conversationPreview in conversationPreviews"
 						:key="conversationPreview.id"
-					class="conversation-raw"
+					class="conversation-row"
 				>
 					<div class="conversation-picture">
 						<img v-if="conversationPreview.recipientPictureURI === ''" src="@/assets/images/default-user-picture.jpg" alt="User picture">
