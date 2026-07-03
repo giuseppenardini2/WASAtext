@@ -19,7 +19,7 @@ export default {
 				
 				this.conversationPreviews = response.data?.map(conversationPreview => ({
 					...conversationPreview,
-					localImageURL: null
+					localPictureURL: null
 				})) || [];
 
 				this.conversationPreviews.forEach(conversationPreview => {
@@ -39,24 +39,45 @@ export default {
 			if (!conversationPreview.recipientPictureURI) return;
 
 			let response;
-			if (conversationPreview.type === "PrivateConversationType") {
-				response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/picture`, {
-					headers: {
-						"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
-					},
-					params: {
+			console.log(typeof conversationPreview.type)
+			if (conversationPreview.type === 0) {
+				this.loading = true;
+				this.errorMessage = "";
+				try {
+					response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/picture`, {
+						headers: {
+							"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
+						},
+						params: {
 							peerid: conversationPreview.recipientID
-					},
-					responseType: "blob"
-				});
+						},
+						responseType: "blob"
+					});
+				}
+				catch(error) {
+					this.errorMessage = error.toString();
+				}
+				finally {
+					this.loading = false;
+				}
 			}
-			else if (conversationPreview.type === "GroupConversationType") {
-				response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/groups/${conversationPreview.recipientID}/picture`, {
-					headers: {
-						"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
-					},
-					responseType: "blob"
-				});
+			else if (conversationPreview.type === 1) {
+				this.loading = true;
+				this.errorMessage = "";
+				try {
+					response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/groups/${conversationPreview.recipientID}/picture`, {
+						headers: {
+							"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
+						},
+						responseType: "blob"
+					});
+				}
+				catch(error) {
+					this.errorMessage = error.toString();
+				}
+				finally {
+					this.loading = false;
+				}
 			}
 			else {
 				return;
@@ -73,9 +94,9 @@ export default {
 	},
 	beforeUnmount() {
 		this.conversationPreviews.forEach(conversationPreview => {
-		if (conversationPreview.localImageUrl) {
-			URL.revokeObjectURL(conversationPreview.localImageUrl);
-		}
+			if (conversationPreview.localPictureURL) {
+				URL.revokeObjectURL(conversationPreview.localPictureURL);
+			}
 		});
   },
 }
@@ -93,7 +114,7 @@ export default {
 				>
 					<div class="conversation-picture">
 						<img v-if="conversationPreview.recipientPictureURI === ''" src="@/assets/images/default-user-picture.jpg" alt="User picture">
-						<img v-else :src="conversationPreview.recipientPictureURI" alt="User picture">
+						<img v-else :src="conversationPreview.localPictureURL" alt="User picture">
 					</div>
 					<div class="conversation-text">
 						<strong>{{ conversationPreview.recipientName }} </strong>
