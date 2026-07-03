@@ -87,6 +87,12 @@ export default {
 				URL.revokeObjectURL(conversationPreview.localPictureURL);
 			}
 			conversationPreview.localPictureURL = URL.createObjectURL(response.data);
+		},
+		redirectToNewChatView() {
+			this.$router.push("/users");
+		},
+		redirectToNewGroupView() {
+			// this.$router.push("/users");
 		}
 	},
 	mounted() {
@@ -98,13 +104,17 @@ export default {
 				URL.revokeObjectURL(conversationPreview.localPictureURL);
 			}
 		});
-  },
+  	}
 }
 </script>
 
 <template>
 	<div class="main-box">
 		<h1>Conversations</h1>
+		<div class="options-box">
+			<button type="button" @click="redirectToNewChatView" :disabled="loading">New chat</button>
+			<button type="button" @click="redirectToNewGroupView" :disabled="loading">New group</button>
+		</div>
 		<div class="conversations-list-box">
 			<div v-if="conversationPreviews.length > 0">
 				<div
@@ -150,18 +160,44 @@ export default {
 	color: var(--text-color-1);
 }
 
+.options-box {
+	display: flex;
+	gap: 10px;
+}
+
+.options-box button {
+    width: 100px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+	background-color: var(--color-3);
+    color: white;
+    font-size: 14px;
+	cursor: pointer;
+}
+
+.options-box button:hover {
+    background-color: var(--color-3-a);
+}
+
+.options-box button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
 .conversation-row {
 	display: flex; 
-	align-items: center; 
-	width: 100%;
-	border-top: 1px solid #eee;
-	border-bottom: 1px solid #eee;
+	align-items: center;
+	border: 1px solid var(--color-5);
+	background-color: var(--color-2-a);
+	border-radius: 5px;
 	padding: 0.5rem;
-	margin-bottom: 0.5rem;
+	margin: 0.5rem;
 }
 
 .conversation-row:hover {
-    background-color: #f0f0f0;
+    background-color: var(--color-5);
     cursor: pointer;
 }
 

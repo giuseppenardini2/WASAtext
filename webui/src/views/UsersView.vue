@@ -62,16 +62,16 @@ export default {
 					<input type="text" v-model="username" placeholder="Enter username">
 					<button type="submit" :disabled="loading">Submit</button>
 				</div>
-				<ul v-if="users.length > 0">
-      				<li 
+				<div v-if="users.length > 0">
+      				<div 
         				v-for="user in users"
         					:key="user.id" 
         				class="user-item"
      				>
         				<strong>{{ user.username }}</strong>
 						<button type="button" @click="startNewConversation(user.id)" :disabled="loading">New chat</button>
-     	 			</li>
-    			</ul>
+					</div>
+    			</div>
 				<div v-else>
 					No user found
 				</div>
@@ -135,7 +135,7 @@ export default {
     border: none;
     border-radius: 8px;
 	background-color: var(--color-3);
-    color: white;
+    color: var(--text-color-4);
     font-size: 16px;
 	cursor: pointer;
 }
@@ -144,12 +144,25 @@ export default {
     background-color: var(--color-3-a);
 }
 
+.user-item {
+	display: flex;
+	gap: 10px;
+	margin: 0.5rem;
+}
+
 .user-item button {
-	background-color: #007bff;
-	color: white;
-	border: none;
-	padding: 6px 12px;
-	border-radius: 4px;
+	width: 80px;
+	padding: 10px;
+	margin-left: 2px;
+    border: none;
+    border-radius: 8px;
+	background-color: var(--color-3);
+    color: var(--text-color-4);
+    font-size: 10px;
 	cursor: pointer;
+}
+
+.user-search-bar button:hover {
+    background-color: var(--color-3-a);
 }
 </style>
