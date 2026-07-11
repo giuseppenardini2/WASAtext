@@ -160,4 +160,10 @@ export default {
 	margin: 0.5rem;
 }
 
+.group-buttons {
+	display: flex;
+	gap: 10px;
+	margin-top: 10px;
+}
+
 </style>
