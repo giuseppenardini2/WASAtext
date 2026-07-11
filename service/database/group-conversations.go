@@ -29,7 +29,7 @@ func (db *appdbimpl) AddGroupConversation(name string, pictureURI string, userCr
 	}
 
 	query2 := "INSERT INTO group_conversations (id, name, user_creator_id) VALUES (?, ?, ?)"
-	if _, err := tx.Exec(query2, groupConversationID, name, pictureURI, userCreatorID); err != nil {
+	if _, err := tx.Exec(query2, groupConversationID, name, userCreatorID); err != nil {
 		return structs.GroupConversation{}, err
 	}
 
