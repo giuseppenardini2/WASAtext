@@ -9,7 +9,7 @@ import (
  */
 
 func (db *appdbimpl) AddGroupConversationMember(userID int, groupConversationID int) error {
-	query := "INSERT INTO users_group_conversations (user_id, group_conversation_id) VALUES (?, ?)"
+	query := "INSERT INTO group_conversations_members (user_id, group_conversation_id) VALUES (?, ?)"
 	_, err := db.c.Exec(query, userID, groupConversationID)
 	return err
 }
@@ -19,7 +19,7 @@ func (db *appdbimpl) AddGroupConversationMember(userID int, groupConversationID 
  */
 
 func (db *appdbimpl) DeleteGroupConversationMember(userID int, groupConversationID int) error {
-	query := "DELETE FROM users_group_conversations WHERE user_id=? AND group_conversation_id=?"
+	query := "DELETE FROM group_conversations_members WHERE user_id=? AND group_conversation_id=?"
 	_, err := db.c.Exec(query, userID, groupConversationID)
 	return err
 }

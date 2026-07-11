@@ -14,9 +14,9 @@ export default {
 			this.loading = true;
 			this.errorMessage = "";
 			try {
-				if (this.groupName.length < 3 || this.groupName.length > 16) throw "Invalid group name"
+				if (this.name.length < 3 || this.name.length > 16) throw "Invalid group name"
 
-				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/groups`, {
+				const response = await this.$axios.post(`/users/${sessionStorage.getItem("userID")}/groups`, {
 					name: this.name,
 					partecipants: this.usersToAdd
 				},
@@ -62,7 +62,7 @@ export default {
 		<h1>New group</h1>
 		<form @submit.prevent="createGroup" class="group-box">
 			<div class="group-name-bar">
-				<input type="text" v-model="groupName" placeholder="Enter group name">
+				<input type="text" v-model="name" placeholder="Enter group name">
 			</div>
 			<div class="group-users-box">
 				<p>Users to add</p>
@@ -106,6 +106,21 @@ export default {
 	color: var(--text-color-1);
 }
 
+.group-box button {
+    width: 100px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+	background-color: var(--color-3);
+    color: white;
+    font-size: 14px;
+	cursor: pointer;
+}
+
+.group-box button:hover {
+    background-color: var(--color-3-a);
+}
+
 .group-box button:disabled {
 	background-color: #6c757d;
 	cursor: not-allowed;
@@ -143,18 +158,6 @@ export default {
 	display: flex;
 	gap: 10px;
 	margin: 0.5rem;
-}
-
-.group-user-item button {
-	width: 80px;
-	padding: 10px;
-	margin-left: 2px;
-    border: none;
-    border-radius: 8px;
-	background-color: var(--color-3);
-    color: var(--text-color-4);
-    font-size: 10px;
-	cursor: pointer;
 }
 
 </style>

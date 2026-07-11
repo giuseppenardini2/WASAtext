@@ -92,7 +92,7 @@ export default {
 			this.$router.push("/users");
 		},
 		redirectToNewGroupView() {
-			// this.$router.push("/users");
+			this.$router.push("/groups");
 		}
 	},
 	mounted() {
