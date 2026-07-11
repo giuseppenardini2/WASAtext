@@ -4,6 +4,7 @@ import LoginView from '../views/LoginView.vue'
 import UsersView from '../views/UsersView.vue'
 import SettingsView from '../views/SettingsView.vue'
 import ConversationView from '../views/ConversationView.vue'
+import NewGroupView from '../views/NewGroupView.vue'
 import GroupView from '../views/GroupView.vue'
 
 const router = createRouter({
@@ -15,7 +16,8 @@ const router = createRouter({
 		{path: '/users', component: UsersView},
 		{path: '/settings', component: SettingsView},
 		{path: '/conversations/:conversationid', component: ConversationView},
-		{path: '/group', component: GroupView},
+		{path: '/groups', component: NewGroupView},
+		{path: '/groups/:groupid', component: GroupView},
 	]
 })
 

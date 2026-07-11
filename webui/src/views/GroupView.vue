@@ -2,31 +2,43 @@
 export default {
 	data() {
 		return {
-			conversationPreviews: [],
+			selectedFile: null,
 			errorMessage: null,
 			loading: false,
 		}
 	},
 	methods: {
-		async listChats() {
+		handleFileSelection(event) {
+			const file = event.target.files[0];
+     		if (!file) return;
+			if (file.type !== "image/jpeg" && file.type !== "image/png") {
+                this.errorMessage = "File type is wrong";
+                return
+            }
+            if (file.size > 3145728) {
+                this.errorMessage = "Max file size is 3 MB";
+                return
+            }
+			this.selectedFile = file;
+		},
+		async changePicture() {
+			if (!this.selectedFile) return;
+			
 			this.loading = true;
 			this.errorMessage = "";
 			try {
-				const response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}`, 
+				const payload = new FormData();
+				payload.append("image", this.selectedFile);
+
+				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/picture`, payload,
 				{
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
-				
-				this.conversationPreviews = response.data?.map(conversationPreview => ({
-					...conversationPreview,
-					localPictureURL: null
-				})) || [];
 
-				this.conversationPreviews.forEach(conversationPreview => {
-					if (conversationPreview.recipientPictureURI) {
-						this.fetchConversationImage(conversationPreview);
-					}
-				});
+				this.pictureURI = response.data.imageURI;
+				sessionStorage.setItem("pictureURI", response.data.imageURI);
+
+				this.getUserPicture();
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -34,111 +46,38 @@ export default {
 			finally {
 				this.loading = false;
 			}
-		},
-		async fetchConversationImage(conversationPreview) {
-			if (!conversationPreview.recipientPictureURI) return;
-
-			let response;
-			console.log(typeof conversationPreview.type)
-			if (conversationPreview.type === 0) {
-				this.loading = true;
-				this.errorMessage = "";
-				try {
-					response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/picture`, {
-						headers: {
-							"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
-						},
-						params: {
-							peerid: conversationPreview.recipientID
-						},
-						responseType: "blob"
-					});
-				}
-				catch(error) {
-					this.errorMessage = error.toString();
-				}
-				finally {
-					this.loading = false;
-				}
-			}
-			else if (conversationPreview.type === 1) {
-				this.loading = true;
-				this.errorMessage = "";
-				try {
-					response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/groups/${conversationPreview.recipientID}/picture`, {
-						headers: {
-							"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
-						},
-						responseType: "blob"
-					});
-				}
-				catch(error) {
-					this.errorMessage = error.toString();
-				}
-				finally {
-					this.loading = false;
-				}
-			}
-			else {
-				return;
-			}
-
-			if (conversationPreview.localPictureURL) {
-				URL.revokeObjectURL(conversationPreview.localPictureURL);
-			}
-			conversationPreview.localPictureURL = URL.createObjectURL(response.data);
-		},
-		redirectToNewChatView() {
-			this.$router.push("/users");
-		},
-		redirectToNewGroupView() {
-			// this.$router.push("/users");
 		}
 	},
 	mounted() {
-		this.listChats();
+		
 	},
 	beforeUnmount() {
-		this.conversationPreviews.forEach(conversationPreview => {
-			if (conversationPreview.localPictureURL) {
-				URL.revokeObjectURL(conversationPreview.localPictureURL);
-			}
-		});
+		
   	}
 }
 </script>
 
 <template>
 	<div class="main-box">
-		<h1>Conversations</h1>
-		<div class="options-box">
-			<button type="button" @click="redirectToNewChatView" :disabled="loading">New chat</button>
-			<button type="button" @click="redirectToNewGroupView" :disabled="loading">New group</button>
-		</div>
-		<div class="conversations-list-box">
-			<div v-if="conversationPreviews.length > 0">
-				<div
-					v-for="conversationPreview in conversationPreviews"
-						:key="conversationPreview.id"
-					class="conversation-row" @click="redirectToNewChatView"
-				>
-					<div class="conversation-picture">
-						<img v-if="conversationPreview.recipientPictureURI === ''" src="@/assets/images/default-user-picture.jpg" alt="User picture">
-						<img v-else :src="conversationPreview.localPictureURL" alt="User picture">
-					</div>
-					<div class="conversation-text">
-						<strong>{{ conversationPreview.recipientName }} </strong>
-						<p v-if="conversationPreview.lastMessageID != -1 && !conversationPreview.lastMessagePictureURI">{{ conversationPreview.lastMessageBody }} </p>
-						<p v-else-if="conversationPreview.lastMessageID != -1 && conversationPreview.lastMessagePictureURI">📷 Photo</p>
-					</div>
-					<div v-if="conversationPreview.lastMessageID != -1" class="conversation-date">
-						<strong>{{ conversationPreview.lastMessageDate }} </strong>
-					</div>
-				</div>
+		<h1>Group</h1>
+		<form @submit.prevent="changePicture">
+			<div class="user-picture">
+				<img v-if="pictureURI === ''" src="@/assets/images/default-group-picture.jpg" alt="Group picture">
+				<img v-else :src="localPictureURL" alt="Group picture">
 			</div>
-			<div v-else>
-				No conversation
+			<div>
+				<input type="file" accept="image/*" @change="handleFileSelection">
+				<button type="submit" :disabled="!selectedFile || loading">Change</button>
 			</div>
+		</form>
+		<form @submit.prevent="changeUsername">
+			<div class="user-username-bar">
+				<input type="text" v-model="username" placeholder="Enter username">
+				<button type="submit" :disabled="loading">Change</button>
+			</div>
+		</form>
+		<div class="group">
+			
 		</div>
 		<div>
 			<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>

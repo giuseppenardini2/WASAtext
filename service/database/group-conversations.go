@@ -33,6 +33,11 @@ func (db *appdbimpl) AddGroupConversation(name string, pictureURI string, userCr
 		return structs.GroupConversation{}, err
 	}
 
+	query3 := "INSERT INTO users_group_conversations (user_id, group_conversation_id) VALUES (?, ?)"
+	if _, err := tx.Exec(query3, userCreatorID, groupConversationID); err != nil {
+		return structs.GroupConversation{}, err
+	}
+
 	if pictureURI != "" {
 		query := "UPDATE group_conversations SET picture_uri=? WHERE id=?"
 		if _, err := tx.Exec(query, pictureURI, groupConversationID); err != nil {
