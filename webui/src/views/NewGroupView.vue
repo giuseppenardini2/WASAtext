@@ -73,7 +73,7 @@ export default {
 						class="group-user-item"
 					>
 						<label>
-							<input type="checkbox" :value="user" v-model="selectedUsers">
+							<input type="checkbox" :value="user" v-model="usersToAdd">
 							{{ user.username }}
 						</label>
 					</div>

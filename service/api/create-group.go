@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 	"wasatext/service/structs"
@@ -48,7 +47,6 @@ func (rt *_router) createGroup(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	for i := range groupPart.Partecipants {
-		log.Printf("Aggiunto: %v", groupPart.Partecipants[i].ID)
 		if err := rt.db.AddGroupConversationMember(groupPart.Partecipants[i].ID, groupConversation.ID); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
