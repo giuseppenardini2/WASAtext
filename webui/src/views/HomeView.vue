@@ -123,8 +123,9 @@ export default {
 					class="conversation-row" @click="redirectToNewChatView"
 				>
 					<div class="conversation-picture">
-						<img v-if="conversationPreview.recipientPictureURI === ''" src="@/assets/images/default-user-picture.jpg" alt="User picture">
-						<img v-else :src="conversationPreview.localPictureURL" alt="User picture">
+						<img v-if="conversationPreview.recipientPictureURI === '' && conversationPreview.type === 0" src="@/assets/images/default-user-picture.jpg" alt="User picture">
+						<img v-else-if="conversationPreview.recipientPictureURI === '' && conversationPreview.type === 1" src="@/assets/images/default-group-picture.jpg" alt="Group picture">
+						<img v-else :src="conversationPreview.localPictureURL" alt="Profile picture">
 					</div>
 					<div class="conversation-text">
 						<strong>{{ conversationPreview.recipientName }} </strong>

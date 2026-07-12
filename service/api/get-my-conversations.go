@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -23,6 +24,7 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 	// Prepare the response
 	conversations, err := rt.db.GetConversations(userID)
 	if err != nil {
+		log.Printf("ERRORE: %v", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
