@@ -39,6 +39,7 @@ type GroupConversation struct {
 	Name          string `json:"name"`          // Group name
 	PictureURI    string `json:"pictureURI"`    // Group picture URI
 	UserCreatorID int    `json:"userCreatorID"` // ID of the user who created the group
+	Partecipants  []User `json:"partecipants"`  // Partecipant users
 }
 
 func IsGroupNameValid(groupName string) bool {

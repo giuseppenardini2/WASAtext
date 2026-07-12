@@ -45,6 +45,12 @@ func (db *appdbimpl) AddGroupConversation(name string, pictureURI string, userCr
 		}
 	}
 
+	var userCreator structs.User
+	query4 := "SELECT id, username, COALESCE(picture_uri, '') FROM users WHERE id=?"
+	if err := db.c.QueryRow(query4, userCreatorID).Scan(&userCreator.ID, &userCreator.Username, &userCreator.PictureURI); err != nil {
+		return structs.GroupConversation{}, err
+	}
+
 	if err := tx.Commit(); err != nil {
 		return structs.GroupConversation{}, err
 	}
@@ -54,6 +60,7 @@ func (db *appdbimpl) AddGroupConversation(name string, pictureURI string, userCr
 		Name:          name,
 		PictureURI:    pictureURI,
 		UserCreatorID: userCreatorID,
+		Partecipants:  []structs.User{userCreator},
 	}, nil
 }
 
@@ -90,9 +97,18 @@ func (db *appdbimpl) DeleteGroupConversation(groupConversationID int) error {
 func (db *appdbimpl) GetGroupConversation(groupConversationID int) (structs.GroupConversation, error) {
 	var group structs.GroupConversation
 
-	query := "SELECT id, name, COALESCE(picture_uri, ''), user_creator_id FROM group_conversations WHERE id=?"
-	err := db.c.QueryRow(query, groupConversationID).Scan(&group.ID, &group.Name, &group.PictureURI, &group.UserCreatorID)
-	return group, err
+	query1 := "SELECT id, name, COALESCE(picture_uri, ''), user_creator_id FROM group_conversations WHERE id=?"
+	if err := db.c.QueryRow(query1, groupConversationID).Scan(&group.ID, &group.Name, &group.PictureURI, &group.UserCreatorID); err != nil {
+		return structs.GroupConversation{}, err
+	}
+
+	partecipants, err := db.GetGroupConversartionMembers(groupConversationID)
+	if err != nil {
+		return structs.GroupConversation{}, err
+	}
+	group.Partecipants = partecipants
+
+	return group, nil
 }
 
 func (db *appdbimpl) GetGroupConversationPictureURI(groupConversationID int) (string, error) {

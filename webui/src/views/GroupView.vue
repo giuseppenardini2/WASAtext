@@ -2,12 +2,45 @@
 export default {
 	data() {
 		return {
+			id: -1,
+			name: null,
+			pictureURI: null,
+			userCreatorID: -1,
+			partecipants: [],
+
 			selectedFile: null,
+			localPictureURL: null,
+
 			errorMessage: null,
 			loading: false,
 		}
 	},
 	methods: {
+		async fetchGroup() {
+			this.loading = true;
+			this.errorMessage = "";
+			try {
+				const response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/groups`,
+				{
+					params: {
+						peerid: this.$route.params.groupid
+					},
+					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
+				});
+
+				this.id = response.data.id
+				this.name = response.data.name
+				this.pictureURI = response.data.pictureURI
+				this.userCreatorID = response.data.userCreatorID
+				this.partecipants = response.data.partecipants
+			}
+			catch(error) {
+				this.errorMessage = error.toString();
+			}
+			finally {
+				this.loading = false;
+			}
+		}
 		handleFileSelection(event) {
 			const file = event.target.files[0];
      		if (!file) return;
@@ -49,7 +82,7 @@ export default {
 		}
 	},
 	mounted() {
-		
+		this.fetchGroup();
 	},
 	beforeUnmount() {
 		
@@ -61,7 +94,7 @@ export default {
 	<div class="main-box">
 		<h1>Group</h1>
 		<form @submit.prevent="changePicture">
-			<div class="user-picture">
+			<div class="group-picture">
 				<img v-if="pictureURI === ''" src="@/assets/images/default-group-picture.jpg" alt="Group picture">
 				<img v-else :src="localPictureURL" alt="Group picture">
 			</div>
@@ -99,69 +132,19 @@ export default {
 	color: var(--text-color-1);
 }
 
-.options-box {
-	display: flex;
-	gap: 10px;
-}
-
-.options-box button {
-    width: 100px;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-	background-color: var(--color-3);
-    color: white;
-    font-size: 14px;
-	cursor: pointer;
-}
-
-.options-box button:hover {
-    background-color: var(--color-3-a);
-}
-
-.options-box button:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-  opacity: 0.8;
-}
-
-.conversation-row {
-	display: flex; 
-	align-items: center;
-	border: 1px solid var(--color-5);
-	background-color: var(--color-2-a);
-	border-radius: 5px;
-	padding: 0.5rem;
-	margin: 0.5rem;
-}
-
-.conversation-row:hover {
-    background-color: var(--color-5);
-    cursor: pointer;
-}
-
-.conversation-picture {
-	display: flex;
-	align-items: center;
-}
-
-.conversation-picture img {
-	width: 50px;
-	height: 50px;
-	border-radius: 50%;
-	display: block;
-	object-fit: cover;
-}
-
-.conversation-text {
+.group-picture {
 	display: flex;
 	flex-direction: column;
-	margin-left: 1rem;
-	align-self: flex-start;
+	gap: 5px;
+	margin-bottom: 10px;
+	align-items: center;
 }
 
-.conversation-date {
-	margin-left: auto;
+.group-picture img {
+	width: 150px;
+	height: 150px;
+	object-fit: cover;
+	border-radius: 50%;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
 </style>
