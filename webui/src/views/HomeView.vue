@@ -39,7 +39,6 @@ export default {
 			if (!conversationPreview.recipientPictureURI) return;
 
 			let response;
-			console.log(typeof conversationPreview.type)
 			if (conversationPreview.type === 0) {
 				this.loading = true;
 				this.errorMessage = "";

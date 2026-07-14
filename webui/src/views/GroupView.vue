@@ -40,7 +40,7 @@ export default {
 			finally {
 				this.loading = false;
 			}
-		}
+		},
 		handleFileSelection(event) {
 			const file = event.target.files[0];
      		if (!file) return;
@@ -103,9 +103,9 @@ export default {
 				<button type="submit" :disabled="!selectedFile || loading">Change</button>
 			</div>
 		</form>
-		<form @submit.prevent="changeUsername">
+		<form @submit.prevent="changeGroupName">
 			<div class="user-username-bar">
-				<input type="text" v-model="username" placeholder="Enter username">
+				<input type="text" v-model="name" placeholder="Enter username">
 				<button type="submit" :disabled="loading">Change</button>
 			</div>
 		</form>
