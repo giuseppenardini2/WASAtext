@@ -33,6 +33,8 @@ export default {
 				this.pictureURI = response.data.pictureURI
 				this.userCreatorID = response.data.userCreatorID
 				this.partecipants = response.data.partecipants
+
+				this.getGroupPicture();
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -54,16 +56,16 @@ export default {
             }
 			this.selectedFile = file;
 		},
-		async changePicture() {
+		async changeGroupPicture() {
 			if (!this.selectedFile) return;
 			
 			this.loading = true;
 			this.errorMessage = "";
 			try {
 				const payload = new FormData();
-				payload.append("image", this.selectedFile);
+				payload.append("image", this.selectedFile); ///users/{userid}/groups/{groupid}/picture
 
-				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/picture`, payload,
+				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/picture`, payload,
 				{
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
@@ -71,7 +73,32 @@ export default {
 				this.pictureURI = response.data.imageURI;
 				sessionStorage.setItem("pictureURI", response.data.imageURI);
 
-				this.getUserPicture();
+				this.getGroupPicture();
+			}
+			catch(error) {
+				this.errorMessage = error.toString();
+			}
+			finally {
+				this.loading = false;
+			}
+		},
+		async getGroupPicture() {
+			if (!this.pictureURI) return;
+
+			this.loading = true;
+			this.errorMessage = "";
+			try {
+				const response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/picture`, {
+					headers: { 
+						"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
+					},
+					responseType: "blob"
+				});
+
+				if (this.localPictureURL) {
+          			URL.revokeObjectURL(this.localPictureURL);
+        		}
+				this.localPictureURL = URL.createObjectURL(response.data);
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -85,7 +112,9 @@ export default {
 		this.fetchGroup();
 	},
 	beforeUnmount() {
-		
+		if (this.localPictureURL) {
+      		URL.revokeObjectURL(this.localPictureURL);
+    	}
   	}
 }
 </script>
@@ -93,7 +122,7 @@ export default {
 <template>
 	<div class="main-box">
 		<h1>Group</h1>
-		<form @submit.prevent="changePicture">
+		<form @submit.prevent="changeGroupPicture">
 			<div class="group-picture">
 				<img v-if="pictureURI === ''" src="@/assets/images/default-group-picture.jpg" alt="Group picture">
 				<img v-else :src="localPictureURL" alt="Group picture">

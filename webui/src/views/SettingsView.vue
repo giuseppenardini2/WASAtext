@@ -26,7 +26,7 @@ export default {
             }
 			this.selectedFile = file;
 		},
-		async changePicture() {
+		async changeUserPicture() {
 			if (!this.selectedFile) return;
 			
 			this.loading = true;
@@ -117,7 +117,7 @@ export default {
 	<div class="main-box">
 		<h1>Settings</h1>
 		<div class="profile-box">
-			<form @submit.prevent="changePicture">
+			<form @submit.prevent="changeUserPicture">
 				<div class="user-picture">
 					<img v-if="pictureURI === ''" src="@/assets/images/default-user-picture.jpg" alt="User picture">
 					<img v-else :src="localPictureURL" alt="User picture">
