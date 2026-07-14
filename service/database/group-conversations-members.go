@@ -29,7 +29,7 @@ func (db *appdbimpl) DeleteGroupConversationMember(userID int, groupConversation
  */
 
 func (db *appdbimpl) GetGroupConversartionMembers(groupConversationsID int) ([]structs.User, error) {
-	query := `SELECT u.id, u.username, u.picture_uri 
+	query := `SELECT u.id, u.username, COALESCE(u.picture_uri, '') 
 		FROM users AS u
 		INNER JOIN group_conversations_members AS gcm ON u.id=gcm.user_id
 		WHERE gcm.group_conversation_id=?`
