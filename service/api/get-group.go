@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -13,6 +14,7 @@ func (rt *_router) getGroup(w http.ResponseWriter, r *http.Request, ps httproute
 	userID, err := strconv.Atoi(ps.ByName("userid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("ERRORE 0: %v\n", err.Error())
 		return
 	}
 
@@ -23,16 +25,19 @@ func (rt *_router) getGroup(w http.ResponseWriter, r *http.Request, ps httproute
 	peerID, err := strconv.Atoi(r.URL.Query().Get("peerid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("ERRORE 1: %v\n", err.Error())
 		return
 	}
 
 	if err := rt.db.CheckGroupConversation(peerID); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("ERRORE 2: %v\n", err.Error())
 		return
 	}
 
 	if err := rt.db.CheckGroupConversationMember(userID, peerID); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("ERRORE 3: %v\n", err.Error())
 		return
 	}
 
@@ -40,6 +45,7 @@ func (rt *_router) getGroup(w http.ResponseWriter, r *http.Request, ps httproute
 	groupConversation, err := rt.db.GetGroupConversation(peerID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("ERRORE 4: %v\n", err.Error())
 		return
 	}
 

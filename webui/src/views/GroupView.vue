@@ -3,7 +3,7 @@ export default {
 	data() {
 		return {
 			id: -1,
-			name: null,
+			name: "",
 			pictureURI: null,
 			userCreatorID: -1,
 			partecipants: [],

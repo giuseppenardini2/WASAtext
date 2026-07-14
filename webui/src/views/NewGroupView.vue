@@ -2,7 +2,7 @@
 export default {
 	data() {
 		return {
-			name: null,
+			name: "",
 			users: [],
 			usersToAdd: [],
 			errorMessage: null,

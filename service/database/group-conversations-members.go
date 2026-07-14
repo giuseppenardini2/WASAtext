@@ -60,7 +60,7 @@ func (db *appdbimpl) GetGroupConversartionMembers(groupConversationsID int) ([]s
 func (db *appdbimpl) CheckGroupConversationMember(userID int, groupConversationID int) error {
 	var count int
 
-	query := "SELECT COUNT(id) FROM group_conversations_members WHERE user_id=? AND group_conversation_id=?"
+	query := "SELECT COUNT(user_id) FROM group_conversations_members WHERE user_id=? AND group_conversation_id=?"
 	err := db.c.QueryRow(query, userID, groupConversationID).Scan(&count)
 	if err != nil {
 		return err
