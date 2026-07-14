@@ -106,6 +106,27 @@ export default {
 			finally {
 				this.loading = false;
 			}
+		},
+		async changeGroupName() {
+			this.loading = true;
+			this.errorMessage = "";
+			try {
+				if (this.name.length < 3 || this.name.length > 20) throw "Invalid group name"
+
+				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/picture`, {
+					name: this.name
+				},
+				{
+					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
+				});
+				sessionStorage.setItem("name", this.name);
+			}
+			catch(error) {
+				this.errorMessage = error.toString();
+			}
+			finally {
+				this.loading = false;
+			}
 		}
 	},
 	mounted() {
@@ -122,24 +143,23 @@ export default {
 <template>
 	<div class="main-box">
 		<h1>Group</h1>
-		<form @submit.prevent="changeGroupPicture">
-			<div class="group-picture">
-				<img v-if="pictureURI === ''" src="@/assets/images/default-group-picture.jpg" alt="Group picture">
-				<img v-else :src="localPictureURL" alt="Group picture">
-			</div>
-			<div>
-				<input type="file" accept="image/*" @change="handleFileSelection">
-				<button type="submit" :disabled="!selectedFile || loading">Change</button>
-			</div>
-		</form>
-		<form @submit.prevent="changeGroupName">
-			<div class="user-username-bar">
-				<input type="text" v-model="name" placeholder="Enter username">
-				<button type="submit" :disabled="loading">Change</button>
-			</div>
-		</form>
-		<div class="group">
-			
+		<div class="group-info-box">
+			<form @submit.prevent="changeGroupPicture">
+				<div class="group-picture">
+					<img v-if="pictureURI === ''" src="@/assets/images/default-group-picture.jpg" alt="Group picture">
+					<img v-else :src="localPictureURL" alt="Group picture">
+				</div>
+				<div>
+					<input type="file" accept="image/*" @change="handleFileSelection">
+					<button type="submit" :disabled="!selectedFile || loading">Change</button>
+				</div>
+			</form>
+			<form @submit.prevent="changeGroupName">
+				<div class="group-name-bar">
+					<input type="text" v-model="name" placeholder="Enter group name">
+					<button type="submit" :disabled="loading">Change</button>
+				</div>
+			</form>
 		</div>
 		<div>
 			<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
@@ -159,6 +179,57 @@ export default {
 
 .main-box h1 {
 	color: var(--text-color-1);
+}
+
+.group-info-box {
+	margin: 2px;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.group-info-box form {
+	margin-bottom: 20px;
+}
+
+.group-info-box button {
+    width: 100px;
+	padding: 10px;
+    border: none;
+    border-radius: 8px;
+	background-color: var(--color-3);
+    color: white;
+    font-size: 16px;
+	cursor: pointer;
+}
+
+.group-info-box button:hover {
+    background-color: var(--color-3-a);
+}
+
+.group-info-box button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.group-name-bar {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	margin-bottom: 10px;
+	align-items: center;
+}
+
+.group-name-bar input {
+    width: 300px;
+	padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+	background-color: var(--color-2-a);
+    font-size: 16px;
+	color: var(--text-color-1)
 }
 
 .group-picture {
