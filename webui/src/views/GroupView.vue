@@ -127,6 +127,24 @@ export default {
 			}
 		}
 	},
+	async leaveGroup(){
+		this.loading = true;
+		this.errorMessage = "";
+		try {
+			const response = await this.$axios.delete(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/partecipants`,
+			{
+				headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
+			});
+
+			this.$router.push("/home")
+		}
+		catch(error) {
+			this.errorMessage = error.toString();
+		}
+		finally {
+			this.loading = false;
+		}
+	},
 	mounted() {
 		this.fetchGroup();
 	},
@@ -141,7 +159,7 @@ export default {
 <template>
 	<div class="main-box">
 		<h1>Group</h1>
-		<div class="group-info-box">
+		<div class="profile-box">
 			<form @submit.prevent="changeGroupPicture">
 				<div class="group-picture">
 					<img v-if="pictureURI === ''" src="@/assets/images/default-group-picture.jpg" alt="Group picture">
@@ -158,6 +176,26 @@ export default {
 					<button type="submit" :disabled="loading">Change</button>
 				</div>
 			</form>
+		</div>
+		<div>
+			<div v-if="partecipants.length > 0">
+				<strong>Partecipants</strong>
+				<div
+				v-for="partecipant in partecipants"
+					:key="partecipant.id"
+				>
+				{{ partecipant.username }}
+				</div>
+			</div>
+			<div v-else>
+				No partecipants
+			</div>
+			<div>
+				<button>Add partecipant</button>
+			</div>
+		</div>
+		<div>
+			<button type="button" @click="leaveGroup">Leave</button>
 		</div>
 		<div>
 			<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
@@ -179,7 +217,7 @@ export default {
 	color: var(--text-color-1);
 }
 
-.group-info-box {
+.profile-box {
 	margin: 2px;
 	padding: 10px;
 	display: flex;
@@ -187,11 +225,11 @@ export default {
 	align-items: center;
 }
 
-.group-info-box form {
+.profile-box form {
 	margin-bottom: 20px;
 }
 
-.group-info-box button {
+.profile-box button {
     width: 100px;
 	padding: 10px;
     border: none;
@@ -202,11 +240,11 @@ export default {
 	cursor: pointer;
 }
 
-.group-info-box button:hover {
+.profile-box button:hover {
     background-color: var(--color-3-a);
 }
 
-.group-info-box button:disabled {
+.profile-box button:disabled {
   background-color: #6c757d;
   cursor: not-allowed;
   opacity: 0.8;
