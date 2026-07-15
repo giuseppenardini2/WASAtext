@@ -217,6 +217,12 @@ export default {
 	color: var(--text-color-1);
 }
 
+.main-box button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
 .profile-box {
 	margin: 2px;
 	padding: 10px;
@@ -242,12 +248,6 @@ export default {
 
 .profile-box button:hover {
     background-color: var(--color-3-a);
-}
-
-.profile-box button:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-  opacity: 0.8;
 }
 
 .group-name-bar {
