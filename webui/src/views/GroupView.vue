@@ -63,7 +63,7 @@ export default {
 			this.errorMessage = "";
 			try {
 				const payload = new FormData();
-				payload.append("image", this.selectedFile); ///users/{userid}/groups/{groupid}/picture
+				payload.append("image", this.selectedFile);
 
 				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/picture`, payload,
 				{
@@ -71,7 +71,6 @@ export default {
 				});
 
 				this.pictureURI = response.data.imageURI;
-				sessionStorage.setItem("pictureURI", response.data.imageURI);
 
 				this.getGroupPicture();
 			}
@@ -113,13 +112,12 @@ export default {
 			try {
 				if (this.name.length < 3 || this.name.length > 20) throw "Invalid group name"
 
-				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/picture`, {
+				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/name`, {
 					name: this.name
 				},
 				{
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
-				sessionStorage.setItem("name", this.name);
 			}
 			catch(error) {
 				this.errorMessage = error.toString();

@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"wasatext/service/structs"
@@ -18,6 +19,7 @@ func (rt *_router) setGroupName(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	if !IsUserAuthorized(userID, r, w) {
+		log.Printf("ERRORE 1")
 		return
 	}
 
@@ -53,7 +55,7 @@ func (rt *_router) setGroupName(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	// Prepare the response
-	if err := rt.db.UpdateGroupConversationName(userID, groupPart.Name); err != nil {
+	if err := rt.db.UpdateGroupConversationName(groupID, groupPart.Name); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
