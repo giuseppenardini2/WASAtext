@@ -125,24 +125,24 @@ export default {
 			finally {
 				this.loading = false;
 			}
-		}
-	},
-	async leaveGroup(){
-		this.loading = true;
-		this.errorMessage = "";
-		try {
-			const response = await this.$axios.delete(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/partecipants`,
-			{
-				headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
-			});
+		},
+		async leaveGroup() {
+			this.loading = true;
+			this.errorMessage = "";
+			try {
+				await this.$axios.delete(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/participants`,
+				{
+					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
+				});
 
-			this.$router.push("/home")
-		}
-		catch(error) {
-			this.errorMessage = error.toString();
-		}
-		finally {
-			this.loading = false;
+				this.$router.push("/home")
+			}
+			catch(error) {
+				this.errorMessage = error.toString();
+			}
+			finally {
+				this.loading = false;
+			}
 		}
 	},
 	mounted() {
