@@ -10,5 +10,6 @@ import './assets/css/main.css'
 const app = createApp(App)
 app.config.globalProperties.$axios = axios;
 app.component("ErrorMessage", ErrorMessage);
+app.component("UserSearchBar", UserSearchBar);
 app.use(router)
 app.mount('#app')

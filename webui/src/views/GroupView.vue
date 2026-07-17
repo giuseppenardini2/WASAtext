@@ -6,7 +6,7 @@ export default {
 			name: "",
 			pictureURI: null,
 			userCreatorID: -1,
-			partecipants: [],
+			participants: [],
 
 			selectedFile: null,
 			localPictureURL: null,
@@ -22,8 +22,7 @@ export default {
 			this.loading = true;
 			this.errorMessage = "";
 			try {
-				const response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/groups`,
-				{
+				const response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/groups`, {
 					params: {
 						peerid: this.$route.params.groupid
 					},
@@ -34,7 +33,7 @@ export default {
 				this.name = response.data.name
 				this.pictureURI = response.data.pictureURI
 				this.userCreatorID = response.data.userCreatorID
-				this.partecipants = response.data.partecipants
+				this.participants = response.data.participants
 
 				this.getGroupPicture();
 			}
@@ -135,14 +134,17 @@ export default {
 			this.loading = true;
 			this.errorMessage = "";
 			try {
-				if (this.name.length < 3 || this.name.length > 20) throw "Invalid group name"
+				if (!this.selectedUser) throw "Select a user"
 
-				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/participants`, {
-					name: this.name
-				},
-				{
-					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
+				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/participants`, null, {
+					params: {
+						peerid: this.selectedUser.id
+					},
+					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` }
 				});
+
+				this.participants.push(this.selectedUser);
+				this.selectedUser = null;
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -203,30 +205,30 @@ export default {
 			</form>
 		</div>
 		<div>
-			<div v-if="partecipants.length > 0">
-				<strong>Partecipants</strong>
+			<div v-if="participants.length > 0">
+				<strong>Participants</strong>
 				<div
-				v-for="partecipant in partecipants"
-					:key="partecipant.id"
+				v-for="participant in participants"
+					:key="participant.id"
 				>
-				{{ partecipant.username }}
+				{{ participant.username }}
 				</div>
 			</div>
 			<div v-else>
-				No partecipants
+				No participants
 			</div>
 			<div>
-				<UserSearchBar @user-selected="handleUserSelection" />
-				<div v-if="selectedUser">
-					<p>Hai selezionato: <strong>{{ selectedUser.username }}</strong> (ID: {{ selectedUser.id }})</p>
-				</div>
-				<div>
-					<button type="button" @click="addPartecipant">Add partecipant</button>
+				<div class="add-participant-box">
+					<UserSearchBar @user-selected="handleUserSelection" />
+					<div v-if="selectedUser">
+						<p>Hai selezionato: <strong>{{ selectedUser.username }}</strong> (ID: {{ selectedUser.id }})</p>
+					</div>
+					<button type="button" @click="addParticipant" :disabled="!selectedUser || loading">Add participant</button>
 				</div>
 			</div>
 		</div>
 		<div>
-			<button type="button" @click="leaveGroup">Leave</button>
+			<button type="button" @click="leaveGroup" :disabled="loading">Leave</button>
 		</div>
 		<div>
 			<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
@@ -315,7 +317,15 @@ export default {
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.partecipants-box {
+.participants-box {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	margin-bottom: 10px;
+	align-items: center;
+}
+
+.add-participants-box {
 	display: flex;
 	flex-direction: row;
 	gap: 5px;

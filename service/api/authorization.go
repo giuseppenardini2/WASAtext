@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -12,7 +13,7 @@ func getUserToken(r *http.Request) (int, error) {
 	// Get the authorization header
 	authorizationHeader := r.Header.Get("Authorization")
 	if authorizationHeader == "" {
-		return -1, errors.New("Authorization header error")
+		return -1, errors.New("Authorization header is empty")
 	}
 
 	// Split the line to get the bearer token (format: "Bearer token123")
@@ -34,6 +35,7 @@ func IsUserAuthorized(userID int, r *http.Request, w http.ResponseWriter) bool {
 	token, err := getUserToken(r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("ERRORE X: %v\n", err.Error())
 		return false
 	}
 	if userID != token {

@@ -60,7 +60,7 @@ func (db *appdbimpl) AddGroupConversation(name string, pictureURI string, userCr
 		Name:          name,
 		PictureURI:    pictureURI,
 		UserCreatorID: userCreatorID,
-		Partecipants:  []structs.User{userCreator},
+		Participants:  []structs.User{userCreator},
 	}, nil
 }
 
@@ -106,7 +106,7 @@ func (db *appdbimpl) GetGroupConversation(groupConversationID int) (structs.Grou
 	if err != nil {
 		return structs.GroupConversation{}, err
 	}
-	group.Partecipants = partecipants
+	group.Participants = partecipants
 
 	return group, nil
 }
