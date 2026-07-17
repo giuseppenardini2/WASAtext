@@ -38,7 +38,7 @@ func (rt *_router) addToGroup(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
-	userToAddID, err := strconv.Atoi(r.URL.Query().Get("usertoaddid"))
+	userToAddID, err := strconv.Atoi(r.URL.Query().Get("peerid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

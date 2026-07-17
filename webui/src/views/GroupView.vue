@@ -11,6 +11,8 @@ export default {
 			selectedFile: null,
 			localPictureURL: null,
 
+			selectedUser: null,
+
 			errorMessage: null,
 			loading: false,
 		}
@@ -126,6 +128,29 @@ export default {
 				this.loading = false;
 			}
 		},
+		handleUserSelection(user) {
+			this.selectedUser = user;
+		},
+		async addParticipant() {
+			this.loading = true;
+			this.errorMessage = "";
+			try {
+				if (this.name.length < 3 || this.name.length > 20) throw "Invalid group name"
+
+				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/participants`, {
+					name: this.name
+				},
+				{
+					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
+				});
+			}
+			catch(error) {
+				this.errorMessage = error.toString();
+			}
+			finally {
+				this.loading = false;
+			}
+		},
 		async leaveGroup() {
 			this.loading = true;
 			this.errorMessage = "";
@@ -135,7 +160,7 @@ export default {
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
 
-				this.$router.push("/home")
+				this.$router.push("/home");
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -191,7 +216,13 @@ export default {
 				No partecipants
 			</div>
 			<div>
-				<button>Add partecipant</button>
+				<UserSearchBar @user-selected="handleUserSelection" />
+				<div v-if="selectedUser">
+					<p>Hai selezionato: <strong>{{ selectedUser.username }}</strong> (ID: {{ selectedUser.id }})</p>
+				</div>
+				<div>
+					<button type="button" @click="addPartecipant">Add partecipant</button>
+				</div>
 			</div>
 		</div>
 		<div>
@@ -282,5 +313,13 @@ export default {
 	object-fit: cover;
 	border-radius: 50%;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.partecipants-box {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	margin-bottom: 10px;
+	align-items: center;
 }
 </style>

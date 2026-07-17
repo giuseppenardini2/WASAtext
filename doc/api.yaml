@@ -631,11 +631,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: usertoaddid
-          description: ID of the new user to add
-          in: query
-          required: true
-          schema: { $ref: "#/components/schemas/Identifier" }
+        - $ref: "#/components/parameters/peerID"
       responses:
         "200":
           description: ID of the user added to the group
