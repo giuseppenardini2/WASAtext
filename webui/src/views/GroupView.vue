@@ -29,11 +29,11 @@ export default {
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
 
-				this.id = response.data.id
-				this.name = response.data.name
-				this.pictureURI = response.data.pictureURI
-				this.userCreatorID = response.data.userCreatorID
-				this.participants = response.data.participants
+				this.id = response.data.id;
+				this.name = response.data.name;
+				this.pictureURI = response.data.pictureURI;
+				this.userCreatorID = response.data.userCreatorID;
+				this.participants = response.data.participants;
 
 				this.getGroupPicture();
 			}
