@@ -630,14 +630,17 @@ paths:
         Add the current user to a group
       security:
         - bearerAuth: []
-      parameters:
-        - $ref: "#/components/parameters/peerID"
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/User" }
+        required: true
       responses:
         "200":
           description: ID of the user added to the group
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Identifier"}
+              schema: { $ref: "#/components/schemas/User" }
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":

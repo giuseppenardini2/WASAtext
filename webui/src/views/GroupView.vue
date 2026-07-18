@@ -136,10 +136,13 @@ export default {
 			try {
 				if (!this.selectedUser) throw "Select a user"
 
-				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/participants`, null, {
-					params: {
-						peerid: this.selectedUser.id
-					},
+				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/participants`,
+				{
+					id: this.selectedUser.id,
+					username: this.selectedUser.username,
+					pictureURI: this.selectedUser.pictureURI
+				}, 
+				{
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` }
 				});
 

@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -35,7 +34,6 @@ func IsUserAuthorized(userID int, r *http.Request, w http.ResponseWriter) bool {
 	token, err := getUserToken(r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		log.Printf("ERRORE X: %v\n", err.Error())
 		return false
 	}
 	if userID != token {
