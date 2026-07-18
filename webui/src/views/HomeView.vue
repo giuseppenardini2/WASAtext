@@ -39,47 +39,49 @@ export default {
 			if (!conversationPreview.recipientPictureURI) return;
 
 			let response;
-			if (conversationPreview.type === 0) {
-				this.loading = true;
-				this.errorMessage = "";
-				try {
-					response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/picture`, {
-						headers: {
-							"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
-						},
-						params: {
-							peerid: conversationPreview.recipientID
-						},
-						responseType: "blob"
-					});
-				}
-				catch(error) {
-					this.errorMessage = error.toString();
-				}
-				finally {
-					this.loading = false;
-				}
-			}
-			else if (conversationPreview.type === 1) {
-				this.loading = true;
-				this.errorMessage = "";
-				try {
-					response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/groups/${conversationPreview.recipientID}/picture`, {
-						headers: {
-							"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
-						},
-						responseType: "blob"
-					});
-				}
-				catch(error) {
-					this.errorMessage = error.toString();
-				}
-				finally {
-					this.loading = false;
-				}
-			}
-			else {
-				return;
+			switch(conversationPreview.type) {
+				case 0:
+					this.loading = true;
+					this.errorMessage = "";
+					try {
+						response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/picture`, {
+							headers: {
+								"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
+							},
+							params: {
+								peerid: conversationPreview.recipientID
+							},
+							responseType: "blob"
+						});
+					}
+					catch(error) {
+						this.errorMessage = error.toString();
+					}
+					finally {
+						this.loading = false;
+					}
+					break;
+				case 1:
+					this.loading = true;
+					this.errorMessage = "";
+					try {
+						response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/groups/${conversationPreview.recipientID}/picture`, {
+							headers: {
+								"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
+							},
+							responseType: "blob"
+						});
+					}
+					catch(error) {
+						this.errorMessage = error.toString();
+					}
+					finally {
+						this.loading = false;
+					}
+					break;
+				default:
+					return;
+					break;
 			}
 
 			if (conversationPreview.localPictureURL) {
@@ -92,6 +94,9 @@ export default {
 		},
 		redirectToNewGroupView() {
 			this.$router.push("/groups");
+		},
+		redirectToSelectedChat(conversationID) {
+			this.$router.push(`/conversations/${conversationID}`);
 		}
 	},
 	mounted() {
@@ -119,7 +124,7 @@ export default {
 				<div
 					v-for="conversationPreview in conversationPreviews"
 						:key="conversationPreview.id"
-					class="conversation-row" @click="redirectToNewChatView"
+					class="conversation-row" @click="redirectToSelectedChat(conversationPreview.id)"
 				>
 					<div class="conversation-picture">
 						<img v-if="conversationPreview.recipientPictureURI === '' && conversationPreview.type === 0" src="@/assets/images/default-user-picture.jpg" alt="User picture">

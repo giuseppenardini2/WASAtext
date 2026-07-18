@@ -48,6 +48,7 @@ type AppDatabase interface {
 	CheckUser(userID int) error
 	CheckUserUsername(username string) error
 
+	GetConversation(userID int, conversationID int) (structs.Conversation, error)
 	GetConversations(userID int) ([]structs.ConversationPreview, error)
 	GetConversationType(conversationID int) (structs.ConversationType, error)
 	CheckUserConversation(userID int, conversationID int) error
@@ -75,7 +76,7 @@ type AppDatabase interface {
 	GetNewMessageID(conversationID int) (int64, error)
 	GetMessage(conversationID int, messageID int) (structs.Message, error)
 	GetMessagePictureURI(conversationID int, messageID int) (string, error)
-	GetMessages(conversationID int) (structs.Conversation, error)
+	GetMessages(conversationID int) ([]structs.Message, error)
 	GetLastMessage(conversationID int) (structs.Message, error)
 	CheckMessageConversation(messageID int, conversationID int) error
 

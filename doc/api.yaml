@@ -391,7 +391,7 @@ paths:
 
     get:
       operationId: getMessagePhoto
-      tags: ["images"]
+      tags: ["messages", "images"]
       summary: Get message image
       description: |-
         Return the message image

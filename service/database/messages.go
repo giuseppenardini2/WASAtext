@@ -1,6 +1,7 @@
 package database
 
 import (
+	"sort"
 	"wasatext/service/structs"
 )
 
@@ -200,14 +201,14 @@ func (db *appdbimpl) GetMessagePictureURI(conversationID int, messageID int) (st
 	return pictureURI, err
 }
 
-func (db *appdbimpl) GetMessages(conversationID int) (structs.Conversation, error) {
+func (db *appdbimpl) GetMessages(conversationID int) ([]structs.Message, error) {
 	query := `SELECT id, body, sent_date, COALESCE(picture_uri, ''), sender_id, conversation_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
 		FROM messages
 		WHERE conversation_id=?
 		ORDER BY sent_date DESC`
 	rows, err := db.c.Query(query, conversationID)
 	if err != nil {
-		return structs.Conversation{}, err
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -215,18 +216,18 @@ func (db *appdbimpl) GetMessages(conversationID int) (structs.Conversation, erro
 	for rows.Next() {
 		var message structs.Message
 		if err := rows.Scan(&message.ID, &message.ConversationID, &message.Body, &message.SentDate, &message.PictureURI, &message.SenderID, &message.ReplyMessageID, &message.ForwardedMessageID); err != nil {
-			return structs.Conversation{}, err
+			return nil, err
 		}
 		messages = append(messages, message)
 	}
 	if err := rows.Err(); err != nil {
-		return structs.Conversation{}, err
+		return nil, err
 	}
 
-	return structs.Conversation{
-		ID:       conversationID,
-		Messages: messages,
-	}, nil
+	sort.Slice(messages, func(p, q int) bool {
+		return messages[p].SentDate > messages[q].SentDate
+	})
+	return messages, nil
 }
 
 func (db *appdbimpl) GetLastMessage(conversationID int) (structs.Message, error) {

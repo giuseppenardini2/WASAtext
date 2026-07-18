@@ -3,12 +3,48 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"sort"
 	"wasatext/service/structs"
 )
 
 /*
  * GET OPERATIONS
  */
+
+func (db *appdbimpl) GetConversation(userID int, conversationID int) (structs.Conversation, error) {
+	conversationType, err := db.GetConversationType(conversationID)
+	if err != nil {
+		return structs.Conversation{}, err
+	}
+
+	var conversation structs.Conversation
+	switch conversationType {
+	case structs.PrivateConversationType:
+		query := `SELECT DISTINCT pc.id, u.id, u.username, COALESCE(u.picture_uri, '')
+		FROM users AS u
+		INNER JOIN private_conversations AS pc ON (pc.first_user_id=u.id OR pc.second_user_id=u.id)
+		WHERE u.id!=? AND (pc.first_user_id=? OR pc.second_user_id=?) AND pc.id=?`
+		if err := db.c.QueryRow(query, conversationID, userID, userID, conversationID).Scan(&conversation.ID, &conversation.RecipientID, &conversation.RecipientName, &conversation.RecipientPictureURI); err != nil {
+			return structs.Conversation{}, err
+		}
+	case structs.GroupConversationType:
+		query := `SELECT DISTINCT gc.id, gc.id, gc.name, COALESCE(gc.picture_uri, '')
+		FROM group_conversations AS gc
+		INNER JOIN group_conversations_members AS gcm ON gcm.group_conversation_id=gc.id
+		WHERE gcm.user_id=? AND gc.id=?`
+		if err := db.c.QueryRow(query, userID, conversationID).Scan(&conversation.ID, &conversation.RecipientID, &conversation.RecipientName, &conversation.RecipientPictureURI); err != nil {
+			return structs.Conversation{}, err
+		}
+	}
+
+	messages, err := db.GetMessages(conversationID)
+	if err != nil {
+		return structs.Conversation{}, err
+	}
+	conversation.Messages = messages
+
+	return conversation, err
+}
 
 func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview, error) {
 	var conversations []structs.ConversationPreview
@@ -67,6 +103,9 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 		return nil, err
 	}
 
+	sort.Slice(conversations, func(p, q int) bool {
+		return conversations[p].LastMessageSentDate > conversations[q].LastMessageSentDate
+	})
 	return conversations, nil
 }
 
@@ -105,9 +144,9 @@ func (db *appdbimpl) CheckUserConversation(userID int, conversationID int) error
 	var count int
 	switch conversationType {
 	case structs.PrivateConversationType:
-		query := `SELECT COUNT(user_id) 
+		query := `SELECT COUNT(first_user_id) 
         FROM private_conversations 
-        WHERE conversation_id=? AND (first_user_id=? OR second_user_id=?)`
+        WHERE id=? AND (first_user_id=? OR second_user_id=?)`
 		if err := db.c.QueryRow(query, conversationID, userID, userID).Scan(&count); err != nil {
 			return err
 		}

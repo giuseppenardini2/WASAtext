@@ -28,8 +28,12 @@ type ConversationPreview struct {
 }
 
 type Conversation struct {
-	ID       int       `json:"id"`       // Conversation ID
-	Messages []Message `json:"messages"` // Conversation messages
+	ID                  int              `json:"id"`                  // Conversation ID
+	Type                ConversationType `json:"type"`                // Conversation type
+	RecipientID         int              `json:"recipientID"`         // Recipient ID
+	RecipientName       string           `json:"recipientName"`       // Recipient name (Group name or user username)
+	RecipientPictureURI string           `json:"recipientPictureURI"` // Recipient picture URI
+	Messages            []Message        `json:"messages"`            // Conversation messages
 }
 
 var groupConversationNameRegex = regexp.MustCompile(`^[a-zA-Z0-9\s!?-]{3,20}$`)

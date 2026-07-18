@@ -2,31 +2,49 @@
 export default {
 	data() {
 		return {
-			conversationPreviews: [],
+			id: -1,
+			type: -1,
+			recipientID: -1,
+			recipientName: null,
+			recipientPictureURI: null,
+			messages: [],
+
+			localeRecipientPictureURI: null,
+
 			errorMessage: null,
 			loading: false,
 		}
 	},
 	methods: {
-		async listChats() {
+		async fecthConversation() {
 			this.loading = true;
 			this.errorMessage = "";
 			try {
-				const response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}`, 
-				{
+				const response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/conversations`, {
+					params: {
+						recipientid: this.$route.params.conversationid
+					},
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
 				
-				this.conversationPreviews = response.data?.map(conversationPreview => ({
-					...conversationPreview,
+				this.id = response.data.id;
+				this.type = response.data.type;
+				this.recipientID = response.data.recipientID;
+				this.recipientName = response.data.recipientName;
+				this.recipientPictureURI = response.data.recipientPictureURI;
+
+				this.messages = response.data.messages?.map(message => ({
+					...message,
 					localPictureURL: null
 				})) || [];
 
-				this.conversationPreviews.forEach(conversationPreview => {
-					if (conversationPreview.recipientPictureURI) {
-						this.fetchConversationImage(conversationPreview);
+				this.messages.forEach(message => {
+					if (message.pictureURI) {
+						this.fetchMessageImage(message);
 					}
 				});
+
+				this.fetchConversationImage();
 			}
 			catch(error) {
 				this.errorMessage = error.toString();
@@ -35,52 +53,53 @@ export default {
 				this.loading = false;
 			}
 		},
-		async fetchConversationImage(conversationPreview) {
-			if (!conversationPreview.recipientPictureURI) return;
+		async fetchConversationImage() {
+			if (!this.recipientPictureURI) return;
 
 			let response;
-			console.log(typeof conversationPreview.type)
-			if (conversationPreview.type === 0) {
-				this.loading = true;
-				this.errorMessage = "";
-				try {
-					response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/picture`, {
-						headers: {
-							"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
-						},
-						params: {
-							peerid: conversationPreview.recipientID
-						},
-						responseType: "blob"
-					});
-				}
-				catch(error) {
-					this.errorMessage = error.toString();
-				}
-				finally {
-					this.loading = false;
-				}
-			}
-			else if (conversationPreview.type === 1) {
-				this.loading = true;
-				this.errorMessage = "";
-				try {
-					response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/groups/${conversationPreview.recipientID}/picture`, {
-						headers: {
-							"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
-						},
-						responseType: "blob"
-					});
-				}
-				catch(error) {
-					this.errorMessage = error.toString();
-				}
-				finally {
-					this.loading = false;
-				}
-			}
-			else {
-				return;
+			switch(this.type) {
+				case 0:
+					this.loading = true;
+					this.errorMessage = "";
+					try {
+						response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/picture`, {
+							headers: {
+								"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
+							},
+							params: {
+								peerid: this.recipientID
+							},
+							responseType: "blob"
+						});
+					}
+					catch(error) {
+						this.errorMessage = error.toString();
+					}
+					finally {
+						this.loading = false;
+					}
+					break;
+				case 1:
+					this.loading = true;
+					this.errorMessage = "";
+					try {
+						response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/groups/${this.recipientID}/picture`, {
+							headers: {
+								"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
+							},
+							responseType: "blob"
+						});
+					}
+					catch(error) {
+						this.errorMessage = error.toString();
+					}
+					finally {
+						this.loading = false;
+					}
+					break;
+				default:
+					return;
+					break;
 			}
 
 			if (conversationPreview.localPictureURL) {
@@ -88,20 +107,39 @@ export default {
 			}
 			conversationPreview.localPictureURL = URL.createObjectURL(response.data);
 		},
-		redirectToNewChatView() {
-			this.$router.push("/users");
-		},
-		redirectToNewGroupView() {
-			// this.$router.push("/users");
+		async fetchMessageImage(message) {
+			if(!message.pictureURI) return;
+
+			this.loading = true;
+			this.errorMessage = "";
+			try {
+				const response = await this.$axios.get(`/users/${sessionStorage.getItem("userID")}/conversations/${this.id}/messages/${message.id}/image`, {
+					headers: {
+						"Authorization": `Bearer ${sessionStorage.getItem("token")}` 
+					},
+					responseType: "blob"
+				});
+
+				if (message.localPictureURL) {
+					URL.revokeObjectURL(message.localPictureURL);
+				}
+				message.localPictureURL = URL.createObjectURL(response.data);
+			}
+			catch(error) {
+				this.errorMessage = error.toString();
+			}
+			finally {
+				this.loading = false;
+			}
 		}
 	},
 	mounted() {
-		this.listChats();
+		this.fecthConversation();
 	},
 	beforeUnmount() {
-		this.conversationPreviews.forEach(conversationPreview => {
-			if (conversationPreview.localPictureURL) {
-				URL.revokeObjectURL(conversationPreview.localPictureURL);
+		this.messages.forEach(message => {
+			if (message.localPictureURL) {
+				URL.revokeObjectURL(message.localPictureURL);
 			}
 		});
   	}
@@ -110,36 +148,12 @@ export default {
 
 <template>
 	<div class="main-box">
-		<h1>Conversations</h1>
-		<div class="options-box">
-			<button type="button" @click="redirectToNewChatView" :disabled="loading">New chat</button>
-			<button type="button" @click="redirectToNewGroupView" :disabled="loading">New group</button>
-		</div>
-		<div class="conversations-list-box">
-			<div v-if="conversationPreviews.length > 0">
-				<div
-					v-for="conversationPreview in conversationPreviews"
-						:key="conversationPreview.id"
-					class="conversation-row" @click="redirectToNewChatView"
-				>
-					<div class="conversation-picture">
-						<img v-if="conversationPreview.recipientPictureURI === ''" src="@/assets/images/default-user-picture.jpg" alt="User picture">
-						<img v-else :src="conversationPreview.localPictureURL" alt="User picture">
-					</div>
-					<div class="conversation-text">
-						<strong>{{ conversationPreview.recipientName }} </strong>
-						<p v-if="conversationPreview.lastMessageID != -1 && !conversationPreview.lastMessagePictureURI">{{ conversationPreview.lastMessageBody }} </p>
-						<p v-else-if="conversationPreview.lastMessageID != -1 && conversationPreview.lastMessagePictureURI">📷 Photo</p>
-					</div>
-					<div v-if="conversationPreview.lastMessageID != -1" class="conversation-date">
-						<strong>{{ conversationPreview.lastMessageDate }} </strong>
-					</div>
-				</div>
-			</div>
-			<div v-else>
-				No conversation
+		<div class="recipient-row">
+			<div>
+				{{ recipientName }}
 			</div>
 		</div>
+		
 		<div>
 			<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
 		</div>
