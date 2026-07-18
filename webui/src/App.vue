@@ -69,6 +69,7 @@ export default {
   	height: 100vh;
 	margin: 0;
 	background-color: var(--color-2);
+	overflow: hidden;
 }
 
 /* SIDEBAR */
@@ -132,6 +133,7 @@ export default {
 /* MAIN */
 .main {
 	flex: 1;
+	overflow-y: auto;
 	background-color: var(--color-2);
 }
 </style>

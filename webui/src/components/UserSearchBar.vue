@@ -30,10 +30,8 @@ export default {
 		}
     },
     selectUser(user) {
-		// Dispatch dell'evento custom verso il parent, passando in payload l'oggetto user
 		this.$emit('user-selected', user);
 		
-		// Cleanup dello stato locale dopo la selezione
 		this.username = "";
 		this.users = [];
     }
@@ -47,11 +45,11 @@ export default {
       type="text"
       v-model="username"
       @input="fetchUsers"
-      placeholder="Cerca username..."
+      placeholder="Search username..."
       class="search-input"
     />
     
-    <div v-if="isLoading" class="loading-indicator">Caricamento...</div>
+    <div v-if="isLoading" class="loading-indicator">Loading...</div>
     <div v-if="error" class="error-message">{{ error }}</div>
 
     <ul v-if="users.length > 0 && !isLoading" class="results-list">

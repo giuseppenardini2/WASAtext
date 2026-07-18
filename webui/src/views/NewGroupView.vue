@@ -14,6 +14,7 @@ export default {
 			this.loading = true;
 			this.errorMessage = "";
 			try {
+				this.name = this.name.trim();
 				if (this.name.length < 3 || this.name.length > 16) throw "Invalid group name"
 
 				const response = await this.$axios.post(`/users/${sessionStorage.getItem("userID")}/groups`, {

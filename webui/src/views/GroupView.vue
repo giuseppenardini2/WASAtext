@@ -111,6 +111,7 @@ export default {
 			this.loading = true;
 			this.errorMessage = "";
 			try {
+				this.name = this.name.trim();
 				if (this.name.length < 3 || this.name.length > 20) throw "Invalid group name"
 
 				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/groups/${this.id}/name`, {
@@ -207,7 +208,7 @@ export default {
 				</div>
 			</form>
 		</div>
-		<div>
+		<div class="participants-box">
 			<div v-if="participants.length > 0">
 				<strong>Participants</strong>
 				<div
@@ -221,16 +222,16 @@ export default {
 				No participants
 			</div>
 			<div>
-				<div class="add-participant-box">
+				<div class="add-participants-row">
 					<UserSearchBar @user-selected="handleUserSelection" />
-					<div v-if="selectedUser">
-						<p>Hai selezionato: <strong>{{ selectedUser.username }}</strong> (ID: {{ selectedUser.id }})</p>
-					</div>
-					<button type="button" @click="addParticipant" :disabled="!selectedUser || loading">Add participant</button>
+					<button type="button" @click="addParticipant" :disabled="!selectedUser || loading">Add</button>
+				</div>
+				<div v-if="selectedUser" class="selected-user-item">
+					<p>User selected: <strong>{{ selectedUser.username }}</strong></p>
 				</div>
 			</div>
 		</div>
-		<div>
+		<div class="leave-group-box">
 			<button type="button" @click="leaveGroup" :disabled="loading">Leave</button>
 		</div>
 		<div>
@@ -321,18 +322,57 @@ export default {
 }
 
 .participants-box {
+	width: 400px;
+	margin: 2px;
+	padding: 10px;
+	gap: 10px;
+	background-color: var(--color-5);
+	border-radius: 5px;
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
+	align-items: center;
+	align-self: center;
+}
+
+.add-participants-row {
+	display: flex;
 	gap: 5px;
 	margin-bottom: 10px;
 	align-items: center;
 }
 
-.add-participants-box {
+.add-participants-row button {
+	width: 60px;
+	padding: 10px;
+	margin-left: 2px;
+    border: none;
+    border-radius: 8px;
+	background-color: var(--color-3);
+    color: var(--text-color-4);
+    font-size: 12px;
+	cursor: pointer;
+}
+
+.selected-user-item {
+	align-self: center;
+}
+
+.leave-group-box {
 	display: flex;
-	flex-direction: row;
 	gap: 5px;
 	margin-bottom: 10px;
 	align-items: center;
+	align-self: center;
+}
+
+.leave-group-box button {
+	width: 100px;
+	padding: 10px;
+    border: none;
+    border-radius: 8px;
+	background-color: red;
+    color: white;
+    font-size: 16px;
+	cursor: pointer;
 }
 </style>
