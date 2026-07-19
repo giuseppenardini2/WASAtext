@@ -23,10 +23,11 @@ func (db *appdbimpl) GetConversation(userID int, conversationID int) (structs.Co
 		query := `SELECT DISTINCT pc.id, u.id, u.username, COALESCE(u.picture_uri, '')
 		FROM users AS u
 		INNER JOIN private_conversations AS pc ON (pc.first_user_id=u.id OR pc.second_user_id=u.id)
-		WHERE u.id!=? AND (pc.first_user_id=? OR pc.second_user_id=?) AND pc.id=?`
-		if err := db.c.QueryRow(query, conversationID, userID, userID, conversationID).Scan(&conversation.ID, &conversation.RecipientID, &conversation.RecipientName, &conversation.RecipientPictureURI); err != nil {
+		WHERE pc.id=? AND u.id!=? AND (pc.first_user_id=? OR pc.second_user_id=?)`
+		if err := db.c.QueryRow(query, conversationID, userID, userID, userID).Scan(&conversation.ID, &conversation.RecipientID, &conversation.RecipientName, &conversation.RecipientPictureURI); err != nil {
 			return structs.Conversation{}, err
 		}
+		conversation.Type = structs.PrivateConversationType
 	case structs.GroupConversationType:
 		query := `SELECT DISTINCT gc.id, gc.id, gc.name, COALESCE(gc.picture_uri, '')
 		FROM group_conversations AS gc
@@ -35,6 +36,7 @@ func (db *appdbimpl) GetConversation(userID int, conversationID int) (structs.Co
 		if err := db.c.QueryRow(query, userID, conversationID).Scan(&conversation.ID, &conversation.RecipientID, &conversation.RecipientName, &conversation.RecipientPictureURI); err != nil {
 			return structs.Conversation{}, err
 		}
+		conversation.Type = structs.GroupConversationType
 	}
 
 	messages, err := db.GetMessages(conversationID)

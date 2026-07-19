@@ -1,7 +1,6 @@
 package database
 
 import (
-	"sort"
 	"wasatext/service/structs"
 )
 
@@ -196,7 +195,7 @@ func (db *appdbimpl) GetMessage(conversationID int, messageID int) (structs.Mess
 func (db *appdbimpl) GetMessagePictureURI(conversationID int, messageID int) (string, error) {
 	var pictureURI string
 
-	query := "SELECT COALESCE(picture_uri, '' FROM messages WHERE id=? AND conversation_id=?"
+	query := "SELECT COALESCE(picture_uri, '') FROM messages WHERE id=? AND conversation_id=?"
 	err := db.c.QueryRow(query, messageID, conversationID).Scan(&pictureURI)
 	return pictureURI, err
 }
@@ -224,9 +223,6 @@ func (db *appdbimpl) GetMessages(conversationID int) ([]structs.Message, error) 
 		return nil, err
 	}
 
-	sort.Slice(messages, func(p, q int) bool {
-		return messages[p].SentDate > messages[q].SentDate
-	})
 	return messages, nil
 }
 

@@ -6,10 +6,10 @@ export default {
 			type: -1,
 			recipientID: -1,
 			recipientName: null,
-			recipientPictureURI: null,
+			recipientPictureURI: "",
 			messages: [],
 
-			localeRecipientPictureURI: null,
+			localRecipientPictureURL: null,
 
 			errorMessage: null,
 			loading: false,
@@ -102,10 +102,10 @@ export default {
 					break;
 			}
 
-			if (conversationPreview.localPictureURL) {
-				URL.revokeObjectURL(conversationPreview.localPictureURL);
+			if (localRecipientPictureURL) {
+				URL.revokeObjectURL(localRecipientPictureURL);
 			}
-			conversationPreview.localPictureURL = URL.createObjectURL(response.data);
+			localRecipientPictureURL = URL.createObjectURL(response.data);
 		},
 		async fetchMessageImage(message) {
 			if(!message.pictureURI) return;
@@ -131,6 +131,9 @@ export default {
 			finally {
 				this.loading = false;
 			}
+		},
+		redirectToGroupInfo() {
+			this.$router.push(`/groups/${this.id}`);
 		}
 	},
 	mounted() {
@@ -142,20 +145,33 @@ export default {
 				URL.revokeObjectURL(message.localPictureURL);
 			}
 		});
+		if(localRecipientPictureURL) {
+			URL.revokeObjectURL(localRecipientPictureURL);
+		}
   	}
 }
 </script>
 
 <template>
 	<div class="main-box">
-		<div class="recipient-row">
-			<div>
-				{{ recipientName }}
+		<div class="conversation-box">
+			<div class="recipient-box">
+				<div class="recipient-picture">
+					<img v-if="recipientPictureURI === '' && type === 0" src="@/assets/images/default-user-picture.jpg" alt="User picture">
+					<img v-else-if="recipientPictureURI === '' && type === 1" src="@/assets/images/default-group-picture.jpg" alt="Group picture">
+					<img v-else :src="localRecipientPictureURL" alt="Profile picture">
+				</div>
+				<div class="recipient-username">
+					<strong>{{ recipientName }}</strong>
+				</div>
+				<div v-if="type === 1" class="recipient-button">
+					<button type="button" @click="redirectToGroupInfo">Edit</button>
+				</div>
 			</div>
-		</div>
-		
-		<div>
-			<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
+			
+			<div>
+				<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
+			</div>
 		</div>
 	</div>
 </template>
@@ -174,53 +190,44 @@ export default {
 	color: var(--text-color-1);
 }
 
-.options-box {
-	display: flex;
-	gap: 10px;
+.conversation-box button:hover {
+    background-color: var(--color-3-a);
 }
 
-.options-box button {
-    width: 100px;
+.conversation-box button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.recipient-box {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	border: 1px solid var(--color-5);
+	background-color: var(--color-2-a);
+	border-radius: 5px;
+	padding: 10px;
+	margin: 0.5rem;
+}
+
+.recipient-button button {
+    width: 60px;
     padding: 10px;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
 	background-color: var(--color-3);
     color: white;
     font-size: 14px;
 	cursor: pointer;
 }
 
-.options-box button:hover {
-    background-color: var(--color-3-a);
-}
-
-.options-box button:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-  opacity: 0.8;
-}
-
-.conversation-row {
-	display: flex; 
-	align-items: center;
-	border: 1px solid var(--color-5);
-	background-color: var(--color-2-a);
-	border-radius: 5px;
-	padding: 0.5rem;
-	margin: 0.5rem;
-}
-
-.conversation-row:hover {
-    background-color: var(--color-5);
-    cursor: pointer;
-}
-
-.conversation-picture {
+.recipient-picture {
 	display: flex;
 	align-items: center;
 }
 
-.conversation-picture img {
+.recipient-picture img {
 	width: 50px;
 	height: 50px;
 	border-radius: 50%;
@@ -228,14 +235,14 @@ export default {
 	object-fit: cover;
 }
 
-.conversation-text {
+.recipient-username {
 	display: flex;
 	flex-direction: column;
 	margin-left: 1rem;
 	align-self: flex-start;
 }
 
-.conversation-date {
+.recipient-button {
 	margin-left: auto;
 }
 
