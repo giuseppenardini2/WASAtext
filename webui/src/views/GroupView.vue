@@ -240,7 +240,7 @@ export default {
 	</div>
 </template>
 
-<style>
+<style scoped>
 .main-box {
 	width: 100%;
   	height: 100%;
