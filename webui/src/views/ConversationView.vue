@@ -102,10 +102,10 @@ export default {
 					break;
 			}
 
-			if (localRecipientPictureURL) {
-				URL.revokeObjectURL(localRecipientPictureURL);
+			if (this.localRecipientPictureURL) {
+				URL.revokeObjectURL(this.localRecipientPictureURL);
 			}
-			localRecipientPictureURL = URL.createObjectURL(response.data);
+			this.localRecipientPictureURL = URL.createObjectURL(response.data);
 		},
 		async fetchMessageImage(message) {
 			if(!message.pictureURI) return;
@@ -145,8 +145,8 @@ export default {
 				URL.revokeObjectURL(message.localPictureURL);
 			}
 		});
-		if(localRecipientPictureURL) {
-			URL.revokeObjectURL(localRecipientPictureURL);
+		if(this.localRecipientPictureURL) {
+			URL.revokeObjectURL(this.localRecipientPictureURL);
 		}
   	}
 }
@@ -168,6 +168,10 @@ export default {
 					<button type="button" @click="redirectToGroupInfo">Edit</button>
 				</div>
 			</div>
+
+			<div>
+
+			</div>
 			
 			<div>
 				<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
@@ -177,6 +181,7 @@ export default {
 </template>
 
 <style>
+/* MAIN */
 .main-box {
 	width: 100%;
   	height: 100%;
@@ -190,6 +195,7 @@ export default {
 	color: var(--text-color-1);
 }
 
+/* CONVERSATION */
 .conversation-box button:hover {
     background-color: var(--color-3-a);
 }
@@ -200,6 +206,7 @@ export default {
   opacity: 0.8;
 }
 
+/* RECIPIENT */
 .recipient-box {
 	display: flex;
 	flex-direction: row;
@@ -245,5 +252,10 @@ export default {
 .recipient-button {
 	margin-left: auto;
 }
+
+/* MESSAGE LIST */
+
+/* MESSAGE WRITING */
+
 
 </style>
