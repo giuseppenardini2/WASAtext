@@ -1,5 +1,39 @@
 package database
 
+import (
+	"wasatext/service/structs"
+)
+
+/*
+ * GET OPERATIONS
+ */
+
+func (db *appdbimpl) GetPrivateConversationMembers(privateConversationID int) ([]structs.User, error) {
+	var users []structs.User
+
+	query := `SELECT DISTINCT u.id, u.username, COALESCE(u.picture_uri, '')
+	FROM private_conversations AS pc
+	INNER JOIN users AS u ON pc.first_user_id=u.id OR pc.second_user_id=u.id
+	WHERE pc.id=?`
+	rows, err := db.c.Query(query, privateConversationID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var user structs.User
+		if err := rows.Scan(&user.ID, &user.Username, &user.PictureURI); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
 /*
  * ADD OPERATIONS
  */

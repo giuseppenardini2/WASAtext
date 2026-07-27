@@ -28,6 +28,11 @@ func (db *appdbimpl) GetConversation(userID int, conversationID int) (structs.Co
 			return structs.Conversation{}, err
 		}
 		conversation.Type = structs.PrivateConversationType
+		partecipants, err := db.GetPrivateConversationMembers(conversationID)
+		if err != nil {
+			return structs.Conversation{}, err
+		}
+		conversation.Participants = partecipants
 	case structs.GroupConversationType:
 		query := `SELECT DISTINCT gc.id, gc.id, gc.name, COALESCE(gc.picture_uri, '')
 		FROM group_conversations AS gc
@@ -37,10 +42,18 @@ func (db *appdbimpl) GetConversation(userID int, conversationID int) (structs.Co
 			return structs.Conversation{}, err
 		}
 		conversation.Type = structs.GroupConversationType
+		partecipants, err := db.GetGroupConversartionMembers(conversationID)
+		if err != nil {
+			return structs.Conversation{}, err
+		}
+		conversation.Participants = partecipants
 	}
 
 	messages, err := db.GetMessages(conversationID)
 	if err != nil {
+		return structs.Conversation{}, err
+	}
+	if err := db.AddReadCheckmarks(userID, conversationID, messages); err != nil {
 		return structs.Conversation{}, err
 	}
 	conversation.Messages = messages
@@ -71,7 +84,7 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 			return nil, err
 		}
 		conversationPreview.LastMessageID = -1
-		if err := db.c.QueryRow(query2, conversationPreview.ID).Scan(&conversationPreview.LastMessageID, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePictureURI, &conversationPreview.LastMessageSentDate); !errors.Is(err, sql.ErrNoRows) {
+		if err := db.c.QueryRow(query2, conversationPreview.ID).Scan(&conversationPreview.LastMessageID, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePictureURI, &conversationPreview.LastMessageSentDate); err != nil && !errors.Is(err, sql.ErrNoRows) {
 			return nil, err
 		}
 		conversations = append(conversations, conversationPreview)
@@ -96,7 +109,7 @@ func (db *appdbimpl) GetConversations(userID int) ([]structs.ConversationPreview
 			return nil, err
 		}
 		conversationPreview.LastMessageID = -1
-		if err := db.c.QueryRow(query2, conversationPreview.ID).Scan(&conversationPreview.LastMessageID, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePictureURI, &conversationPreview.LastMessageSentDate); !errors.Is(err, sql.ErrNoRows) {
+		if err := db.c.QueryRow(query2, conversationPreview.ID).Scan(&conversationPreview.LastMessageID, &conversationPreview.LastMessageBody, &conversationPreview.LastMessagePictureURI, &conversationPreview.LastMessageSentDate); err != nil && !errors.Is(err, sql.ErrNoRows) {
 			return nil, err
 		}
 		conversations = append(conversations, conversationPreview)

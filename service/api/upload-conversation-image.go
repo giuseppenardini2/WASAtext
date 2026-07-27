@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"math/rand"
 	"net/http"
 	"os"
@@ -18,6 +19,7 @@ func (rt *_router) uploadConversationImage(w http.ResponseWriter, r *http.Reques
 	userID, err := strconv.Atoi(ps.ByName("userid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("ERRORE 30: %v\n", err.Error())
 		return
 	}
 
@@ -25,38 +27,44 @@ func (rt *_router) uploadConversationImage(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	recipientID, err := strconv.Atoi(r.URL.Query().Get("recipientid"))
+	conversationID, err := strconv.Atoi(ps.ByName("conversationid"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("ERRORE 31: %v\n", err.Error())
 		return
 	}
 
-	if err := rt.db.CheckUserConversation(userID, recipientID); err != nil {
+	if err := rt.db.CheckUserConversation(userID, conversationID); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("ERRORE 32: %v\n", err.Error())
 		return
 	}
 
 	// Get request body
-	uploadDirectory := "./uploads/conversations/conversation" + strconv.Itoa(userID) + "/" // Set up the upload directory
+	uploadDirectory := "./uploads/conversations/conversation" + strconv.Itoa(conversationID) + "/" // Set up the upload directory
 	if err := os.MkdirAll(uploadDirectory, os.ModePerm); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("ERRORE 33: %v\n", err.Error())
 		return
 	}
 
 	err = r.ParseMultipartForm(32 << 20) // Allocate to 32 MB of memory for the image
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("ERRORE 34: %v\n", err.Error())
 		return
 	}
 
 	file, fileHandler, err := r.FormFile("image") // Get the image
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("ERRORE 35: %v\n", err.Error())
 		return
 	}
 	defer func() {
 		if err := file.Close(); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
+			log.Printf("ERRORE 36: %v\n", err.Error())
 			return
 		}
 	}()
@@ -68,16 +76,19 @@ func (rt *_router) uploadConversationImage(w http.ResponseWriter, r *http.Reques
 	fileDestination, err := os.Create(filePath)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("ERRORE 37: %v\n", err.Error())
 		return
 	}
 	defer func() {
 		if err := fileDestination.Close(); err != nil {
+			log.Printf("ERRORE 38: %v\n", err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	}()
 
 	if _, err = io.Copy(fileDestination, file); err != nil { // Copy the image file into the disk
+		log.Printf("ERRORE 39: %v\n", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -94,6 +105,7 @@ func (rt *_router) uploadConversationImage(w http.ResponseWriter, r *http.Reques
 	w.Header().Set("content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(imagePart); err != nil {
+		log.Printf("ERRORE 39.1: %v\n", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

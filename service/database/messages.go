@@ -20,14 +20,14 @@ func (db *appdbimpl) AddMessage(body string, pictureURI string, senderID int, co
 	}()
 
 	var messageID int64
-	query1 := "SELECT MAX(id) FROM messages WHERE conversation_id=?"
+	query1 := "SELECT COALESCE((SELECT MAX(id) FROM messages WHERE conversation_id=?), 0)"
 	if err := tx.QueryRow(query1, conversationID).Scan(&messageID); err != nil {
 		return structs.Message{}, err
 	}
 	messageID += 1
 
 	sentDate := structs.SentDateNow()
-	query2 := "INSERT INTO messages (id, conversation_id, body, sent_date sender_id) VALUES (?, ?, ?, ?, ?)"
+	query2 := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id) VALUES (?, ?, ?, ?, ?)"
 	if _, err := tx.Exec(query2, messageID, conversationID, body, sentDate, senderID); err != nil {
 		return structs.Message{}, err
 	}
@@ -45,14 +45,17 @@ func (db *appdbimpl) AddMessage(body string, pictureURI string, senderID int, co
 	}
 
 	return structs.Message{
-		ID:                 int(messageID),
-		ConversationID:     conversationID,
-		Body:               body,
-		SentDate:           sentDate,
-		PictureURI:         pictureURI,
-		SenderID:           senderID,
-		ReplyMessageID:     -1,
-		ForwardedMessageID: -1,
+		ID:                             int(messageID),
+		ConversationID:                 conversationID,
+		Body:                           body,
+		SentDate:                       sentDate,
+		PictureURI:                     pictureURI,
+		Status:                         structs.SentMessageStatus,
+		SenderID:                       senderID,
+		ReplyMessageID:                 -1,
+		ReplyMessageConversationID:     -1,
+		ForwardedMessageID:             -1,
+		ForwardedMessageConversationID: -1,
 	}, nil
 }
 
@@ -68,15 +71,15 @@ func (db *appdbimpl) AddReplyMessage(body string, pictureURI string, senderID in
 	}()
 
 	var messageID int64
-	query1 := "SELECT MAX(id) FROM messages WHERE conversation_id=?"
+	query1 := "SELECT COALESCE((SELECT MAX(id) FROM messages WHERE conversation_id=?), 0)"
 	if err := tx.QueryRow(query1, conversationID).Scan(&messageID); err != nil {
 		return structs.Message{}, err
 	}
 	messageID += 1
 
 	sentDate := structs.SentDateNow()
-	query2 := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id, reply_message_id) VALUES (?, ?, ?, ?, ?, ?)"
-	if _, err := tx.Exec(query2, messageID, conversationID, body, sentDate, senderID, replyMessageID); err != nil {
+	query2 := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id, reply_message_id, reply_message_conversation_id) VALUES (?, ?, ?, ?, ?, ?, ?)"
+	if _, err := tx.Exec(query2, messageID, conversationID, body, sentDate, senderID, replyMessageID, conversationID); err != nil {
 		return structs.Message{}, err
 	}
 
@@ -92,14 +95,17 @@ func (db *appdbimpl) AddReplyMessage(body string, pictureURI string, senderID in
 	}
 
 	return structs.Message{
-		ID:                 int(messageID),
-		ConversationID:     conversationID,
-		Body:               body,
-		SentDate:           sentDate,
-		PictureURI:         pictureURI,
-		SenderID:           senderID,
-		ReplyMessageID:     replyMessageID,
-		ForwardedMessageID: -1,
+		ID:                             int(messageID),
+		ConversationID:                 conversationID,
+		Body:                           body,
+		SentDate:                       sentDate,
+		PictureURI:                     pictureURI,
+		Status:                         structs.SentMessageStatus,
+		SenderID:                       senderID,
+		ReplyMessageID:                 replyMessageID,
+		ReplyMessageConversationID:     conversationID,
+		ForwardedMessageID:             -1,
+		ForwardedMessageConversationID: -1,
 	}, nil
 }
 
@@ -123,7 +129,7 @@ func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversa
 
 	// Create a new message with the same body and picture of the message to forward to
 	var messageID int64
-	query2 := "SELECT MAX(id) FROM messages WHERE conversation_id=?"
+	query2 := "SELECT COALESCE((SELECT MAX(id) FROM messages WHERE conversation_id=?), 0)"
 	if err := tx.QueryRow(query2, conversationID).Scan(&messageID); err != nil {
 		return structs.Message{}, err
 	}
@@ -148,14 +154,17 @@ func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversa
 	}
 
 	return structs.Message{
-		ID:                 int(messageID),
-		ConversationID:     conversationID,
-		Body:               body,
-		SentDate:           sentDate,
-		PictureURI:         pictureURI,
-		SenderID:           senderID,
-		ReplyMessageID:     -1,
-		ForwardedMessageID: originalMessageID,
+		ID:                             int(messageID),
+		ConversationID:                 conversationID,
+		Body:                           body,
+		SentDate:                       sentDate,
+		PictureURI:                     pictureURI,
+		Status:                         structs.SentMessageStatus,
+		SenderID:                       senderID,
+		ReplyMessageID:                 -1,
+		ReplyMessageConversationID:     -1,
+		ForwardedMessageID:             originalMessageID,
+		ForwardedMessageConversationID: originalConversationID,
 	}, nil
 }
 
@@ -185,10 +194,10 @@ func (db *appdbimpl) GetNewMessageID(conversationID int) (int64, error) {
 func (db *appdbimpl) GetMessage(conversationID int, messageID int) (structs.Message, error) {
 	var message structs.Message
 
-	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture_uri, ''), sender_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
+	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture_uri, ''), sender_id, COALESCE(reply_message_id, -1), COALESCE(reply_message_conversation_id, -1), COALESCE(forwarded_message_id, -1), COALESCE(forwarded_message_conversation_id, -1)
 		FROM messages
 		WHERE id=? AND conversation_id=?`
-	err := db.c.QueryRow(query, messageID, conversationID).Scan(&message.ID, &message.SentDate, &message.PictureURI, &message.SenderID, &message.ConversationID, &message.ReplyMessageID, &message.ForwardedMessageID)
+	err := db.c.QueryRow(query, messageID, conversationID).Scan(&message.ID, &message.SentDate, &message.PictureURI, &message.SenderID, &message.ConversationID, &message.ReplyMessageID, &message.ReplyMessageConversationID, &message.ForwardedMessageID, &message.ForwardedMessageConversationID)
 	return message, err
 }
 
@@ -201,10 +210,10 @@ func (db *appdbimpl) GetMessagePictureURI(conversationID int, messageID int) (st
 }
 
 func (db *appdbimpl) GetMessages(conversationID int) ([]structs.Message, error) {
-	query := `SELECT id, body, sent_date, COALESCE(picture_uri, ''), sender_id, conversation_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
+	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture_uri, ''), sender_id, COALESCE(reply_message_id, -1), COALESCE(reply_message_conversation_id, -1), COALESCE(forwarded_message_id, -1), COALESCE(forwarded_message_conversation_id, -1)
 		FROM messages
 		WHERE conversation_id=?
-		ORDER BY sent_date DESC`
+		ORDER BY sent_date ASC`
 	rows, err := db.c.Query(query, conversationID)
 	if err != nil {
 		return nil, err
@@ -214,9 +223,10 @@ func (db *appdbimpl) GetMessages(conversationID int) ([]structs.Message, error) 
 	var messages []structs.Message
 	for rows.Next() {
 		var message structs.Message
-		if err := rows.Scan(&message.ID, &message.ConversationID, &message.Body, &message.SentDate, &message.PictureURI, &message.SenderID, &message.ReplyMessageID, &message.ForwardedMessageID); err != nil {
+		if err := rows.Scan(&message.ID, &message.ConversationID, &message.Body, &message.SentDate, &message.PictureURI, &message.SenderID, &message.ReplyMessageID, &message.ReplyMessageConversationID, &message.ForwardedMessageID, &message.ForwardedMessageConversationID); err != nil {
 			return nil, err
 		}
+		message.Status = structs.SentMessageStatus
 		messages = append(messages, message)
 	}
 	if err := rows.Err(); err != nil {
@@ -229,11 +239,11 @@ func (db *appdbimpl) GetMessages(conversationID int) ([]structs.Message, error) 
 func (db *appdbimpl) GetLastMessage(conversationID int) (structs.Message, error) {
 	var message structs.Message
 
-	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture_uri, ''), sender_id, COALESCE(reply_message_id, -1), COALESCE(forwarded_message_id, -1)
+	query := `SELECT id, conversation_id, body, sent_date, COALESCE(picture_uri, ''), sender_id, COALESCE(reply_message_id, -1), COALESCE(reply_message_conversation_id, -1), COALESCE(forwarded_message_id, -1), COALESCE(forwarded_message_conversation_id, -1)
 		FROM messages
 		WHERE conversation_id=?
 		ORDER BY sent_date DESC LIMIT 1`
-	err := db.c.QueryRow(query, conversationID).Scan(&message.ID, &message.ConversationID, &message.SentDate, &message.PictureURI, &message.SenderID, &message.ReplyMessageID, &message.ForwardedMessageID)
+	err := db.c.QueryRow(query, conversationID).Scan(&message.ID, &message.ConversationID, &message.Body, &message.SentDate, &message.PictureURI, &message.SenderID, &message.ReplyMessageID, &message.ReplyMessageConversationID, &message.ForwardedMessageID, &message.ForwardedMessageConversationID)
 	return message, err
 }
 

@@ -53,6 +53,7 @@ type AppDatabase interface {
 	GetConversationType(conversationID int) (structs.ConversationType, error)
 	CheckUserConversation(userID int, conversationID int) error
 
+	GetPrivateConversationMembers(privateConversationID int) ([]structs.User, error)
 	AddPrivateConversation(firstUserID int, secondUserID int) (int64, error)
 	CheckUserPrivateConversation(firstUserID int, secondUserID int) error
 
@@ -81,6 +82,7 @@ type AppDatabase interface {
 	CheckMessageConversation(messageID int, conversationID int) error
 
 	AddReadCheckmark(userID int, messageID int, conversationID int) error
+	AddReadCheckmarks(userID int, conversationID int, messages []structs.Message) error
 	CheckReadMessage(messageID int, conversationID int) error
 
 	AddReaction(userID int, conversationID int, messageID int, emoji string) (structs.Reaction, error)

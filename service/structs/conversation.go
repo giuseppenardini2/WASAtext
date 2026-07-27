@@ -11,8 +11,8 @@ const (
 	GroupConversationType
 )
 
-func (recipient_type ConversationType) String() string {
-	return [...]string{"PrivateConversationType", "GroupConversationType"}[recipient_type]
+func (recipientType ConversationType) String() string {
+	return [...]string{"PrivateConversationType", "GroupConversationType"}[recipientType]
 }
 
 type ConversationPreview struct {
@@ -33,6 +33,7 @@ type Conversation struct {
 	RecipientID         int              `json:"recipientID"`         // Recipient ID
 	RecipientName       string           `json:"recipientName"`       // Recipient name (Group name or user username)
 	RecipientPictureURI string           `json:"recipientPictureURI"` // Recipient picture URI
+	Participants        []User           `json:"participants"`        // Participants
 	Messages            []Message        `json:"messages"`            // Conversation messages
 }
 

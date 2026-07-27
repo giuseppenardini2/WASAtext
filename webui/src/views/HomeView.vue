@@ -19,7 +19,8 @@ export default {
 				
 				this.conversationPreviews = response.data?.map(conversationPreview => ({
 					...conversationPreview,
-					localPictureURL: null
+					localPictureURL: null,
+					lastMessageSentDate: this.formatMessageDate(conversationPreview.lastMessageSentDate)
 				})) || [];
 
 				this.conversationPreviews.forEach(conversationPreview => {
@@ -89,6 +90,18 @@ export default {
 			}
 			conversationPreview.localPictureURL = URL.createObjectURL(response.data);
 		},
+		formatMessageDate(dateString) {
+			if(!dateString) return "";
+
+			const date = new Date(dateString);
+
+			return new Intl.DateTimeFormat('en-US', {
+				day: "numeric",
+				month: "short",
+				hour: "2-digit",
+				minute: "2-digit"
+			}).format(date);
+		},
 		redirectToNewChatView() {
 			this.$router.push("/users");
 		},
@@ -137,7 +150,7 @@ export default {
 						<p v-else-if="conversationPreview.lastMessageID != -1 && conversationPreview.lastMessagePictureURI">📷 Photo</p>
 					</div>
 					<div v-if="conversationPreview.lastMessageID != -1" class="conversation-date">
-						<strong>{{ conversationPreview.lastMessageDate }} </strong>
+						<i>{{ conversationPreview.lastMessageSentDate }}</i>
 					</div>
 				</div>
 			</div>
@@ -227,6 +240,7 @@ export default {
 }
 
 .conversation-date {
+	font-size: 12px;
 	margin-left: auto;
 }
 
