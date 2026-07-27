@@ -446,6 +446,27 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+    get:
+      operationId: getReactions
+      tags: ["messages"]
+      summary: Get the group profile picture
+      description: |-
+        Return the group profile picture
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of reactions
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReactionCollection" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /users/{userid}/conversations/{conversationid}/messages/{messageid}/reactions/{reactionid}:
     parameters:
         - $ref: "#/components/parameters/userID"
@@ -797,7 +818,7 @@ components:
         - date
 
     ConversationPreviewCollection:
-      title: Conversation previews
+      title: Conversation previews collection
       description: This object represents a list of conversation previews object
       type: object
       properties:
@@ -844,6 +865,21 @@ components:
       required:
         - id
         - emoji
+
+    ReactionCollection:
+      title: Reaction collection
+      description: This object represents a list of reaction object
+      type: object
+      properties:
+        reactions:
+          description: Reactions of a message
+          type: array
+          items: { $ref: "#/components/schemas/Reaction" }
+          uniqueItems: true
+          minItems: 0
+          maxItems: 50
+      required:
+        - reactions
 
     GroupName:
       title: Group name
