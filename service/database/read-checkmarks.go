@@ -2,7 +2,6 @@ package database
 
 import (
 	"errors"
-	"log"
 	"wasatext/service/structs"
 )
 
@@ -94,7 +93,6 @@ func (db *appdbimpl) CheckReadMessage(messageID int, conversationID int) error {
 		if err := db.c.QueryRow(query3, messageID, conversationID).Scan(&groupMembersNumber); err != nil {
 			return err
 		}
-		log.Printf("LETTORI: %v %v\n", usersReadMessageNumber, groupMembersNumber)
 		if usersReadMessageNumber != groupMembersNumber-1 {
 			return ErrNonexistentResource
 		}

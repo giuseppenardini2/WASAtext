@@ -28,10 +28,14 @@ export default {
 		},
     selectConversation(selectedConversation) {
       this.$emit('conversation-selected', selectedConversation);
+      this.closeModal();
     },
     closeModal() {
       this.$emit('close-modal');
     }
+  },
+  mounted() {
+    this.listChats();
   }
 }
 </script>

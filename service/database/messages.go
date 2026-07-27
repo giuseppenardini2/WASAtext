@@ -136,8 +136,8 @@ func (db *appdbimpl) AddForwardedMessage(originalMessageID int, originalConversa
 	messageID += 1
 
 	sentDate := structs.SentDateNow()
-	query3 := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id, forwarded_message_id) VALUES (?, ?, ?, ?, ?, ?)"
-	if _, err := tx.Exec(query3, messageID, conversationID, body, sentDate, senderID, originalMessageID); err != nil {
+	query3 := "INSERT INTO messages (id, conversation_id, body, sent_date, sender_id, forwarded_message_id, forwarded_message_conversation_id) VALUES (?, ?, ?, ?, ?, ?, ?)"
+	if _, err := tx.Exec(query3, messageID, conversationID, body, sentDate, senderID, originalMessageID, originalConversationID); err != nil {
 		return structs.Message{}, err
 	}
 

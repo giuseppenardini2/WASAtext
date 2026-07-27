@@ -218,8 +218,6 @@ export default {
 				this.fetchReplyMessagePreview(message);
 				this.messages.push(message);
 
-				console.log(message.replyMessageID);
-
 				this.newMessageText = "";
 				this.newMessagePictureURI = "";
 				this.selectedFile = null;
@@ -281,7 +279,25 @@ export default {
 			}
 		},
 		async forwardMessage(conversationPreview, message) {
-			// TODO: Inserire il forward
+			this.loading = true;
+			this.errorMessage = "";
+			try {
+				await this.$axios.post(`/users/${sessionStorage.getItem("userID")}/conversations/${this.id}/messages/${message.id}`, {},
+				{	
+					params: {
+						recipientid: conversationPreview.id
+					},
+					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
+				});
+
+				this.$router.push(`/conversations/${conversationPreview.id}`);
+			}
+			catch(error) {
+				this.errorMessage = error.toString();
+			}
+			finally {
+				this.loading = false;
+			}
 		},
 		formatMessageDate(dateString) {
 			if(!dateString) return "";
