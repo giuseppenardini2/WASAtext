@@ -39,6 +39,7 @@ export default {
         <div v-if="isOpen" class="dropdown-content">
             <div class="dropdown-item" @click.stop="selectOption('reply')">Reply</div>
             <div class="dropdown-item" @click.stop="selectOption('forward')">Forward</div>
+            <div class="dropdown-item" @click.stop="selectOption('react')">React</div>
             <div v-if="isMine" class="dropdown-item delete" @click.stop="selectOption('delete')">Delete</div>
         </div>
     </div>

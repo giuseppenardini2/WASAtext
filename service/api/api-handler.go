@@ -23,6 +23,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.GET("/users/:userid/conversations/:conversationid/messages/:messageid/image", rt.getMessagePhoto)
 
 	rt.router.POST("/users/:userid/conversations/:conversationid/messages/:messageid/reactions", rt.commentMessage)
+	rt.router.GET("/users/:userid/conversations/:conversationid/messages/:messageid/reactions", rt.getReactions)
 	rt.router.DELETE("/users/:userid/conversations/:conversationid/messages/:messageid/reactions/:reactionid", rt.uncommentMessage)
 
 	rt.router.POST("/users/:userid/groups", rt.createGroup)

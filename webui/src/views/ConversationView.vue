@@ -18,7 +18,8 @@ export default {
 
 			selectedReplyMessage: null,
 
-			isConversationModalOpen: false,
+			activeConversationMessageID: null,
+			activeReactionMessageID: null,
 
 			errorMessage: null,
 			loading: false,
@@ -267,8 +268,7 @@ export default {
 
 				const messageIndex = this.messages.indexOf(message);
 				if(messageIndex != -1) {
-					const x=this.messages.slice(messageIndex, 1);
-					console.log(x);
+					this.messages.splice(messageIndex, 1);
 				}
 			}
 			catch(error) {
@@ -345,11 +345,17 @@ export default {
 				replyMessagePreview = replyMessagePreview.substring(0, 9) + "...";
 			message.replyMessagePreview = replyMessagePreview;
 		},
-		openConversationModal() {
-			this.isConversationModalOpen = true;
+		openConversationModal(message) {
+			this.activeConversationMessageID = message.id;
 		},
 		closeConversationModal() {
-			this.isConversationModalOpen = false;
+			this.activeConversationMessageID = null;
+		},
+		openReactionModal(message) {
+			this.activeReactionMessageID = message.id;
+		},
+		closeReactionModal() {
+			this.activeReactionMessageID = null;
 		}
 	},
 	mounted() {
@@ -397,8 +403,9 @@ export default {
                             v-if="isMessageMine(message)" 
 							:isMine="true"
                             @delete="deleteMessage(message)" 
-                            @reply="handleMessageSelection(message)" 
-                            @forward="openConversationModal"
+                            @reply="handleMessageSelection(message)"
+							@react="openReactionModal(message)" 
+                            @forward="openConversationModal(message)"
                         />
 						<div class="message-bubble">
 							<div v-if="type === 1" class="message-recipient-name">
@@ -421,16 +428,24 @@ export default {
 								<label v-if="isMessageMine(message) && message.status === 2" class="message-read-checkmark">✔️✔️</label>
 							</div>
 							<ConversationModal 
-								v-if="isConversationModalOpen"
+								v-if="activeConversationMessageID === message.id"
 								@close-modal="closeConversationModal"
 								@conversation-selected="forwardMessage($event, message)"
+							/>
+							<ReactionModal 
+								v-if="activeReactionMessageID === message.id"
+								:conversationID="id"
+								:conversationParticipants="participants"
+								:message="message"
+								@close-modal="closeReactionModal"
 							/>
 						</div>
 						<MessageMenu 
                             v-if="!isMessageMine(message)"
 							:isMine="false"
                             @reply="handleMessageSelection(message)" 
-                            @forward="openConversationModal" 
+                            @forward="openConversationModal(message)" 
+							@react="openReactionModal(message)"
                         />
 					</div>
 				</div>

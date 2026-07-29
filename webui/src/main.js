@@ -6,6 +6,7 @@ import ErrorMessage from './components/ErrorMessage.vue'
 import UserSearchBar from './components/UserSearchBar.vue'
 import MessageMenu from './components/MessageMenu.vue'
 import ConversationModal from './components/ConversationModal.vue'
+import ReactionModal from './components/ReactionModal.vue'
 
 import './assets/css/main.css'
 
@@ -15,5 +16,6 @@ app.component("ErrorMessage", ErrorMessage);
 app.component("UserSearchBar", UserSearchBar);
 app.component("MessageMenu", MessageMenu);
 app.component("ConversationModal", ConversationModal);
+app.component("ReactionModal", ReactionModal);
 app.use(router)
 app.mount('#app')

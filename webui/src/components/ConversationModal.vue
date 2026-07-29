@@ -54,8 +54,11 @@ export default {
           {{ conversation.recipientName }}
         </li>
       </ul>
-
+      
       <button class="close-button" @click="closeModal">Abort</button>
+      <div>
+				<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
+			</div>
     </div>
   </div>
 </template>

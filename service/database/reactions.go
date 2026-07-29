@@ -18,14 +18,14 @@ func (db *appdbimpl) AddReaction(userID int, conversationID int, messageID int, 
 	}()
 
 	var reactionID int64
-	query1 := "SELECT MAX(id) FROM reactions WHERE conversation_id=? AND message_id=?"
-	if err := tx.QueryRow(query1, conversationID).Scan(&reactionID); err != nil {
+	query1 := "SELECT COALESCE((SELECT MAX(id) FROM reactions WHERE conversation_id=? AND message_id=?), 0)"
+	if err := tx.QueryRow(query1, conversationID, messageID).Scan(&reactionID); err != nil {
 		return structs.Reaction{}, err
 	}
 	reactionID += 1
 
-	query2 := "INSERT INTO reactions (id, conversation_id, message_id, user_id, emoji) VALUES (?, ?, ?, ?)"
-	if _, err = db.c.Exec(query2, reactionID, conversationID, messageID, userID, emoji); err != nil {
+	query2 := "INSERT INTO reactions (id, conversation_id, message_id, user_id, emoji) VALUES (?, ?, ?, ?, ?)"
+	if _, err = tx.Exec(query2, reactionID, conversationID, messageID, userID, emoji); err != nil {
 		return structs.Reaction{}, err
 	}
 
