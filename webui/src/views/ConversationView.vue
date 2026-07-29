@@ -360,6 +360,7 @@ export default {
 	},
 	mounted() {
 		this.fecthConversation();
+		setInterval(this.fecthConversation, 30000);
 	},
 	beforeUnmount() {
 		this.messages.forEach(message => {
