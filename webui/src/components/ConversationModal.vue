@@ -8,7 +8,7 @@ export default {
     }
   },
   methods: {
-    async listChats() {
+    async listConversations() {
 			this.loading = true;
 			this.errorMessage = "";
 			try {
@@ -35,7 +35,7 @@ export default {
     }
   },
   mounted() {
-    this.listChats();
+    this.listConversations();
   }
 }
 </script>
@@ -54,7 +54,7 @@ export default {
           {{ conversation.recipientName }}
         </li>
       </ul>
-      
+
       <button class="close-button" @click="closeModal">Abort</button>
       <div>
 				<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>

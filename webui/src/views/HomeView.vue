@@ -8,7 +8,7 @@ export default {
 		}
 	},
 	methods: {
-		async listChats() {
+		async listConversations() {
 			this.loading = true;
 			this.errorMessage = "";
 			try {
@@ -113,7 +113,8 @@ export default {
 		}
 	},
 	mounted() {
-		this.listChats();
+		this.listConversations();
+		setInterval(this.listConversations, 30000); // Auto update home view every 30 seconds
 	},
 	beforeUnmount() {
 		this.conversationPreviews.forEach(conversationPreview => {
