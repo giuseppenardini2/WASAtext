@@ -84,7 +84,7 @@ export default {
 			this.loading = true;
 			this.errorMessage = "";
 			try {
-				if (this.username.length < 3 || this.username.length > 16) throw "Invalid username"
+				if (this.username.length < 3 || this.username.length > 16) throw "Invalid username :("
 
 				const response = await this.$axios.put(`/users/${sessionStorage.getItem("userID")}/username`, {
 					username: this.username
@@ -95,11 +95,19 @@ export default {
 				sessionStorage.setItem("username", this.username);
 			}
 			catch(error) {
-				this.errorMessage = error.toString();
+				if(error.response && error.response.status === 400) {
+					this.errorMessage = "Username already used :(";
+				}
+				else {
+					this.errorMessage = error.toString();
+				}
 			}
 			finally {
 				this.loading = false;
 			}
+		},
+		isNewUsernameDifferent(username) {
+			return username != sessionStorage.getItem("username");
 		}
 	},
 	mounted() {
@@ -130,7 +138,7 @@ export default {
 			<form @submit.prevent="changeUsername">
 				<div class="user-username-bar">
 					<input type="text" v-model="username" placeholder="Enter username">
-					<button type="submit" :disabled="loading">Change</button>
+					<button type="submit" :disabled="!isNewUsernameDifferent(username) || loading">Change</button>
 				</div>
 			</form>
 		</div>
