@@ -50,6 +50,9 @@ export default {
 			finally {
 				this.loading = false;
 			}
+		},
+		isCurrentUser(user) {
+			return user.id == sessionStorage.getItem("userID");
 		}
 	},
 	mounted() {
@@ -73,7 +76,7 @@ export default {
 							:key="user.id" 
 						class="group-user-item"
 					>
-						<label>
+						<label v-if="!isCurrentUser(user)">
 							<input type="checkbox" :value="user" v-model="usersToAdd">
 							{{ user.username }}
 						</label>

@@ -45,6 +45,9 @@ export default {
 			finally {
 				this.loading = false;
 			}
+		},
+		isCurrentUser(user) {
+			return user.id == sessionStorage.getItem("userID");
 		}
 	},
 	mounted() {
@@ -69,7 +72,7 @@ export default {
         				class="user-item"
      				>
         				<strong>{{ user.username }}</strong>
-						<button type="button" @click="startNewConversation(user.id)" :disabled="loading">New chat</button>
+						<button type="button" @click="startNewConversation(user.id)" :disabled="isCurrentUser(user) || loading">New chat</button>
 					</div>
     			</div>
 				<div v-else>
