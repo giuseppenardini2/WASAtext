@@ -180,17 +180,17 @@ export default {
     border: none;
     border-radius: 8px;
 	background-color: var(--color-3);
-    color: white;
+    color: var(--text-color-4);
     font-size: 16px;
 	cursor: pointer;
 }
 
-.profile-box button:hover {
+.profile-box button:not(:disabled):hover {
     background-color: var(--color-3-a);
 }
 
 .profile-box button:disabled {
-  background-color: #6c757d;
+  background-color: var(--color-7);
   cursor: not-allowed;
   opacity: 0.8;
 }
@@ -227,17 +227,5 @@ export default {
 	object-fit: cover;
 	border-radius: 50%;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.image-selector {
-	display: flex;
-	flex-direction: row;
-	gap: 5px;
-	margin-bottom: 10px;
-	align-items: center;
-}
-
-.image-selector input {
-	color: red;
 }
 </style>

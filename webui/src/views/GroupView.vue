@@ -255,7 +255,7 @@ export default {
 }
 
 .main-box button:disabled {
-  background-color: #6c757d;
+  background-color: var(--color-7);
   cursor: not-allowed;
   opacity: 0.8;
 }
@@ -278,12 +278,12 @@ export default {
     border: none;
     border-radius: 8px;
 	background-color: var(--color-3);
-    color: white;
+    color: var(--text-color-4);
     font-size: 16px;
 	cursor: pointer;
 }
 
-.profile-box button:hover {
+.profile-box button:not(:disabled):hover {
     background-color: var(--color-3-a);
 }
 
@@ -353,6 +353,10 @@ export default {
 	cursor: pointer;
 }
 
+.add-participants-row button:not(:disabled):hover {
+	background-color: var(--color-3-a);
+}
+
 .selected-user-item {
 	align-self: center;
 }
@@ -370,9 +374,13 @@ export default {
 	padding: 10px;
     border: none;
     border-radius: 8px;
-	background-color: red;
-    color: white;
+	background-color: var(--color-6-a);
+    color: var(--text-color-4);
     font-size: 16px;
 	cursor: pointer;
+}
+
+.leave-group-box button:not(:disabled):hover {
+	background-color: var(--color-6-b);
 }
 </style>

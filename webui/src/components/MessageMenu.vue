@@ -34,7 +34,7 @@ export default {
 
 <template>
     <div class="message-menu">
-        <button class="menu-btn" @click.stop="toggleMenu">⋮</button>
+        <button class="menu-button" @click.stop="toggleMenu">⋮</button>
         
         <div v-if="isOpen" class="dropdown-content">
             <div class="dropdown-item" @click.stop="selectOption('reply')">Reply</div>
@@ -52,7 +52,7 @@ export default {
     align-items: center;
 }
 
-.menu-btn {
+.menu-button {
     background: none;
     border: none;
     font-size: 20px;
@@ -68,7 +68,7 @@ export default {
     transition: background-color 0.2s;
 }
 
-.menu-btn:hover {
+.menu-button:hover {
     background-color: rgba(0, 0, 0, 0.05);
 }
 
@@ -76,7 +76,7 @@ export default {
     position: absolute;
     top: 35px;
     right: 0;
-    background-color: white;
+    background-color: var(--color-2-a);
     min-width: 120px;
     box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
     border-radius: 8px;
@@ -86,7 +86,7 @@ export default {
 }
 
 .dropdown-item {
-    color: #333;
+    color: var(--text-color-2);
     padding: 10px 16px;
     display: block;
     cursor: pointer;
@@ -95,7 +95,7 @@ export default {
 }
 
 .dropdown-item:hover {
-    background-color: #f5f5f5;
+    background-color: var(--color-5);
 }
 
 .dropdown-item.delete {

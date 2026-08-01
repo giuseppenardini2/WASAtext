@@ -202,7 +202,7 @@ export default {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--color-2-a);
   padding: 24px;
   border-radius: 12px;
   width: 300px;
@@ -211,7 +211,7 @@ export default {
 }
 
 .modal-content button:disabled {
-	background-color: #6c757d;
+	background-color: var(--color-7);
 	cursor: not-allowed;
 	opacity: 0.8;
 }
@@ -227,14 +227,14 @@ export default {
 .reaction-list li {
   padding: 10px;
   margin-bottom: 5px;
-  background-color: #f4f4f9;
+  background-color: var(--color-2);
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .reaction-list li:hover {
-  background-color: #e0e0f0;
+  background-color: var(--color-5);
 }
 
 .emoji-box {
@@ -260,14 +260,14 @@ export default {
 
 .buttons-box button {
   padding: 8px 16px;
-  background-color: #ff4d4f;
-  color: white;
+  background-color: var(--color-6-a);
+  color: var(--text-color-4);
   border: none;
   border-radius: 6px;
   cursor: pointer;
 }
 
-.buttons-box button:hover {
-  background-color: #d9363e;
+.buttons-box button:not(:disabled):hover {
+  background-color: var(--color-6-b);
 }
 </style>

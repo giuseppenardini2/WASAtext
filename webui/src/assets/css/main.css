@@ -1,5 +1,6 @@
 /* GENERAL */
 :root {
+	/* COLOR PALETTE */
     --color-1:#3b0d11;
 	--color-2:#eddfef;
 	--color-2-a: #f9f4f9;
@@ -9,9 +10,20 @@
 	--color-5:#fcfdaf;
 	--color-5-a:#fdfebd;
 
+	/* ERROR COLOR */
+	--color-6: #c10d0d;
+	--color-6-a: #fc6767;
+	--color-6-b: #d9363e;
+
+	/* DISABLED COLOR */
+	--color-7: #6c757d;
+
+	/* TEXT COLOR */
 	--text-color-1: #0f0f0f;
 	--text-color-2: #333;
 	--text-color-3: #ccc;
 	--text-color-4: white;
+	--text-color-5: #c10d0d;
+	--text-color-6: #fc6767;
 
 }

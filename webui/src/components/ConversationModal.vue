@@ -45,7 +45,7 @@ export default {
     <div class="modal-content">
       <h2>Select a conversation</h2>
       
-      <ul class="conversation-list">
+      <ul v-if="!loading" class="conversation-list">
         <li 
           v-for="conversation in conversations" 
           :key="conversation.id" 
@@ -55,7 +55,7 @@ export default {
         </li>
       </ul>
 
-      <button class="close-button" @click="closeModal">Abort</button>
+      <button class="close-button" :disabled="loading" @click="closeModal">Abort</button>
       <div>
 				<ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
 			</div>
@@ -78,7 +78,7 @@ export default {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--color-2-a);
   padding: 24px;
   border-radius: 12px;
   width: 300px;
@@ -95,26 +95,26 @@ export default {
 .conversation-list li {
   padding: 10px;
   margin-bottom: 5px;
-  background-color: #f4f4f9;
+  background-color: var(--color-2);
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .conversation-list li:hover {
-  background-color: #e0e0f0;
+  background-color: var(--color-5);
 }
 
 .close-button {
   padding: 8px 16px;
-  background-color: #ff4d4f;
-  color: white;
+  background-color: var(--color-6-a);
+  color: var(--text-color-4);
   border: none;
   border-radius: 6px;
   cursor: pointer;
 }
 
-.close-button:hover {
-  background-color: #d9363e;
+.close-button:not(:disabled):hover {
+  background-color: var(--color-6-b);
 }
 </style>

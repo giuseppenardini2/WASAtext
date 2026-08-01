@@ -109,7 +109,7 @@ export default {
 }
 
 .users-box button:disabled {
-	background-color: #6c757d;
+	background-color: var(--color-7);
 	cursor: not-allowed;
 	opacity: 0.8;
 }
@@ -143,7 +143,7 @@ export default {
 	cursor: pointer;
 }
 
-.user-search-bar button:hover {
+.user-search-bar button:not(:disabled):hover {
     background-color: var(--color-3-a);
 }
 
@@ -165,7 +165,7 @@ export default {
 	cursor: pointer;
 }
 
-.user-search-bar button:hover {
+.user-search-bar button:not(:disabled):hover {
     background-color: var(--color-3-a);
 }
 </style>

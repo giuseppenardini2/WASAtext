@@ -494,12 +494,12 @@ export default {
     flex-direction: column;
     height: 100%;
 }
-.conversation-box button:hover {
+.conversation-box button:not(:disabled):hover {
     background-color: var(--color-3-a);
 }
 
 .conversation-box button:disabled {
-	background-color: #6c757d;
+	background-color: var(--color-7);
 	cursor: not-allowed;
 	opacity: 0.8;
 }
@@ -523,7 +523,7 @@ export default {
     border: none;
     border-radius: 12px;
 	background-color: var(--color-3);
-    color: white;
+    color: var(--text-color-4);
     font-size: 14px;
 	cursor: pointer;
 }
@@ -578,13 +578,13 @@ export default {
 }
 
 .message-row-mine .message-bubble {
-	background-color: #dcf8c6; /* TODO: Cambiare colori */
-	color: #333;
+	background-color: #dcf8c6;
+	color: var(--text-color-2);
 }
 
 .message-row-other .message-bubble {
 	background-color: #ffffff;
-	color: #333;
+	color: var(--text-color-2);
 	border: 1px solid #ddd;
 }
 
@@ -673,7 +673,6 @@ export default {
     height: 60px;
 	resize: none; 
 	overflow-y: auto; 
-	
 	padding: 12px;
 	box-sizing: border-box;
 	border: 1px solid #ccc;
@@ -688,10 +687,9 @@ export default {
     border: none;
     border-radius: 12px;
 	background-color: var(--color-3);
-    color: white;
+    color: var(--text-color-4);
     font-size: 14px;
 	cursor: pointer;
 	flex-shrink: 0;
 }
-
 </style>

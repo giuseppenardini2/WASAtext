@@ -4,8 +4,8 @@ export default {
     return {
       username: "",
       users: [],
-      isLoading: false,
-      error: null,
+      loading: false,
+      errorMessage: null,
     };
   },
   methods: {
@@ -46,9 +46,10 @@ export default {
       placeholder="Search username..."
       class="search-input"
     />
-    
-    <div v-if="isLoading" class="loading-indicator">Loading...</div>
-    <div v-if="error" class="error-message">{{ error }}</div>
+
+    <div>
+      <ErrorMessage v-if="errorMessage" :message="errorMessage"></ErrorMessage>
+    </div>
 
     <ul v-if="users.length > 0 && !isLoading" class="results-list">
       <li
@@ -86,7 +87,7 @@ export default {
   margin: 4px 0 0;
   padding: 0;
   list-style: none;
-  background: white;
+  background: var(--color-2-a);
   border: 1px solid #ddd;
   border-radius: 4px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -106,15 +107,6 @@ export default {
 }
 
 .result-item:hover {
-  background-color: #f5f5f5;
-}
-
-.loading-indicator, .error-message {
-  font-size: 0.85em;
-  color: #666;
-  margin-top: 5px;
-}
-.error-message {
-  color: #d9534f;
+  background-color: var(--color-5);
 }
 </style>

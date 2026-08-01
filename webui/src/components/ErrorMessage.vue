@@ -16,9 +16,9 @@ export default {
     align-items: center;
 	padding: 5px;
 	margin: 10px;
-	border: 1px solid #c10d0d;
+	border: 1px solid var(--color-6);
     border-radius: 5px;
-	background-color:  #fc6767;
+	background-color: var(--color-6-a);
 	color: var(--text-color-1);
 	font-size: 16px;
 }

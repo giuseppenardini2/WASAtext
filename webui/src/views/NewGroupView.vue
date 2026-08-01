@@ -116,17 +116,17 @@ export default {
     border: none;
     border-radius: 8px;
 	background-color: var(--color-3);
-    color: white;
+    color: var(--text-color-4);
     font-size: 14px;
 	cursor: pointer;
 }
 
-.group-box button:hover {
+.group-box button:not(:disabled):hover {
     background-color: var(--color-3-a);
 }
 
 .group-box button:disabled {
-	background-color: #6c757d;
+	background-color: var(--color-7);
 	cursor: not-allowed;
 	opacity: 0.8;
 }

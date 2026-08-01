@@ -110,17 +110,17 @@ export default {
     border: none;
     border-radius: 8px;
 	background-color: var(--color-3);
-    color: white;
+    color: var(--text-color-4);
     font-size: 16px;
 	cursor: pointer;
 }
 
-.login-box button:hover {
+.login-box button:not(:disabled):hover {
     background-color: var(--color-3-a);
 }
 
 .login-box button:disabled {
-  background-color: #6c757d;
+  background-color: var(--color-7);
   cursor: not-allowed;
   opacity: 0.8;
 }
