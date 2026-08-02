@@ -290,6 +290,9 @@ export default {
 					headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` } 
 				});
 
+				if(conversationPreview.id == this.id) {
+					this.fecthConversation();
+				}
 				this.$router.push(`/conversations/${conversationPreview.id}`);
 			}
 			catch(error) {
