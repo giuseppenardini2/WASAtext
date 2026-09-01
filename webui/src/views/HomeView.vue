@@ -114,7 +114,7 @@ export default {
 	},
 	mounted() {
 		this.listConversations();
-		setInterval(this.listConversations, 30000); // Auto update home view every 30 seconds
+		setInterval(this.listConversations, 15000); // Auto update home view every 30 seconds
 	},
 	beforeUnmount() {
 		this.conversationPreviews.forEach(conversationPreview => {

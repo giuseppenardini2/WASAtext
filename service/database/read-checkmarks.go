@@ -46,10 +46,10 @@ func (db *appdbimpl) AddReadCheckmarks(userID int, conversationID int, messages 
 			}
 		}
 		err := db.CheckReadMessage(messages[i].ID, conversationID)
-		switch err {
-		case ErrNonexistentResource:
+		switch {
+		case errors.Is(err, ErrNonexistentResource):
 			messages[i].Status = structs.SentMessageStatus
-		case nil:
+		case err == nil:
 			messages[i].Status = structs.ReadMessageStatus
 		default:
 			return err

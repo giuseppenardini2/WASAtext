@@ -363,7 +363,7 @@ export default {
 	},
 	mounted() {
 		this.fecthConversation();
-		setInterval(this.fecthConversation, 30000); // Auto update conversation view every 30 seconds
+		setInterval(this.fecthConversation, 15000); // Auto update conversation view every 30 seconds
 	},
 	beforeUnmount() {
 		this.messages.forEach(message => {

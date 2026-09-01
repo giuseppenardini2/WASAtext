@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -13,7 +12,6 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 	// Get parameters
 	userID, err := strconv.Atoi(ps.ByName("userid"))
 	if err != nil {
-		log.Printf("ERRORE 20: %v\n", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -25,7 +23,6 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 	// Prepare the response
 	conversations, err := rt.db.GetConversations(userID)
 	if err != nil {
-		log.Printf("ERRORE 21: %v\n", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -33,7 +30,6 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 	w.Header().Set("content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(conversations); err != nil {
-		log.Printf("ERRORE 22: %v\n", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
