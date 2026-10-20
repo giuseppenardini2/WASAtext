@@ -58,8 +58,8 @@ Follow these instructions to run WASAtext:
 		docker run -rm -it -p 8080:80 --name wt-frontend wasa-text-frontend:latest
 		```
 
-* Open your browser, type `localhost:8080`, and the website will appear. (To simulate additional users, 
-open multiple tabs—one for each user.)
+* Open your browser, type `localhost:8080`, and the website will appear. 
+(To simulate additional users, open multiple tabs — one for each user).
 
 > [!IMPORTANT]
 > Both commands must be executed for the site to work. If you make changes to either the backend or the frontend, stop both processes with Ctrl+C and rerun the commands above starting with `docker build ...` to rebuild the site.
