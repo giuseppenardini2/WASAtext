@@ -4,8 +4,9 @@ Connect with your friends effortlessly using WASAtext! Send and receive messages
 or in groups, all from the convenience of your PC. Enjoy seamless conversations with text or GIFs and
 easily stay in touch through your private chats or group discussions.
 
-WARNING: WASAtext is a university project focused on creating APIs, managing the backend, and building a functional frontend.
-The login and security features are overlooked in order to focus on the rest.
+> [!WARNING]  
+> WASAtext is a university project focused on creating APIs, managing the backend, and building a functional frontend. 
+> The login and security features are overlooked in order to focus on the rest.
 
 ## Project structure
 
