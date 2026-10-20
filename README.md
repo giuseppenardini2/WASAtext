@@ -29,27 +29,29 @@ Other project files include:
 
 ## Run the project
 
-WARNING: This project was developed in a GNU/Linux environment.
+> [!WARNING]  
+> This project was developed in a GNU/Linux environment.
 
-Open two terminal windows and navigate to the project folder in both windows:
+Follow these instructions to run WASAtext:
 
-Run the following commands in one terminal window to run the backend:
+* Open two terminal windows and navigate to the project folder in both windows:
 
+* Run the following commands in one terminal window to run the backend:
 ```bash
 sudo docker build -t wasa-text-backend:latest -f Dockerfile.backend . &&
 sudo docker run -it -p 3000:3000 --name wt-backend wasa-text-backend:latest
 ```
 
-Run the following commands in a terminal window to run the frontend:
+* Run the following commands in a terminal window to run the frontend:
 ```bash
 sudo docker build -t wasa-text-frontend:latest -f Dockerfile.frontend . &&
 sudo docker run -it -p 8080:80 --name wt-frontend wasa-text-frontend:latest
 ```
 
-Open your browser, type localhost:8080, and the website will appear.
+* Open your browser, type `localhost:8080`, and the website will appear.
 
-(WARNING: Both commands must be executed for the site to work. If you make changes to either the backend or the frontend, stop both processes with Ctrl+C and rerun the commands above starting with `docker build ...` to rebuild the site.)
-
+> [!IMPORTANT]  
+> Both commands must be executed for the site to work. If you make changes to either the backend or the frontend, stop both processes with Ctrl+C and rerun the commands above starting with `docker build ...` to rebuild the site.
 
 ## License
 
