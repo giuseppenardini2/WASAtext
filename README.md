@@ -105,6 +105,6 @@ Follow these instructions to run WASAtext:
 
 ## License
 
-*Copyright© 2025 Giuseppe Nardini*\
+*Copyright© 2026 Giuseppe Nardini*\
 This program is licensed under the [AGPL-3.0](LICENSE) license.
 The images used in the project presentation are licensed under [CC0 Public Domain](https://creativecommons.org/publicdomain/zero/1.0/) license.
