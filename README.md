@@ -8,6 +8,15 @@ easily stay in touch through your private chats or group discussions.
 > WASAtext is a university project focused on creating APIs, managing the backend, and building a functional frontend. 
 > The login and security features are overlooked in order to focus on the rest.
 
+## Project features
+
+### Login
+
+A login page allows users to register or log in to their accounts
+![Login page image](Login.png)
+
+
+
 ## Project structure
 
 * `cmd/` contains all executables; Go programs here should only do "executable-stuff", like reading options from the CLI/env, etc.
