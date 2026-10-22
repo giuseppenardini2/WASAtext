@@ -6,7 +6,7 @@ easily stay in touch through your private chats or group discussions.
 
 > [!WARNING]  
 > WASAtext is a university project focused on creating APIs, managing the backend, and building a functional frontend. 
-> The login and security features are overlooked in order to focus on the rest.
+> The login, graphic design, and security features are overlooked in order to focus on the rest.
 
 ## Project features
 
@@ -15,6 +15,28 @@ easily stay in touch through your private chats or group discussions.
 A login page allows users to register or log in to their accounts
 ![Login page image](Login.png)
 
+### User profile
+
+A user can change their username or profile picture.
+![User profile page](Settings.png)
+
+### Users
+
+A user can see and create new chat with other users.
+![Users page](Users.png)
+
+### Private or group chats
+
+A user can chat with other users in private or group chats by sending text messages and photos, forwarding messages, replying to others' messages, or reacting to messages.
+![Private chat](PrivateChat.png)
+![Group chat](Groups.png)
+![Reaction](Reactios.png)
+
+### Group
+
+A user can create a group, leave it, or change its name and picture, and add other participants.
+![New group](NewGroup.png)
+![Group info](GroupInfo.png)
 
 
 ## Project structure
