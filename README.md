@@ -21,30 +21,30 @@ easily stay in touch through your private chats or group discussions.
 ### Login
 
 A login page allows users to register or log in to their accounts
-![Login page image](Login.png)
+![Login page image](doc/images/Login.png)
 
 ### User profile
 
 A user can change their username or profile picture.
-![User profile page](Settings.png)
+![User profile page](doc/images/Settings.png)
 
 ### Users
 
 A user can see and create new chat with other users.
-![Users page](Users.png)
+![Users page](doc/images/Users.png)
 
 ### Private or group chats
 
 A user can chat with other users in private or group chats by sending text messages and photos, forwarding messages, replying to others' messages, or reacting to messages.
-![Private chat](PrivateChat.png)
-![Group chat](Groups.png)
-![Reaction](Reactios.png)
+![Private chat](doc/images/PrivateChat.png)
+![Group chat](doc/images/Groups.png)
+![Reaction](doc/images/Reactios.png)
 
 ### Group
 
 A user can create a group, leave it, or change its name and picture, and add other participants.
-![New group](NewGroup.png)
-![Group info](GroupInfo.png)
+![New group](doc/images/NewGroup.png)
+![Group info](doc/images/GroupInfo.png)
 
 
 ## Project structure
